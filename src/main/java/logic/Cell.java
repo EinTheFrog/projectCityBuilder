@@ -7,6 +7,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import org.w3c.dom.events.Event;
+import render.GameApplication;
 
 public class Cell extends Polygon {
     private double x;
@@ -14,9 +15,11 @@ public class Cell extends Polygon {
     private double side;
     private double pi = Math.PI;
     private Color color;
+    private Field parentField;
 
     //конструктор
-    public Cell (double x, double y, double side, Color color) {
+    public Cell (double x, double y, double side, Color color, Field field) {
+        parentField = field;
         this.x = x;
         this.y = y;
         this.side = side;
@@ -30,9 +33,16 @@ public class Cell extends Polygon {
         this.setStroke(color);
         this.setFill(Color.rgb(0,0,0, 0));
 
-        this.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            System.out.println(x);
+        this.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+            buildBuilding();
         });
+    }
+
+    public void buildBuilding () {
+        System.out.println(x + " " + y);
+        Building house = new Building(x, y, side, 2 * side, parentField);
+        house.relocate(x, y - house.getHeight());
+        parentField.getChildren().add(house);
     }
 
     public double getSide () {return side;}

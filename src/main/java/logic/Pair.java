@@ -8,7 +8,7 @@ public class Pair <T> {
     private final   Supplier <T> secondSup;
     public T first;
     public T second;
-    public Pair(Supplier<T> sup1, Supplier<T> sup2) {
+    public Pair(Supplier sup1, Supplier sup2) {
         Objects.requireNonNull(firstSup = sup1);
         Objects.requireNonNull(secondSup = sup2);
         first = firstSup.get();
