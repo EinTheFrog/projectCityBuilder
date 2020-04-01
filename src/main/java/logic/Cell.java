@@ -1,9 +1,12 @@
 package logic;
 
+import javafx.event.EventType;
 import javafx.scene.Node;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
+import org.w3c.dom.events.Event;
 
 public class Cell extends Polygon {
     private double x;
@@ -25,7 +28,15 @@ public class Cell extends Polygon {
                 side * (1 + Math.cos(pi/ 6)), side * Math.sin(pi / 6)
         );
         this.setStroke(color);
+        this.setFill(Color.rgb(0,0,0, 0));
+
+        this.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            System.out.println(x);
+        });
     }
 
     public double getSide () {return side;}
+    public double getX () {return x;}
+    public double getY () {return y;}
+
 }

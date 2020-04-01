@@ -16,9 +16,10 @@ import logic.Field;
 public class GameApplication {
 
     public static void run () {
-        double paneWidth = 800;
-        double paneHeight = 600;
         double cellSide = 50;
+        int fieldSize = 10;
+        double paneWidth = (cellSide + cellSide * Math.cos(Math.PI / 6)) * fieldSize + 100;
+        double paneHeight = (cellSide * Math.sin(Math.PI / 6)) * fieldSize + 100;
         //задаем начальные элементы и параметры для них
         Stage gameWindow = new Stage();
         Scene gameScene;
@@ -29,16 +30,11 @@ public class GameApplication {
         gameScene.getStylesheets().add("RedLord.css");
 
         //создаем объекты сцены
-        final Canvas canvas = new Canvas(paneWidth, paneHeight);
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-        gc.setFill(Color.rgb(20, 114, 77 ));
-        gc.fillRect(0,0, paneWidth, paneHeight);
-
-        Field field = new Field(10, new Cell(50, 50, cellSide, Color.YELLOW));
+        Field field = new Field(fieldSize, new Cell(0, 0, cellSide, Color.BLACK));
         System.out.println(field.getPrefHeight() + " " + field.getPrefWidth());
 
         //добавляем объекты
-        mainPane.getChildren().addAll(canvas, field);
+        mainPane.getChildren().addAll(field);
 
 
 
