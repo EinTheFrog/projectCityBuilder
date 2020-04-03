@@ -1,22 +1,21 @@
 package logic;
 
+import javafx.event.EventDispatchChain;
+import javafx.scene.Node;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 
 public class Building  extends Polygon {
-    private double x;
-    private double y;
     private double height;
     private double side;
     private double pi = Math.PI;
     private Field parentField;
 
     //конструктор
-    public Building (double x, double y, double side, double height, Field field) {
+    public Building (double side, double height, Field field) {
         parentField = field;
-        this.x = x;
-        this.y = y;
         this.side = side;
         this.height = height;
         this.getPoints().addAll(
@@ -29,7 +28,9 @@ public class Building  extends Polygon {
         );
         this.setFill(Color.rgb(0,0,0));
         this.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-
+            double x = event.getSceneX();
+            double y = event.getSceneY();
+            field.findCell(x, y).buildBuilding();
         });
     }
 

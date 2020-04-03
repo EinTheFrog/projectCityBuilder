@@ -1,20 +1,18 @@
 package logic;
 
-import javafx.geometry.Pos;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Field extends Pane {
-    ArrayList<Cell> cellsList= new ArrayList<>();
+    Cell[][] cellsArray;
     private int size;
     private double cellSide;
     private double cellHeight;
     private double intend;
+    Color cellColor = Color.rgb(178, 178, 177 );
     public Field(int size, double x, double y, double cellSide, Color color, double intend) {
+        cellsArray = new Cell[size][size];
         this.intend = intend;
         this.size = size;
         this.cellSide = cellSide;
@@ -31,15 +29,31 @@ public class Field extends Pane {
             for (int j = 0; j < size; j++) {
                 double x = j * cellSide + indentX;
                 double y = i * cellHeight + indentY;
-                Color color = Color.rgb(178, 178, 177 );
-                Cell cell = new Cell(x, y, cellSide, color,this);
+                Cell cell = new Cell(x, y, cellSide, cellColor,this);
                 cell.relocate(x, y);
-                cellsList.add(cell);
+                cellsArray[j][i] = cell;
                 this.getChildren().add(cell);
             }
             indentX += cellSide * Math.cos(Math.PI / 6);
         }
     }
 
+    public Cell findCell (double x1, double y1) {
+        double x = x1 - intend;
+        double y = y1 - intend;
+        int indX = (int) ((x - (1/Math.tan(Math.PI/6)) * y) / cellSide);
+        double reqY = 0;
+        double cellHeight = cellSide * Math.sin(Math.PI / 6);
+        int indY = 0;
+        while (y > reqY) {
+            reqY += cellHeight;
+            indY++;
+        }
+        indY--;
+        return cellsArray[indX][indY];
+    }
+
     public double getIntend() { return intend;}
+
+
 }

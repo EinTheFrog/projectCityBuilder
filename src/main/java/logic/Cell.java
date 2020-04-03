@@ -33,14 +33,18 @@ public class Cell extends Polygon {
         this.setStroke(color);
         this.setFill(Color.rgb(0,0,0, 0));
 
+        this.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            System.out.println("Cell");
+            buildBuilding();
+            event.consume();
+        });
         this.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
             buildBuilding();
         });
     }
 
     public void buildBuilding () {
-        System.out.println(x + " " + y);
-        Building house = new Building(x, y, side, 2 * side, parentField);
+        Building house = new Building(side, 2 * side, parentField);
         house.relocate(x, y - house.getHeight());
         parentField.getChildren().add(house);
     }
