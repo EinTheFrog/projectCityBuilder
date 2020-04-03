@@ -55,5 +55,4 @@ public class Field extends Pane {
 
     public double getIntend() { return intend;}
 
-
 }

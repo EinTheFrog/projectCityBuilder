@@ -17,10 +17,14 @@ public class GameApplication {
 
     public static void run () {
         double intend = 50;
-        double cellSide = 50;
-        int fieldSize = 10;
-        double paneWidth = (cellSide + cellSide * Math.cos(Math.PI / 6)) * fieldSize + 2 * intend;
-        double paneHeight = (cellSide * Math.sin(Math.PI / 6)) * fieldSize + 2 * intend;
+        int fieldSize = 20;
+        double paneWidth = 1000 ;
+        double paneSide = paneWidth / (1 + Math.cos(Math.PI / 6));
+        double paneHeight = paneSide * Math.sin(Math.PI / 6);
+        double cellSide = paneSide / fieldSize;
+        paneWidth += 2 * intend;
+        paneHeight += 2 * intend;
+
         //задаем начальные элементы и параметры для них
         Stage gameWindow = new Stage();
         Scene gameScene;
