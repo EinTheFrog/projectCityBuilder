@@ -36,12 +36,11 @@ public class GameApplication {
 
         //создаем объекты сцены
         Field field = new Field(fieldSize, 0, 0, cellSide, Color.BLACK, intend);
-        System.out.println(field.getPrefHeight() + " " + field.getPrefWidth());
 
         //добавляем объекты
         mainPane.getChildren().addAll(field);
 
-
+        gameScene.setOnKeyPressed(field);
 
         //рендерим окно
         gameWindow.setScene(gameScene);

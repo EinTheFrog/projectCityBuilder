@@ -6,8 +6,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
-import org.w3c.dom.events.Event;
-import render.GameApplication;
 
 public class Cell extends Polygon {
     private double x;
