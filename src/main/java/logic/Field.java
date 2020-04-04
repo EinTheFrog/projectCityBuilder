@@ -17,26 +17,24 @@ public class Field extends Pane implements EventHandler<KeyEvent> {
     //обработка нажатия клавиши
     @Override
     public void handle(KeyEvent event) {
-        System.out.println(event.getEventType().toString());
-
-        if(event.getSource() == getOnKeyPressed()) {
+        if(event.getEventType() == KeyEvent.KEY_PRESSED) {
             keyPressed(event);
         }
-        if(event.getSource() == getOnKeyReleased()) {
+        if(event.getEventType() == KeyEvent.KEY_RELEASED) {
             keyReleased(event);
         }
-
-        System.out.println(((KeyEvent) event).getCode());
     }
 
     private void keyPressed(KeyEvent e) {
         if (e.getCode() == KeyCode.W) {
+            //System.out.println("Pressed " + e.getCode());
             dx = 1;
             dy = 1;
         }
     }
     private void keyReleased(KeyEvent e) {
         if (e.getCode() == KeyCode.W) {
+           // System.out.println("Released " + e.getCode());
             dx = 0;
             dy = 0;
         }
@@ -47,6 +45,8 @@ public class Field extends Pane implements EventHandler<KeyEvent> {
     private double cellSide;
     private double cellHeight;
     private double intend;
+    private double fieldX = 0;
+    private double fieldY = 0;
     private double dx = 0;
     private double dy = 0;
     Color cellColor = Color.rgb(178, 178, 177 );
@@ -65,17 +65,18 @@ public class Field extends Pane implements EventHandler<KeyEvent> {
         this.size = size;
         this.cellSide = cellSide;
         cellHeight = cellSide * Math.sin(Math.PI / 6);
-        this.setPrefSize( cellSide * size + cellSide * Math.cos(Math.PI / 6), cellHeight * size);
+        this.setPrefSize( cellSide * size *(1 + Math.cos(Math.PI / 6)) + 2 * intend, cellHeight * size + 2 * intend);
         this.setBackground(new Background(new BackgroundFill(Color.rgb(133, 106, 84  ), null, null)));
         createCells();
 
         timer = new Timer(true);
-        timer.schedule(timerTask, 100);
+        timer.schedule(timerTask, 100, 100);
     }
 
     private void move () {
-        this.setLayoutX(this.getLayoutX() + dx);
-        this.setLayoutY(this.getLayoutY() + dy);
+        fieldX += dx;
+        fieldY += dy;
+        this.relocate(fieldX, fieldY);
     }
 
 

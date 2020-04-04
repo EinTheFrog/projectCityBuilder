@@ -4,6 +4,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -29,6 +30,7 @@ public class GameApplication {
         Stage gameWindow = new Stage();
         Scene gameScene;
         StackPane mainPane = new StackPane();
+        Pane fieldPane = new Pane();
 
         mainPane.setPrefSize(paneWidth, paneHeight);
         gameScene = new Scene(mainPane);
@@ -38,9 +40,11 @@ public class GameApplication {
         Field field = new Field(fieldSize, 0, 0, cellSide, Color.BLACK, intend);
 
         //добавляем объекты
-        mainPane.getChildren().addAll(field);
+        fieldPane.getChildren().add(field);
+        mainPane.getChildren().addAll(fieldPane);
 
         gameScene.setOnKeyPressed(field);
+        gameScene.setOnKeyReleased(field);
 
         //рендерим окно
         gameWindow.setScene(gameScene);
