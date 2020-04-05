@@ -2,8 +2,10 @@ package logic;
 
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
@@ -22,6 +24,8 @@ public class Field extends Pane implements EventHandler<KeyEvent> {
     private double dy = 0;
     private double moveRange;
     private Pane parentPane;
+    private double scaleValue = 1;
+    private final double moveSpeedDenom = 8;
     private Map <KeyboardButtons, Boolean> curBtnPressed;
     private Map <KeyboardButtons, Boolean> newBtnPressed;
     Color cellColor = Color.rgb(178, 178, 177);
@@ -33,17 +37,26 @@ public class Field extends Pane implements EventHandler<KeyEvent> {
         this.intend = intend;
         this.size = size;
         this.cellSide = cellSide;
-
         cellHeight = cellSide * Math.sin(Math.PI / 6);
         this.setPrefSize(cellSide * size * (1 + Math.cos(Math.PI / 6)) + 2 * intend, cellHeight * size + 2 * intend);
         this.parentPane.setBackground(new Background(new BackgroundFill(Color.rgb(133, 106, 84), null, null)));
-        moveRange = cellSide / 10;
+        moveRange = cellSide / moveSpeedDenom;
 
         createCells();
 
         curBtnPressed = new HashMap<>();
         newBtnPressed = new HashMap<>();
         timer.cancel();
+
+        this.setOnScroll(event -> {
+            double scrollValue = event.getDeltaY();
+            scaleValue += scrollValue / 100;
+            this.setScaleX(scaleValue);
+            this.setScaleY(scaleValue);
+
+            moveRange = cellSide * scaleValue / moveSpeedDenom;
+            System.out.println(scaleValue);
+        });
     }
 
     //обработка нажатия клавиши
@@ -103,7 +116,6 @@ public class Field extends Pane implements EventHandler<KeyEvent> {
 
     //методы для запуска и остановки таймера
     private void startTimer() {
-        System.out.println("start " + newBtnPressed.size() + " " + curBtnPressed.size());
         if (curBtnPressed.isEmpty() && !newBtnPressed.isEmpty()) {
             timer = new Timer(true);
             TimerTask timerTask = new TimerTask() {
@@ -113,16 +125,13 @@ public class Field extends Pane implements EventHandler<KeyEvent> {
                 }
             };
             timer.schedule(timerTask, 0, 20);
-            System.out.println("timer is created");
         }
         curBtnPressed.putAll(newBtnPressed);
     }
 
     private void stopTimer() {
-        System.out.println("cancel " + newBtnPressed.size() + " " + curBtnPressed.size());
         if (newBtnPressed.isEmpty()) {
             timer.cancel();
-            System.out.println("timer is canceled");
         }
         curBtnPressed.clear();
         curBtnPressed.putAll(newBtnPressed);
@@ -136,6 +145,8 @@ public class Field extends Pane implements EventHandler<KeyEvent> {
         this.relocate(fieldX, fieldY);
         // System.out.println(this.getLayoutX() + " " + this.getLayoutY());
     }
+
+
 
     // метод заполнения поля клетками
     private void createCells() {
