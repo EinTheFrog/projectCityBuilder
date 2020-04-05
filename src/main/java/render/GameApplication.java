@@ -37,7 +37,7 @@ public class GameApplication {
         gameScene.getStylesheets().add("RedLord.css");
 
         //создаем объекты сцены
-        Field field = new Field(fieldSize, 0, 0, cellSide, Color.BLACK, intend);
+        Field field = new Field(fieldSize, cellSide, fieldPane, intend);
 
         //добавляем объекты
         fieldPane.getChildren().add(field);
