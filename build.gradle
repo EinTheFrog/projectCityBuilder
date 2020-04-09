@@ -7,7 +7,7 @@ plugins {
 group 'org.example'
 version '0.1'
 
-sourceCompatibility = 1.8
+sourceCompatibility = 1.11
 
 repositories {
     mavenCentral()
@@ -16,16 +16,19 @@ repositories {
 dependencies {
     implementation group: 'junit', name: 'junit', version: '4.12'
 }
+mainClassName = "render.Main"
 
 javafx {
     version = "13"
     modules = [ 'javafx.controls', 'javafx.fxml' ]
 }
 
-mainClassName = "render.Main"
+jar {
+    manifest {
+        attributes "Main-Class": "render.MainLauncher"
+    }
 
-apply plugin: 'java'
-
-repositories {
-    mavenCentral()
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }

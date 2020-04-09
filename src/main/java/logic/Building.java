@@ -1,8 +1,6 @@
 package logic;
 
-import javafx.event.EventDispatchChain;
-import javafx.scene.Node;
-import javafx.scene.input.MouseButton;
+
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
