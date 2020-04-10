@@ -3,16 +3,14 @@ package logic;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
 
 import java.util.*;
 
-public class Field extends Pane implements EventHandler<KeyEvent> {
+public class Field extends Pane {
     Cell[][] cellsArray;
     private int size;
     private double cellSide;
@@ -48,27 +46,24 @@ public class Field extends Pane implements EventHandler<KeyEvent> {
         newBtnPressed = new HashMap<>();
         timer.cancel();
 
-        this.setOnScroll(event -> {
+
+        //добавление обработчиков событий
+        this.addEventHandler(ScrollEvent.SCROLL, event -> {
             double scrollValue = event.getDeltaY();
             scaleValue += scrollValue / 100;
             this.setScaleX(scaleValue);
             this.setScaleY(scaleValue);
-
             moveRange = cellSide * scaleValue / moveSpeedDenom;
             System.out.println(scaleValue);
         });
+        this.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+            keyPressed(event);
+        });
+        this.addEventHandler(KeyEvent.KEY_RELEASED, event -> {
+            keyReleased(event);
+        });
     }
 
-    //обработка нажатия клавиши
-    @Override
-    public void handle(KeyEvent event) {
-        if (event.getEventType() == KeyEvent.KEY_PRESSED) {
-            keyPressed(event);
-        }
-        if (event.getEventType() == KeyEvent.KEY_RELEASED) {
-            keyReleased(event);
-        }
-    }
 
     private void keyPressed(KeyEvent e) {
         switch (e.getCode()) {

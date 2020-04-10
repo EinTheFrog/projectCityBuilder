@@ -38,13 +38,11 @@ public class GameApplication {
 
         //создаем объекты сцены
         Field field = new Field(fieldSize, cellSide, fieldPane, intend);
+        field.setFocusTraversable(true);
 
         //добавляем объекты
         fieldPane.getChildren().add(field);
         mainPane.getChildren().addAll(fieldPane);
-
-        gameScene.setOnKeyPressed(field);
-        gameScene.setOnKeyReleased(field);
 
         //рендерим окно
         gameWindow.setScene(gameScene);
