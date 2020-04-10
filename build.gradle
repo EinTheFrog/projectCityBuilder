@@ -16,7 +16,7 @@ repositories {
 dependencies {
     implementation group: 'junit', name: 'junit', version: '4.12'
 }
-mainClassName = "render.Main"
+mainClassName = "render.MainLauncher"
 
 javafx {
     version = "13"
@@ -27,8 +27,21 @@ jar {
     manifest {
         attributes "Main-Class": "render.MainLauncher"
     }
-
     from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+task uberJar(type: Jar) {
+    archiveClassifier = 'uber'
+
+    manifest {
+        attributes 'Main-Class': 'render.MainLauncher'
+    }
+
+    from sourceSets.main.output
+
+    dependsOn configurations.runtimeClasspath
+    from {
+        configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
     }
 }
