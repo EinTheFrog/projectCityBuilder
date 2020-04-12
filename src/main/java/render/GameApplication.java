@@ -14,15 +14,17 @@ public class GameApplication {
     static double paneSide = paneWidth / (1 + Math.cos(Math.PI / 6));
     static double paneHeight = paneSide * Math.sin(Math.PI / 6);
     static final double cellSide = paneSide / fieldSize;
+    static Stage gameWindow;
+    public static StackPane mainPane;
 
     public static void run () {
         paneWidth += 2 * intend;
         paneHeight += 2 * intend;
 
         //задаем начальные элементы и параметры для них
-        Stage gameWindow = new Stage();
+        gameWindow = new Stage();
         Scene gameScene;
-        StackPane mainPane = new StackPane();
+        mainPane = new StackPane();
         Pane fieldPane = new Pane();
 
         mainPane.setPrefSize(paneWidth, paneHeight);
@@ -40,6 +42,11 @@ public class GameApplication {
         gameWindow.setScene(gameScene);
         gameWindow.setTitle("Game");
         gameWindow.show();
+
+    }
+
+    public static void stop () {
+        gameWindow.close();
     }
 
 }

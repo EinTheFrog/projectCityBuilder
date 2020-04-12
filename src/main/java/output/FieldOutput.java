@@ -4,6 +4,7 @@ import controller.Controller;
 import core.FieldCore;
 import javafx.scene.Node;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -38,6 +39,11 @@ public class FieldOutput extends Pane{
         });
         this.addEventHandler(KeyEvent.KEY_RELEASED, event -> {
             Controller.keyReleased(event.getCode(), fieldCore);
+        });
+        this.addEventFilter(MouseEvent.ANY, event -> {
+            if (event.getEventType() == MouseEvent.MOUSE_CLICKED) {
+                Controller.closeMenu(event);
+            }
         });
     }
     public void zoom (double scaleValue) {

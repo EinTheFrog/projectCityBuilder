@@ -6,8 +6,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import logic.KeyboardButtons;
 import output.BuildingOutput;
-import output.FieldOutput;
-import render.GameApplication;
+import render.Menu;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,31 +19,42 @@ public class Controller {
     private static double dx = 0.0;
     private static double dy = 0.0;
     private static Timer timer = new Timer(true);
+    private static boolean inMenu = false;
 
     //запрещаем создавать объекты класса Controller
     private Controller() { }
 
     //методы для field
     public static void keyPressed(KeyCode code, FieldCore fieldCore) {
+        boolean playerMovesCam = false;
         switch (code) {
             case W:
                 dy = fieldCore.getMoveRange();
                 newBtnPressed.put(KeyboardButtons.W, true);
+                playerMovesCam = true;
                 break;
             case A:
                 dx = fieldCore.getMoveRange();
                 newBtnPressed.put(KeyboardButtons.A, true);
+                playerMovesCam = true;
                 break;
             case D:
                 dx = -fieldCore.getMoveRange();
                 newBtnPressed.put(KeyboardButtons.D, true);
+                playerMovesCam = true;
                 break;
             case S:
                 dy = -fieldCore.getMoveRange();
                 newBtnPressed.put(KeyboardButtons.S, true);
+                playerMovesCam = true;
+                break;
+            case ESCAPE:
+                if (inMenu)
+                inMenu = true;
+                Menu.open();
                 break;
         }
-        startCameraMovement(fieldCore);
+        if (playerMovesCam)startCameraMovement(fieldCore);
     }
 
     public static void keyReleased(KeyCode code, FieldCore fieldCore) {
@@ -71,6 +81,14 @@ public class Controller {
 
     public static void zoom (double deltaY, FieldCore fieldCore) {
         fieldCore.zoom(deltaY);
+    }
+
+    public static void closeMenu (MouseEvent event) {
+        if (inMenu) {
+            Menu.close();
+            event.consume();
+            inMenu = false;
+        }
     }
 
 
