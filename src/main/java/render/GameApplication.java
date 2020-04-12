@@ -1,17 +1,10 @@
 package render;
 
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Polygon;
 import javafx.stage.Stage;
-import logic.Cell;
-import logic.Field;
+import output.FieldOutput;
 
 
 public class GameApplication {
@@ -37,11 +30,10 @@ public class GameApplication {
         gameScene.getStylesheets().add("RedLord.css");
 
         //создаем объекты сцены
-        Field field = new Field(fieldSize, cellSide, fieldPane, intend);
-        field.setFocusTraversable(true);
+        mainPane.setFocusTraversable(false);
+        FieldOutput fieldOutput = new FieldOutput(fieldSize, cellSide, fieldPane, intend);
 
         //добавляем объекты
-        fieldPane.getChildren().add(field);
         mainPane.getChildren().addAll(fieldPane);
 
         //рендерим окно

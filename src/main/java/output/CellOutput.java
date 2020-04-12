@@ -1,22 +1,25 @@
-package logic;
+package output;
 
-import javafx.event.EventType;
-import javafx.scene.Node;
+import controller.Controller;
+import core.CellCore;
+import core.FieldCore;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 
-public class Cell extends Polygon {
+public class CellOutput extends Polygon {
     private double x;
     private double y;
     private double side;
     private double pi = Math.PI;
     private Color color;
-    private Field parentField;
+    private FieldOutput parentField;
+    CellCore cellCore;
 
     //конструктор
-    public Cell (double x, double y, double side, Color color, Field field) {
+    public CellOutput (double x, double y, double side, Color color, FieldOutput field) {
+        this.relocate(x, y);
+        cellCore = new CellCore(x, y, side, this);
         parentField = field;
         this.x = x;
         this.y = y;
@@ -32,23 +35,14 @@ public class Cell extends Polygon {
         this.setFill(Color.rgb(0,0,0, 0));
 
         this.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            System.out.println("Cell");
-            buildBuilding();
+            Controller.buildBuilding(cellCore);
             event.consume();
         });
-        this.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-            buildBuilding();
-        });
     }
 
-    public void buildBuilding () {
-        Building house = new Building(side, 2 * side, parentField);
-        house.relocate(x, y - house.getHeight());
-        parentField.getChildren().add(house);
-    }
+    public CellCore getCore () {return cellCore;}
 
-    public double getSide () {return side;}
-    public double getX () {return x;}
-    public double getY () {return y;}
+    public FieldOutput getParentField () {return parentField;}
+
 
 }
