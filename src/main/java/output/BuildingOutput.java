@@ -35,11 +35,13 @@ public class BuildingOutput extends Polygon {
         );
         this.setFill(Color.rgb(0,0,0));
         this.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            Controller.clickOnBuilding(event, parentField);
+            Controller.clickOnBuilding(this, event);
         });
     }
 
     public double getHeight() {return height;}
-
+    public double getX() {return x;}
+    public double getY() {return y;}
     public BuildingCore getCore() {return buildingCore;}
+    public FieldOutput getParentField() {return parentField;}
 }

@@ -21,8 +21,6 @@ public class CellOutput extends Polygon {
         this.relocate(x, y);
         cellCore = new CellCore(x, y, side, this);
         parentField = field;
-        this.x = x;
-        this.y = y;
         this.side = side;
         this.color = color;
         this.getPoints().addAll(

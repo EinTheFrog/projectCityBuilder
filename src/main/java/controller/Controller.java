@@ -5,7 +5,9 @@ import core.FieldCore;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import logic.KeyboardButtons;
+import output.BuildingOutput;
 import output.FieldOutput;
+import render.GameApplication;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,8 +21,10 @@ public class Controller {
     private static double dy = 0.0;
     private static Timer timer = new Timer(true);
 
+    //запрещаем создавать объекты класса Controller
     private Controller() { }
 
+    //методы для field
     public static void keyPressed(KeyCode code, FieldCore fieldCore) {
         switch (code) {
             case W:
@@ -99,9 +103,11 @@ public class Controller {
     }
 
     //методы для Building
-    public static void clickOnBuilding (MouseEvent event, FieldOutput fieldOutput) {
-        double x = event.getSceneX();
-        double y = event.getSceneY();
-        fieldOutput.getCore().findCell(x, y).buildBuilding();
+    public static void clickOnBuilding (BuildingOutput buildingOutput, MouseEvent event) {
+        double x = buildingOutput.getX();
+        double y = buildingOutput.getY();
+        CellCore targetCell = buildingOutput.getParentField().getCore().findCell(
+                x + event.getX(), y + event.getY() - buildingOutput.getHeight()); //вычисляем координату события
+        if (targetCell != null) targetCell.buildBuilding();
     }
 }

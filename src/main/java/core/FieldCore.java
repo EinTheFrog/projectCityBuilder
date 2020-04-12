@@ -69,7 +69,8 @@ public class FieldCore {
             indY++;
         }
         indY--;
-        return cellsArray[indX][indY].getCore();
+        if (indX >= 0 && indY >= 0 && indX < size && indY < size) return cellsArray[indX][indY].getCore();
+        else return null;
     }
 
     public FieldOutput getOutput() { return output;}

@@ -8,14 +8,14 @@ import output.FieldOutput;
 
 
 public class GameApplication {
+    static double intend = 50;
+    static int fieldSize = 20;
+    static double paneWidth = 1000 ;
+    static double paneSide = paneWidth / (1 + Math.cos(Math.PI / 6));
+    static double paneHeight = paneSide * Math.sin(Math.PI / 6);
+    static final double cellSide = paneSide / fieldSize;
 
     public static void run () {
-        double intend = 50;
-        int fieldSize = 20;
-        double paneWidth = 1000 ;
-        double paneSide = paneWidth / (1 + Math.cos(Math.PI / 6));
-        double paneHeight = paneSide * Math.sin(Math.PI / 6);
-        double cellSide = paneSide / fieldSize;
         paneWidth += 2 * intend;
         paneHeight += 2 * intend;
 
