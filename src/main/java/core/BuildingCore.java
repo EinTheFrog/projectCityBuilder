@@ -1,7 +1,6 @@
 package core;
 
 import output.BuildingOutput;
-import output.FieldOutput;
 
 public class BuildingCore {
     private double x;

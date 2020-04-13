@@ -2,6 +2,7 @@ package controller;
 
 import core.CellCore;
 import core.FieldCore;
+import javafx.event.Event;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import logic.KeyboardButtons;
@@ -19,7 +20,7 @@ public class Controller {
     private static double dx = 0.0;
     private static double dy = 0.0;
     private static Timer timer = new Timer(true);
-    private static boolean inMenu = false;
+    public static boolean inMenu = false;
 
     //запрещаем создавать объекты класса Controller
     private Controller() { }
@@ -49,9 +50,8 @@ public class Controller {
                 playerMovesCam = true;
                 break;
             case ESCAPE:
-                if (inMenu)
-                inMenu = true;
                 Menu.open();
+                inMenu = true;
                 break;
         }
         if (playerMovesCam)startCameraMovement(fieldCore);
@@ -81,14 +81,6 @@ public class Controller {
 
     public static void zoom (double deltaY, FieldCore fieldCore) {
         fieldCore.zoom(deltaY);
-    }
-
-    public static void closeMenu (MouseEvent event) {
-        if (inMenu) {
-            Menu.close();
-            event.consume();
-            inMenu = false;
-        }
     }
 
 
@@ -127,5 +119,13 @@ public class Controller {
         CellCore targetCell = buildingOutput.getParentField().getCore().findCell(
                 x + event.getX(), y + event.getY() - buildingOutput.getHeight()); //вычисляем координату события
         if (targetCell != null) targetCell.buildBuilding();
+    }
+
+    //для mainPane
+    public static void closeMenu (Event event) {
+        if (inMenu) {
+            if (event.getEventType() == MouseEvent.MOUSE_CLICKED) Menu.close();
+            event.consume();
+        }
     }
 }

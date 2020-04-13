@@ -18,13 +18,16 @@ public class BuildingOutput extends Polygon {
 
     //конструктор
     public BuildingOutput (double x, double y, double side, double height, FieldOutput field) {
+        //создаем core
         buildingCore = new BuildingCore(x, y, height, side);
+        //задаем параметры
         this.x = x;
         this. y = y;
         this.relocate(x, y - height);
         parentField = field;
         this.side = side;
         this.height = height;
+        //отрисовываем
         this.getPoints().addAll(
                 side * Math.cos(pi/ 6) , height + side * Math.sin(pi / 6),
                 0.0, height,
@@ -34,11 +37,14 @@ public class BuildingOutput extends Polygon {
                 side * (1 + Math.cos(pi/ 6)), height+ side * Math.sin(pi / 6)
         );
         this.setFill(Color.rgb(0,0,0));
+
+        //добавляем обработчик щелчка
         this.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             Controller.clickOnBuilding(this, event);
         });
     }
 
+    //getters
     public double getHeight() {return height;}
     public double getX() {return x;}
     public double getY() {return y;}

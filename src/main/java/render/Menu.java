@@ -1,11 +1,14 @@
 package render;
 
+import controller.Controller;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+
 
 public class Menu {
     static Stage menuWindow;
@@ -15,7 +18,8 @@ public class Menu {
         Scene menuScene;
         VBox vbox = new VBox();
         Button btnMenu = new Button("menu");
-        vbox.getChildren().add(btnMenu);
+        Button btnResume = new Button("resume");
+        vbox.getChildren().addAll(btnResume, btnMenu);
         vbox.setPrefSize(200, 300);
         menuScene = new Scene(vbox);
         menuScene.getStylesheets().add("RedLord.css");
@@ -28,13 +32,24 @@ public class Menu {
 
         //создаем событие для открытия окна игры
         btnMenu.setOnAction(e -> {
-            GameApplication.stop();
             MainMenu.open();
-            menuWindow.close();
+            GameApplication.stop();
         });
-    }
 
+        //создаем события для закрытия окна
+        btnResume.setOnAction(e -> {
+            close();
+        });
+
+        vbox.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.ESCAPE) menuWindow.close();
+        });
+
+    }
     public static void close () {
-        menuWindow.close();
+        if (menuWindow != null) {
+            menuWindow.close();
+            Controller.inMenu = false;
+        }
     }
 }

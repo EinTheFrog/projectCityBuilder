@@ -1,6 +1,9 @@
 package render;
 
+import controller.Controller;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -8,18 +11,18 @@ import output.FieldOutput;
 
 
 public class GameApplication {
-    static double intend = 50;
+    //задаем параметры создания игрвого поля
+    static double indent = 50;
     static int fieldSize = 20;
-    static double paneWidth = 1000 ;
-    static double paneSide = paneWidth / (1 + Math.cos(Math.PI / 6));
+    static final double paneWidth = 1000 ;
+    static final double paneSide = paneWidth / (1 + Math.cos(Math.PI / 6));
     static double paneHeight = paneSide * Math.sin(Math.PI / 6);
     static final double cellSide = paneSide / fieldSize;
+    //создаем объекты для игрвого окна и корневой панели
     static Stage gameWindow;
     public static StackPane mainPane;
 
     public static void run () {
-        paneWidth += 2 * intend;
-        paneHeight += 2 * intend;
 
         //задаем начальные элементы и параметры для них
         gameWindow = new Stage();
@@ -27,13 +30,22 @@ public class GameApplication {
         mainPane = new StackPane();
         Pane fieldPane = new Pane();
 
-        mainPane.setPrefSize(paneWidth, paneHeight);
+        mainPane.setPrefSize(paneWidth + 2 * indent, paneHeight + 2 * indent);
         gameScene = new Scene(mainPane);
         gameScene.getStylesheets().add("RedLord.css");
 
         //создаем объекты сцены
-        mainPane.setFocusTraversable(false);
-        FieldOutput fieldOutput = new FieldOutput(fieldSize, cellSide, fieldPane, intend);
+        mainPane.setFocusTraversable(false); //убираем фокус с mainPane, фокус переключтся на fieldOutput при его создании
+        FieldOutput fieldOutput = new FieldOutput(fieldSize, cellSide, fieldPane, indent); //fieldOutput добавиться в
+        // fieldPane в своем конструкторе
+
+
+        //создаем обработку щелчка мыши при открытом окне меню для закрытия этог самого меню
+        mainPane.addEventFilter(MouseEvent.ANY, event -> {
+            if (event.getEventType() == MouseEvent.MOUSE_CLICKED) {
+                Controller.closeMenu(event);
+            }
+        });
 
         //добавляем объекты
         mainPane.getChildren().addAll(fieldPane);
@@ -43,9 +55,16 @@ public class GameApplication {
         gameWindow.setTitle("Game");
         gameWindow.show();
 
+        //закрытие окна осуществляем через собственный метод
+        gameWindow.setOnCloseRequest(event -> {
+            event.consume();
+            stop();
+        });
     }
 
+    //событие для закрытия игрвого окна
     public static void stop () {
+        Menu.close();
         gameWindow.close();
     }
 

@@ -7,14 +7,20 @@ import javafx.stage.Stage;
 
 public class MainMenu {
 
+    /**
+     * класс для главного меню игры
+     */
     public static void open () {
-        //задаем начальные элементы и параметры для них
+        //создаем окно, сцену, панель и узлы
         Stage menuWindow = new Stage();
         Scene menuScene;
         VBox vbox = new VBox();
         Button btnStart = new Button("start");
+        //добавляем узел на панель
         vbox.getChildren().add(btnStart);
+        //задаем параметы панели
         vbox.setPrefSize(300, 400);
+        //инициализируем сцену и задаем ее параметры
         menuScene = new Scene(vbox);
         menuScene.getStylesheets().add("RedLord.css");
 
