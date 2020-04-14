@@ -1,10 +1,11 @@
 package core;
 
+import javafx.scene.layout.Pane;
 import output.CellOutput;
 import output.FieldOutput;
 
 public class FieldCore {
-    CellOutput[][] cellsArray;
+    CellCore[][] cellsArray;
     private double fieldX;
     private double fieldY;
     private double size = 0; //кол-во клеток на одной стороне игрвого поля
@@ -14,17 +15,17 @@ public class FieldCore {
     private double scaleValue = 1.0;
     private FieldOutput output;
 
-    public FieldCore (int size, double cellSide, FieldOutput output, double indent) {
+    public FieldCore (int size, double cellSide,  Pane parentPane, double indent) {
         //задаем параметры поля
         fieldX = indent;
         fieldY = indent;
-        this.output = output;
+        output = new FieldOutput(size, cellSide, parentPane, indent, this);
         this.size = size;
         this.cellSide = cellSide;
         moveRange = cellSide / moveSpeedDenom;
 
         //создаем массив для хранения клеток
-        cellsArray = new CellOutput[size][size];
+        cellsArray = new CellCore[size][size];
         //создаем клетки
         createCells();
     }
@@ -54,9 +55,9 @@ public class FieldCore {
                 double x = j * cellSide + indentX;
                 double y = i * cellHeight + indentY;
                 //создаем клетку
-                CellOutput cell = new CellOutput(x, y, cellSide, output.getCellColor(), this.getOutput());
+                CellCore cell = new CellCore(x, y, cellSide, output.getCellColor(), this.getOutput());
                 cellsArray[j][i] = cell; //добавляем ее в массив
-                output.add(cell); // отрисовывем ее
+                output.add(cell.getOutput()); // отрисовывем ее
             }
             indentX += cellSide * Math.cos(Math.PI / 6);
         }
@@ -73,7 +74,7 @@ public class FieldCore {
             indY++;
         }
         indY--;
-        if (indX >= 0 && indY >= 0 && indX < size && indY < size) return cellsArray[indX][indY].getCore();
+        if (indX >= 0 && indY >= 0 && indX < size && indY < size) return cellsArray[indX][indY];
         else return null;
     }
 

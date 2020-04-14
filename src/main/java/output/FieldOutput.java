@@ -15,10 +15,10 @@ public class FieldOutput extends Pane{
     private double cellSide;
     private double cellHeight;
     private double indent;
-    private FieldCore fieldCore;
+    private FieldCore core;
     private final Color cellColor = Color.rgb(178, 178, 177);
 
-    public FieldOutput (int size, double cellSide, Pane parentPane, double indent) {
+    public FieldOutput (int size, double cellSide, Pane parentPane, double indent, FieldCore core) {
         //устанавливаем фокус на этом игровом поле
         this.setFocusTraversable(true);
         //записываем значения перемнных
@@ -26,8 +26,7 @@ public class FieldOutput extends Pane{
         this.indent = indent; // отступ
         this.setLayoutX(indent);
         this.setLayoutY(indent);
-        fieldCore = new FieldCore(size, cellSide,this, indent); //создаем core для игрвого поля,
-        // где осуществляется вся логика, отрованная от графической реализации
+        this.core = core;
         this.cellSide = cellSide; //длина стороны одной клетки на игровом поле
         cellHeight = cellSide * Math.sin(Math.PI / 6);
         this.setPrefSize(cellSide * size * (1 + Math.cos(Math.PI / 6)), cellHeight * size);
@@ -40,13 +39,13 @@ public class FieldOutput extends Pane{
         //добавляем обработчиков событий для взаимодействия с пользователем,
         // сама обработка событий реализуется в Controller
         this.addEventHandler(ScrollEvent.SCROLL, event -> {
-            Controller.zoom(event.getDeltaY(), fieldCore);
+            Controller.zoom(event.getDeltaY(), core);
         });
         this.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
-            Controller.keyPressed(event.getCode(), fieldCore);
+            Controller.keyPressed(event.getCode(), core);
         });
         this.addEventHandler(KeyEvent.KEY_RELEASED, event -> {
-            Controller.keyReleased(event.getCode(), fieldCore);
+            Controller.keyReleased(event.getCode(), core);
         });
     }
 
@@ -71,5 +70,5 @@ public class FieldOutput extends Pane{
     public double getCellSide () {return cellSide;}
     public double getIntend() { return indent; }
     public Color getCellColor() {return cellColor;}
-    public FieldCore getCore() {return fieldCore;}
+    public FieldCore getCore() {return core;}
 }

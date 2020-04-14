@@ -1,13 +1,12 @@
 package render;
 
 import controller.Controller;
+import core.FieldCore;
 import javafx.scene.Scene;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import output.FieldOutput;
 
 
 public class GameApplication {
@@ -36,7 +35,7 @@ public class GameApplication {
 
         //создаем объекты сцены
         mainPane.setFocusTraversable(false); //убираем фокус с mainPane, фокус переключтся на fieldOutput при его создании
-        FieldOutput fieldOutput = new FieldOutput(fieldSize, cellSide, fieldPane, indent); //fieldOutput добавиться в
+        FieldCore fieldCore = new FieldCore(fieldSize, cellSide, fieldPane, indent); //fieldOutput добавиться в
         // fieldPane в своем конструкторе
 
 

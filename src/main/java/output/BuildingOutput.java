@@ -14,12 +14,10 @@ public class BuildingOutput extends Polygon {
     private double side;
     private double pi = Math.PI;
     private FieldOutput parentField;
-    private BuildingCore buildingCore;
+    private BuildingCore core;
 
     //конструктор
-    public BuildingOutput (double x, double y, double side, double height, FieldOutput field) {
-        //создаем core
-        buildingCore = new BuildingCore(x, y, height, side);
+    public BuildingOutput (double x, double y, double side, double height, FieldOutput field, BuildingCore core) {
         //задаем параметры
         this.x = x;
         this. y = y;
@@ -27,6 +25,7 @@ public class BuildingOutput extends Polygon {
         parentField = field;
         this.side = side;
         this.height = height;
+        this. core = core;
         //отрисовываем
         this.getPoints().addAll(
                 side * Math.cos(pi/ 6) , height + side * Math.sin(pi / 6),
@@ -40,14 +39,9 @@ public class BuildingOutput extends Polygon {
 
         //добавляем обработчик щелчка
         this.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            Controller.clickOnBuilding(this, event);
+            Controller.clickOnBuilding(core, event);
         });
     }
 
-    //getters
-    public double getHeight() {return height;}
-    public double getX() {return x;}
-    public double getY() {return y;}
-    public BuildingCore getCore() {return buildingCore;}
-    public FieldOutput getParentField() {return parentField;}
+
 }

@@ -1,5 +1,6 @@
 package controller;
 
+import core.BuildingCore;
 import core.CellCore;
 import core.FieldCore;
 import javafx.event.Event;
@@ -113,11 +114,11 @@ public class Controller {
     }
 
     //методы для Building
-    public static void clickOnBuilding (BuildingOutput buildingOutput, MouseEvent event) {
-        double x = buildingOutput.getX();
-        double y = buildingOutput.getY();
-        CellCore targetCell = buildingOutput.getParentField().getCore().findCell(
-                x + event.getX(), y + event.getY() - buildingOutput.getHeight()); //вычисляем координату события
+    public static void clickOnBuilding (BuildingCore buildingCore, MouseEvent event) {
+        double x = buildingCore.getX();
+        double y = buildingCore.getY();
+        CellCore targetCell = buildingCore.getParentField().getCore().findCell(
+                x + event.getX(), y + event.getY() - buildingCore.getHeight()); //вычисляем координату события
         if (targetCell != null) targetCell.buildBuilding();
     }
 
