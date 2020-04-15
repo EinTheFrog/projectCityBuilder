@@ -5,45 +5,34 @@ import core.BuildingCore;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Polygon;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-public class BuildingOutput extends Pane {
-    private double x;
-    private double y;
-    private double height;
-    private double side;
-    private double pi = Math.PI;
-    private FieldOutput parentField;
-    private BuildingCore core;
+public class BuildingOutput extends Polygon {
 
     //конструктор
-    public BuildingOutput (double x, double y, double side, double height, FieldOutput field, BuildingCore core) throws FileNotFoundException {
-        //задаем параметры
-        this.x = x;
-        this. y = y;
-        this.relocate(x, y - height);
-        parentField = field;
-        this.side = side;
-        this.height = height;
-        this. core = core;
+    public BuildingOutput (double x, double y, double width, double height,double cellWidth,double cellHeight,
+                           FieldOutput field, BuildingCore core) throws FileNotFoundException {
         //отрисовываем
-        /*this.getPoints().addAll(
-                side * Math.cos(pi/ 6) , height + side * Math.sin(pi / 6),
-                0.0, height,
+        this.getPoints().addAll(
                 0.0 , 0.0,
-                side, 0.0,
-                side * (1 + Math.cos(pi/ 6)), side * Math.sin(pi / 6),
-                side * (1 + Math.cos(pi/ 6)), height+ side * Math.sin(pi / 6)
-        );*/
+                - cellWidth / 2, - cellHeight / 2,
+                - cellWidth / 2, - height,
+                cellWidth / 2, - height,
+                cellWidth / 2, - cellHeight / 2
+        );
         try {
-            ImageView imgView = new ImageView(new Image(new FileInputStream("src/main/resources/thatched.png")));
-            this.getChildren().add(imgView);
+            Image img = new Image(new FileInputStream("src/main/resources/thatched.png"));
+            this.setFill(new ImagePattern(img, cellWidth / 2, 0, width, height, false));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+        //this.setFill(Color.rgb(100, 200, 100));
+        this.relocate(x - cellWidth / 2, y - height);
 
         //добавляем обработчик щелчка
         this.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {

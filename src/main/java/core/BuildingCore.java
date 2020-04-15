@@ -8,18 +8,18 @@ import java.io.FileNotFoundException;
 public class BuildingCore {
     private double x;
     private double y;
-    private double height;
-    private double side;
     private BuildingOutput output;
     private FieldOutput parentField;
+    private static double width = 128.0;
+    private static double height = 128.0;
 
-    public BuildingCore (double x, double y, double side, double height, FieldOutput field) throws FileNotFoundException {
-        output = new BuildingOutput(x, y, side, height, field, this);
+    public BuildingCore (double x, double y, double cellWidth, double cellHeight, FieldOutput field) throws FileNotFoundException {
         this.x = x;
         this.y = y;
-        this.height = height;
-        this.side = side;
         parentField = field;
+        height *= cellWidth/ width;
+        width = cellWidth;
+        output = new BuildingOutput(x, y, width, height, cellWidth, cellHeight, field, this);
     }
 
     //getters

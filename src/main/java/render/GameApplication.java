@@ -15,7 +15,7 @@ import javafx.stage.Stage;
 public class GameApplication {
     //задаем параметры создания игрвого поля
     static final double indent = 50;
-    static final int fieldSize = 20;
+    static final int fieldSize = 5;
     static final double paneWidth = 1000 ;
     static final double paneSide = paneWidth / (2 * Math.cos(Math.PI / 6));
     static double paneHeight = 2 * paneSide * Math.sin(Math.PI / 6);

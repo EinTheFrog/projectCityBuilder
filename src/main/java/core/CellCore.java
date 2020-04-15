@@ -11,6 +11,8 @@ public class CellCore {
     private double side;
     private CellOutput output;
     private FieldOutput field;
+    private double width;
+    private double height;
     private boolean hasBuilding = false;
 
     //конструктор
@@ -19,12 +21,14 @@ public class CellCore {
         this.y = y;
         this.side = side;
         this.field = field;
+        this.width = width;
+        this.height = height;
         output = new CellOutput(x, y, width, height, color, field, this);
     }
 
     //метод для добавления здания
     public void buildBuilding () throws FileNotFoundException {
-        BuildingCore house = new BuildingCore(x, y, side, 2 * side, field);
+        BuildingCore house = new BuildingCore(x, y, width,  height, field);
         hasBuilding = true;
         field.add(house.getOutput());
     }
