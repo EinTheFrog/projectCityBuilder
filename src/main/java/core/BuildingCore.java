@@ -3,6 +3,8 @@ package core;
 import output.BuildingOutput;
 import output.FieldOutput;
 
+import java.io.FileNotFoundException;
+
 public class BuildingCore {
     private double x;
     private double y;
@@ -11,7 +13,7 @@ public class BuildingCore {
     private BuildingOutput output;
     private FieldOutput parentField;
 
-    public BuildingCore (double x, double y, double side, double height, FieldOutput field) {
+    public BuildingCore (double x, double y, double side, double height, FieldOutput field) throws FileNotFoundException {
         output = new BuildingOutput(x, y, side, height, field, this);
         this.x = x;
         this.y = y;

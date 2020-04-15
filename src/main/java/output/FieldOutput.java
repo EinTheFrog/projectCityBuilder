@@ -12,28 +12,26 @@ import javafx.scene.paint.Color;
 
 public class FieldOutput extends Pane{
     private Pane parentPane;
-    private double cellSide;
-    private double cellHeight;
     private double indent;
     private FieldCore core;
-    private final Color cellColor = Color.rgb(178, 178, 177);
 
-    public FieldOutput (int size, double cellSide, Pane parentPane, double indent, FieldCore core) {
+    public FieldOutput (FieldCore core) {
         //устанавливаем фокус на этом игровом поле
         this.setFocusTraversable(true);
         //записываем значения перемнных
-        this.parentPane = parentPane; //панель, на которой находится игровое поле
-        this.indent = indent; // отступ
-        this.setLayoutX(indent);
-        this.setLayoutY(indent);
+        this.parentPane = core.getParentPane(); //панель, на которой находится игровое поле
+        this.indent = core.getIndent(); // отступ
+        this.setLayoutX(core.getX());
+        this.setLayoutY(core.getY());
         this.core = core;
-        this.cellSide = cellSide; //длина стороны одной клетки на игровом поле
-        cellHeight = cellSide * Math.sin(Math.PI / 6);
-        this.setPrefSize(cellSide * size * (1 + Math.cos(Math.PI / 6)), cellHeight * size);
+        this.setPrefSize(core.getWidth(), core.getHeight());
         //задаем цвет для панели, на которой нахидится игрвое поле и добавляем наше поле на панель
+        this.setBackground(
+                new Background(new BackgroundFill(Color.rgb(10, 106, 84), null, null)));
         this.parentPane.setBackground(
-                new Background(new BackgroundFill(Color.rgb(133, 106, 84), null, null)));
+                new Background(new BackgroundFill(Color.rgb(104, 106, 84), null, null)));
         this.parentPane.getChildren().add(this);
+        this.setPrefSize(core.getWidth(), core.getHeight());
 
 
         //добавляем обработчиков событий для взаимодействия с пользователем,
@@ -67,8 +65,5 @@ public class FieldOutput extends Pane{
     public void add (Node node) {this.getChildren().add(node);}
 
     //getters
-    public double getCellSide () {return cellSide;}
-    public double getIntend() { return indent; }
-    public Color getCellColor() {return cellColor;}
     public FieldCore getCore() {return core;}
 }

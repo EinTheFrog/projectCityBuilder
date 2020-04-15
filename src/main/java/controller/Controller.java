@@ -10,6 +10,7 @@ import logic.KeyboardButtons;
 import output.BuildingOutput;
 import render.Menu;
 
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
@@ -109,12 +110,12 @@ public class Controller {
     }
 
     //методы для cell
-    public static void buildBuilding (CellCore cellCore) {
+    public static void buildBuilding (CellCore cellCore) throws FileNotFoundException {
         cellCore.buildBuilding();
     }
 
     //методы для Building
-    public static void clickOnBuilding (BuildingCore buildingCore, MouseEvent event) {
+    public static void clickOnBuilding (BuildingCore buildingCore, MouseEvent event) throws FileNotFoundException {
         double x = buildingCore.getX();
         double y = buildingCore.getY();
         CellCore targetCell = buildingCore.getParentField().getCore().findCell(
