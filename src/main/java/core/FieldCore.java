@@ -26,6 +26,8 @@ public class FieldCore {
     private Pane parentPane;
     private double width;
     private double height;
+    private double cellIndentX;
+    private double cellIndentY;
 
     public FieldCore (int size, double cellSide, double fieldSide, Color cellColor, Pane parentPane, double indent) {
         //задаем параметры поля
@@ -68,8 +70,8 @@ public class FieldCore {
     private void createCells() {
         // переменные, которые отвечают за расположение клеток на поле
         //вспомогательная переменные
-        double cellIndentX = cellWidth / 2;
-        double cellIndentY = fieldSide * Math.sin(Math.PI / 6) + cellHeight / 2;
+        cellIndentX = cellWidth / 2;
+        cellIndentY = fieldSide * Math.sin(Math.PI / 6) + cellHeight / 2;
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 double x = j * cellWidth / 2 + cellIndentX;
@@ -86,9 +88,20 @@ public class FieldCore {
 
     //метод для нахождения клетки по координатам (используется в Controller.clickOnBuilding)
     public CellCore findCell(double x, double y) {
-        int indX = (int) Math.floor(x / (cellWidth / 2));
-        int indY = (int) Math.floor((y - (cellHeight / 2) * Math.abs((size - indX))) / (cellHeight / 2));
-        if (indX >= 0 && indY >= 0 && indX < size && indY < size) return cellsArray[indX][indY];
+        /*int i = (int) (x/ cellWidth + y / cellHeight - fieldSide * Math.sin(Math.PI / 6) / cellHeight - 1);
+        int j =(int) (2 * x / cellWidth - i - 1);*/
+        int j = 0;
+        x -= cellWidth / 2;
+        y -= fieldSide * Math.sin(Math.PI / 6) + cellHeight / 2;
+        while (y <= Math.tan(Math.PI / 6) * x - j * cellHeight) {
+            j++;
+        }
+        j--;
+        int i = 0;
+        while (y >= - Math.tan(Math.PI / 6) * x + i * cellHeight) {
+            i++;
+        }
+        if (i >= 0 && j >= 0 && i < size && j < size) return cellsArray[j][i];
         else return null;
     }
 

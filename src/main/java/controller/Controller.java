@@ -119,7 +119,7 @@ public class Controller {
         double x = buildingCore.getX();
         double y = buildingCore.getY();
         CellCore targetCell = buildingCore.getParentField().getCore().findCell(
-                x + event.getX(), y + event.getY() - buildingCore.getHeight()); //вычисляем координату события
+                x + event.getX(), y + event.getY()); //вычисляем координату события
         if (targetCell != null) targetCell.buildBuilding();
     }
 
