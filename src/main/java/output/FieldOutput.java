@@ -62,7 +62,10 @@ public class FieldOutput extends Pane{
 
 
     //метод для графического добавление узла на игровое поле
-    public void add (Node node) {this.getChildren().add(node);}
+    public void add (Node node) {
+        this.getChildren().remove(node);
+        this.getChildren().add(node);
+    }
 
     //getters
     public FieldCore getCore() {return core;}

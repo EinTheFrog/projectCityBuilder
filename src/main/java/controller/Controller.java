@@ -112,6 +112,7 @@ public class Controller {
     //методы для cell
     public static void buildBuilding (CellCore cellCore) throws FileNotFoundException {
         cellCore.buildBuilding();
+        cellCore.getField().redrawCloserBuildings(cellCore.getIndices());
     }
 
     //методы для Building
@@ -120,7 +121,7 @@ public class Controller {
         double y = buildingCore.getY();
         CellCore targetCell = buildingCore.getParentField().getCore().findCell(
                 x + event.getX(), y + event.getY()); //вычисляем координату события
-        if (targetCell != null) targetCell.buildBuilding();
+        if (targetCell != null) buildBuilding(targetCell);
     }
 
     //для mainPane

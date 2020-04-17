@@ -20,6 +20,11 @@ public class BuildingCore {
         height *= cellWidth/ width;
         width = cellWidth;
         output = new BuildingOutput(x, y, width, height, cellWidth, cellHeight, field, this);
+        parentField.add(output);
+    }
+
+    public void redraw() {
+        parentField.add(output);
     }
 
     //getters
