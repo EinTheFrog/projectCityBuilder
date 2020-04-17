@@ -1,6 +1,7 @@
 package core;
 
 import javafx.scene.paint.Color;
+import logic.BuildingTypes;
 import logic.Pair;
 import output.CellOutput;
 import output.FieldOutput;
@@ -35,17 +36,13 @@ public class CellCore {
     }
 
     //метод для добавления здания
-    public void buildBuilding () throws FileNotFoundException {
-        this.building = new BuildingCore(x, y, width,  height, field.getOutput());
+    public void buildBuilding (BuildingTypes type, int scale) throws FileNotFoundException {
+        building = new BuildingCore(x, y, width,  height, field.getOutput(), type, scale);
+    }
+    public void setBuilding (BuildingCore building) {
+        this.building = building;
     }
 
-/*    public void setDepth(int depth) {
-        this.depth = depth;
-    }
-
-    public int getDepth() {
-        return depth;
-    }*/
 
     public FieldCore getField() {
         return field;

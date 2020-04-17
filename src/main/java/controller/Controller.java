@@ -6,6 +6,7 @@ import core.FieldCore;
 import javafx.event.Event;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
+import logic.BuildingTypes;
 import logic.KeyboardButtons;
 import output.BuildingOutput;
 import render.Menu;
@@ -19,6 +20,7 @@ import java.util.TimerTask;
 public class Controller {
     private static Map<KeyboardButtons, Boolean> curBtnPressed = new HashMap<>();
     private static Map <KeyboardButtons, Boolean> newBtnPressed = new HashMap<>();
+    private static final int buildingCellScale = 5;
     private static double dx = 0.0;
     private static double dy = 0.0;
     private static Timer timer = new Timer(true);
@@ -111,8 +113,11 @@ public class Controller {
 
     //методы для cell
     public static void buildBuilding (CellCore cellCore) throws FileNotFoundException {
-        cellCore.buildBuilding();
-        cellCore.getField().redrawCloserBuildings(cellCore.getIndices());
+        if (cellCore.getField().neighboursFree(cellCore, buildingCellScale)) {
+            cellCore.buildBuilding(BuildingTypes.SQUARE, buildingCellScale);
+            cellCore.getField().redrawCloserBuildings(cellCore.getIndices());
+            cellCore.getField().setBuildingForNeighbours(cellCore, buildingCellScale);
+        }
     }
 
     //методы для Building

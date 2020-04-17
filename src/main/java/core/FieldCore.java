@@ -81,9 +81,7 @@ public class FieldCore {
                 CellCore cell = new CellCore(x, y, cellSide, cellWidth, cellHeight, cellColor, this, i, j);
                 cellsArray[j][i] = cell; //добавляем ее в массив
                 output.add(cell.getOutput()); // отрисовывем ее
-                System.out.print("(" + j + ";" + i + ")");
             }
-            System.out.println();
             cellIndentX += (cellWidth / 2);
             cellIndentY += (cellHeight / 2);
         }
@@ -126,7 +124,31 @@ public class FieldCore {
             }
             startY++;
         }
-        System.out.println();
+    }
+
+    //метод для занимания зданием клеток
+    public void setBuildingForNeighbours (CellCore cell, int buildingCellScale) {
+        BuildingCore building = cell.getBuilding();
+        int cellX = cell.getIndices().first;
+        int cellY = cell.getIndices().second;
+        for (int i = cellY + 1 - buildingCellScale; i <= cellY; i ++) {
+            for(int j = cellX; j <= cellX - 1 + buildingCellScale; j ++) {
+                if (i >= 0 && j >= 0 && i < size && j < size) cellsArray[j][i].setBuilding(building);
+                System.out.print("(" + j + ";" + i + ") ");
+            }
+        }
+    }
+    public boolean neighboursFree(CellCore cell, int buildingCellScale) {
+        int cellX = cell.getIndices().first;
+        int cellY = cell.getIndices().second;
+        for (int i = cellY + 1 - buildingCellScale; i <= cellY; i ++) {
+            for(int j = cellX; j <= cellX - 1 + buildingCellScale; j ++) {
+                if (i >= 0 && j >= 0 && i < size && j < size ) {
+                     if (cellsArray[j][i].getBuilding() != null) return false;
+                } else return false;
+            }
+        }
+        return true;
     }
 
     public FieldOutput getOutput() { return output;}

@@ -6,6 +6,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Polygon;
+import logic.BuildingTypes;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -13,24 +14,29 @@ import java.io.FileNotFoundException;
 public class BuildingOutput extends Polygon {
 
     //конструктор
-    public BuildingOutput (double x, double y, double width, double height,double cellWidth,double cellHeight,
-                           FieldOutput field, BuildingCore core) throws FileNotFoundException {
+    public BuildingOutput (double x, double y, double width, double height, double areaWidth, double areaHeight,
+                           BuildingTypes type, BuildingCore core) throws FileNotFoundException {
         //отрисовываем
-        this.getPoints().addAll(
-                0.0 , 0.0,
-                - cellWidth / 2, - cellHeight / 2,
-                - cellWidth / 2, - height,
-                cellWidth / 2, - height,
-                cellWidth / 2, - cellHeight / 2
-        );
+        if (type == BuildingTypes.SQUARE) {
+            this.getPoints().addAll(
+                    0.0 , 0.0,
+                    - areaWidth / 2, - areaHeight / 2,
+                    - areaWidth / 2, - height,
+                    areaWidth / 2, - height,
+                    areaWidth / 2, - areaHeight / 2
+            );
+        } else {
+
+        }
+
         try {
             Image img = new Image(new FileInputStream("src/main/resources/thatched.png"));
-            this.setFill(new ImagePattern(img, cellWidth / 2, 0, width, height, false));
+            this.setFill(new ImagePattern(img, areaWidth / 2, 0, width, height, false));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
         //this.setFill(Color.rgb(100, 200, 100));
-        this.relocate(x - cellWidth / 2, y - height);
+        this.relocate(x - areaWidth / 2, y - height);
 
         //добавляем обработчик щелчка
         this.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
