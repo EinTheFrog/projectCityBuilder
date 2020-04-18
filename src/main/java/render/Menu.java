@@ -50,7 +50,7 @@ public class Menu {
     public static void close () {
         if (menuWindow != null) {
             menuWindow.close();
-            Controller.mod = Mod.BUILDING_MOD;
+            Controller.mod = Mod.CHOOSING_MOD;
         }
     }
 }

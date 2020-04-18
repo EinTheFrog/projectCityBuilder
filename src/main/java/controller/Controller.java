@@ -25,7 +25,7 @@ public class Controller {
     private static double dx = 0.0;
     private static double dy = 0.0;
     private static Timer timer = new Timer(true);
-    public static Mod mod = Mod.BUILDING_MOD;
+    public static Mod mod = Mod.CHOOSING_MOD;
 
     //запрещаем создавать объекты класса Controller
     private Controller() { }
@@ -55,8 +55,11 @@ public class Controller {
                 playerMovesCam = true;
                 break;
             case ESCAPE:
-                Menu.open();
-                mod = Mod.MENU_MOD;
+                if (mod == Mod.CHOOSING_MOD) {
+                    Menu.open();
+                    mod = Mod.MENU_MOD;
+                }
+                else mod = Mod.CHOOSING_MOD;
                 break;
         }
         //если игрок двигает камеру, то вызываем метод для перемещения камеры
@@ -123,6 +126,7 @@ public class Controller {
     //методы для cell
     //метод для добавления здания
     public static void buildBuilding (CellCore cellCore) throws FileNotFoundException {
+        if (mod != Mod.BUILDING_MOD) return;
         if (cellCore.getField().neighboursFree(cellCore, buildingCellScale)) {
             //добавляем здание с помощью метода в Cell
             cellCore.buildBuilding(BuildingTypes.SQUARE, buildingCellScale);
@@ -158,6 +162,12 @@ public class Controller {
     //для кнопок на toolsPane
     public static void pressOnBuildingButton(FieldCore fieldCore) {
         Controller.mod = Mod.BUILDING_MOD;
+        //устанавливаем фокус на этом игровом поле
+        fieldCore.getOutput().requestFocus();
+    }
+
+    public static void pressOnChooseButton(FieldCore fieldCore) {
+        Controller.mod = Mod.CHOOSING_MOD;
         //устанавливаем фокус на этом игровом поле
         fieldCore.getOutput().requestFocus();
     }

@@ -59,8 +59,6 @@ public class FieldOutput extends Pane{
         this.relocate(x, y);
     }
 
-
-
     //метод для графического добавление узла на игровое поле
     public void add (Node node) {
         this.getChildren().remove(node);

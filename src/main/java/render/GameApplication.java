@@ -56,12 +56,22 @@ public class GameApplication {
         imgHouseBtn.setFitHeight(paneHeight / 10 );
         Button btnHouse = new Button("", imgHouseBtn);
         btnHouse.setId("control_button");
+        Button btnNone = new Button();
+        btnNone.setPrefWidth(paneHeight / 10 );
+        btnNone.setPrefHeight(paneHeight / 10 );
+        btnHouse.setId("control_button");
 
-        //создаем событие для нажатия на кнопку
+        //создаем события для нажатия на кнопки на панели
         btnHouse.setOnAction(event -> {
             Controller.pressOnBuildingButton(fieldCore);
         });
-        toolsPane.getItems().add(btnHouse);
+
+        btnNone.setOnAction(event -> {
+            Controller.pressOnChooseButton(fieldCore);
+        });
+
+
+        toolsPane.getItems().addAll(btnHouse, btnNone);
         //создаем обработку щелчка мыши при открытом окне меню для закрытия этог самого меню
         mainPane.addEventFilter(MouseEvent.ANY, event -> {
             if (event.getEventType() == MouseEvent.MOUSE_CLICKED) {
