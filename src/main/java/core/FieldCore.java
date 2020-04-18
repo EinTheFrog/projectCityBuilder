@@ -32,7 +32,6 @@ public class FieldCore {
 
     public FieldCore (int size, double cellSide, double fieldSide, Color cellColor, Pane parentPane, double indent) {
         //задаем параметры поля
-        this.parentPane = parentPane;
         fieldX = indent;
         fieldY = indent;
         this.indent = indent;
@@ -134,7 +133,6 @@ public class FieldCore {
         for (int i = cellY + 1 - buildingCellScale; i <= cellY; i ++) {
             for(int j = cellX; j <= cellX - 1 + buildingCellScale; j ++) {
                 if (i >= 0 && j >= 0 && i < size && j < size) cellsArray[j][i].setBuilding(building);
-                System.out.print("(" + j + ";" + i + ") ");
             }
         }
     }

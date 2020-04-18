@@ -3,9 +3,10 @@ package render;
 import controller.Controller;
 import core.FieldCore;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ToolBar;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -15,7 +16,7 @@ import javafx.stage.Stage;
 public class GameApplication {
     //задаем параметры создания игрвого поля
     static final double indent = 50;
-    static final int fieldSize = 50;
+    static final int fieldSize = 20;
     static final double paneWidth = 1000 ;
     static final double paneSide = paneWidth / (2 * Math.cos(Math.PI / 6));
     static double paneHeight = 2 * paneSide * Math.sin(Math.PI / 6);
@@ -23,15 +24,16 @@ public class GameApplication {
     static final Color cellColor = Color.rgb(178, 178, 177 );
     //создаем объекты для игрвого окна и корневой панели
     static Stage gameWindow;
-    public static StackPane mainPane;
+    public static BorderPane mainPane;
 
     public static void run () {
 
         //задаем начальные элементы и параметры для них
         gameWindow = new Stage();
         Scene gameScene;
-        mainPane = new StackPane();
+        mainPane = new BorderPane();
         Pane fieldPane = new Pane();
+        ToolBar toolsPane = new ToolBar();
 
         mainPane.setPrefSize(paneWidth + 2 * indent, paneHeight + 2 * indent);
         gameScene = new Scene(mainPane);
@@ -39,10 +41,12 @@ public class GameApplication {
 
         //создаем объекты сцены
         mainPane.setFocusTraversable(false); //убираем фокус с mainPane, фокус переключтся на fieldOutput при его создании
-        FieldCore fieldCore = new FieldCore(fieldSize, cellSide, paneSide, cellColor, fieldPane, indent); //fieldOutput добавиться в
-        // fieldPane в своем конструкторе
-
-
+        FieldCore fieldCore = new FieldCore(fieldSize, cellSide, paneSide, cellColor, fieldPane, indent);
+        fieldCore.getOutput().toBack();
+        //fieldOutput добавиться в fieldPane в своем конструкторе
+        Button btnHouse = new Button();
+        //btnHouse.setHe
+        toolsPane.getItems().add(btnHouse);
         //создаем обработку щелчка мыши при открытом окне меню для закрытия этог самого меню
         mainPane.addEventFilter(MouseEvent.ANY, event -> {
             if (event.getEventType() == MouseEvent.MOUSE_CLICKED) {
@@ -51,7 +55,10 @@ public class GameApplication {
         });
 
         //добавляем объекты
-        mainPane.getChildren().addAll(fieldPane);
+        fieldPane.toBack();
+        mainPane.setCenter(fieldPane);
+        toolsPane.toFront();
+        mainPane.setBottom(toolsPane);
 
         //рендерим окно
         gameWindow.setScene(gameScene);

@@ -20,7 +20,7 @@ import java.util.TimerTask;
 public class Controller {
     private static Map<KeyboardButtons, Boolean> curBtnPressed = new HashMap<>();
     private static Map <KeyboardButtons, Boolean> newBtnPressed = new HashMap<>();
-    private static final int buildingCellScale = 5;
+    private static final int buildingCellScale = 2;
     private static double dx = 0.0;
     private static double dy = 0.0;
     private static Timer timer = new Timer(true);
@@ -61,7 +61,7 @@ public class Controller {
         if (playerMovesCam)startCameraMovement(fieldCore);
     }
 
-    public static void keyReleased(KeyCode code, FieldCore fieldCore) {
+    public static void keyReleased(KeyCode code) {
         switch (code) {
             case W:
                 dy = 0;
