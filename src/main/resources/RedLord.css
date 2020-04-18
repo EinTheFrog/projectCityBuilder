@@ -5,6 +5,12 @@
     -fx-border-radius: 20;
     -fx-focus-color: transparent;
 }
+#control_button{
+    -fx-background-radius: 10;
+    -fx-padding: 5;
+    -fx-border-color: #F5B041;
+    -fx-border-radius: 10;
+}
 .button:hover{
     -fx-background-color: #9b2c21;
 }

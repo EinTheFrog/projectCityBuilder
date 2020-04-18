@@ -8,6 +8,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import logic.Mod;
 
 
 public class Menu {
@@ -49,7 +50,7 @@ public class Menu {
     public static void close () {
         if (menuWindow != null) {
             menuWindow.close();
-            Controller.inMenu = false;
+            Controller.mod = Mod.BUILDING_MOD;
         }
     }
 }

@@ -4,10 +4,7 @@ import javafx.scene.paint.Color;
 import logic.BuildingTypes;
 import logic.Pair;
 import output.CellOutput;
-import output.FieldOutput;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class CellCore {
     private double x;
@@ -18,7 +15,6 @@ public class CellCore {
     private double width;
     private double height;
     private BuildingCore building;
-    private int depth;
     private int indX;
     private int indY;
 
@@ -39,22 +35,21 @@ public class CellCore {
     public void buildBuilding (BuildingTypes type, int scale) throws FileNotFoundException {
         building = new BuildingCore(x, y, width,  height, field.getOutput(), type, scale);
     }
+
+    //метод для присвоения клетке уже существующего здания (нужен, чтобы задать здание, занимающее более 1 клетки)
     public void setBuilding (BuildingCore building) {
         this.building = building;
     }
 
-
+    //getters
     public FieldCore getField() {
         return field;
     }
-
     public BuildingCore getBuilding () {
         return building;
     }
     public Pair<Integer> getIndices() {
         return new Pair<>(indX, indY);
     }
-
-    //getters
     public CellOutput getOutput() {return output;}
 }

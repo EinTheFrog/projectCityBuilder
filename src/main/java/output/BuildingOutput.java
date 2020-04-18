@@ -15,8 +15,8 @@ public class BuildingOutput extends Polygon {
 
     //конструктор
     public BuildingOutput (double x, double y, double width, double height, double areaWidth, double areaHeight,
-                           BuildingTypes type, BuildingCore core) throws FileNotFoundException {
-        //отрисовываем
+                           BuildingTypes type, BuildingCore core) {
+        //отрисовываем базувую форму (в зависимости от типа здания)
         if (type == BuildingTypes.SQUARE) {
             this.getPoints().addAll(
                     0.0 , 0.0,
@@ -25,17 +25,16 @@ public class BuildingOutput extends Polygon {
                     areaWidth / 2, - height,
                     areaWidth / 2, - areaHeight / 2
             );
-        } else {
-
         }
 
+        // загружаем текстуру для здания
         try {
             Image img = new Image(new FileInputStream("src/main/resources/thatched.png"));
             this.setFill(new ImagePattern(img, areaWidth / 2, 0, width, height, false));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        //this.setFill(Color.rgb(100, 200, 100));
+        //задаем расположение
         this.relocate(x - areaWidth / 2, y - height);
 
         //добавляем обработчик щелчка

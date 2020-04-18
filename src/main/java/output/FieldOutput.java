@@ -16,7 +16,7 @@ public class FieldOutput extends Pane{
     private FieldCore core;
 
     public FieldOutput (FieldCore core) {
-        //устанавливаем фокус на этом игровом поле
+        //позволяем фокусироваться на игровом поле
         this.setFocusTraversable(true);
         //записываем значения перемнных
         this.parentPane = core.getParentPane(); //панель, на которой находится игровое поле
@@ -25,13 +25,13 @@ public class FieldOutput extends Pane{
         this.setLayoutY(core.getY());
         this.core = core;
         this.setPrefSize(core.getWidth(), core.getHeight());
-        //задаем цвет для панели, на которой нахидится игрвое поле и добавляем наше поле на панель
+        //окрашиваем панель (для наглядности на время разработки)
         this.setBackground(
                 new Background(new BackgroundFill(Color.rgb(10, 106, 84), null, null)));
+        //задаем цвет для панели, на которой нахидится игрвое поле и добавляем наше поле на панель
         this.parentPane.setBackground(
                 new Background(new BackgroundFill(Color.rgb(104, 106, 84), null, null)));
         this.parentPane.getChildren().add(this);
-        this.setPrefSize(core.getWidth(), core.getHeight());
 
 
         //добавляем обработчиков событий для взаимодействия с пользователем,

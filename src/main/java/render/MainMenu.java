@@ -5,6 +5,8 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.FileNotFoundException;
+
 public class MainMenu {
 
     /**
@@ -31,7 +33,11 @@ public class MainMenu {
 
         //создаем событие для открытия окна игры
         btnStart.setOnAction(e -> {
-            GameApplication.run();
+            try {
+                GameApplication.run();
+            } catch (FileNotFoundException fileNotFoundException) {
+                fileNotFoundException.printStackTrace();
+            }
             menuWindow.close();
         });
     }

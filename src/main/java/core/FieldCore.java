@@ -53,9 +53,12 @@ public class FieldCore {
         createCells();
     }
 
+    //метод для приближения камеры
     public void zoom (double scrollValue) {
+        //увеличивая значение scale создаем эфект приближения камеры
         scaleValue += scrollValue / 100;
         output.zoom(scaleValue);
+        //изменяем скорость перемщения камеры, чтобы при сильном приближении камера не двигалась слишком быстро
         moveRange = cellSide * scaleValue / moveSpeedDenom;
     }
 
@@ -68,7 +71,6 @@ public class FieldCore {
 
     // метод заполнения поля клетками
     private void createCells() {
-        // переменные, которые отвечают за расположение клеток на поле
         //вспомогательная переменные
         cellIndentX = cellWidth / 2;
         cellIndentY = fieldSide * Math.sin(Math.PI / 6) + cellHeight / 2;
@@ -125,7 +127,7 @@ public class FieldCore {
         }
     }
 
-    //метод для занимания зданием клеток
+    //метод для занимания зданием соседних клеток (нужен когда здание занимает более 1ой клетки)
     public void setBuildingForNeighbours (CellCore cell, int buildingCellScale) {
         BuildingCore building = cell.getBuilding();
         int cellX = cell.getIndices().first;
@@ -136,6 +138,8 @@ public class FieldCore {
             }
         }
     }
+
+    //метод для проверки свободности соседних клеток, необходим для постройки зданий размером больше 1ой клетки
     public boolean neighboursFree(CellCore cell, int buildingCellScale) {
         int cellX = cell.getIndices().first;
         int cellY = cell.getIndices().second;
@@ -149,8 +153,8 @@ public class FieldCore {
         return true;
     }
 
+    //getters
     public FieldOutput getOutput() { return output;}
-
     public double getMoveRange() {return moveRange;}
     public double getX() {return fieldX;}
     public double getY() {return  fieldY;}
