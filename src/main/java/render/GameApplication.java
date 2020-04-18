@@ -75,7 +75,7 @@ public class GameApplication {
         toolsPane.toFront();
         mainPane.setBottom(toolsPane);
 
-        //рендерим окно
+        //рендерим окно и запускаем таймер
         gameWindow.setScene(gameScene);
         gameWindow.setTitle("Game");
         gameWindow.show();

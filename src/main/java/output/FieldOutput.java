@@ -43,7 +43,7 @@ public class FieldOutput extends Pane{
             Controller.keyPressed(event.getCode(), core);
         });
         this.addEventHandler(KeyEvent.KEY_RELEASED, event -> {
-            Controller.keyReleased(event.getCode());
+            Controller.keyReleased(event.getCode(), core);
         });
     }
 

@@ -19,8 +19,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Controller {
-    private static Map<KeyboardButtons, Boolean> curBtnPressed = new HashMap<>();
-    private static Map <KeyboardButtons, Boolean> newBtnPressed = new HashMap<>();
+    private static Map<KeyboardButtons, Integer> curBtnPressed = new HashMap<>();
+    private static Map <KeyboardButtons, Integer> newBtnPressed = new HashMap<>();
     private static final int buildingCellScale = 2;
     private static double dx = 0.0;
     private static double dy = 0.0;
@@ -36,26 +36,22 @@ public class Controller {
         boolean playerMovesCam = false;
         switch (code) {
             case W:
-                //задаем расстояние, на которое камера должна передвигаться за единицу времени
-                dy = fieldCore.getMoveRange();
-                //добавляем в мапу значение true для W, теперь мы знаем, что клавиша W уже нажата
-                newBtnPressed.put(KeyboardButtons.W, true);
+                //добавляем в мапу значение true для W, теперь мы знаем, что клавиша W уже нажата (1 будет споильзована
+                // в дальнейшем для вычисления изменения положения камеры)
+                newBtnPressed.put(KeyboardButtons.W, 1);
                 //говорим, что игрок двигает камеру
                 playerMovesCam = true;
                 break;
             case A:
-                dx = fieldCore.getMoveRange();
-                newBtnPressed.put(KeyboardButtons.A, true);
+                newBtnPressed.put(KeyboardButtons.A, 1);
                 playerMovesCam = true;
                 break;
             case D:
-                dx = -fieldCore.getMoveRange();
-                newBtnPressed.put(KeyboardButtons.D, true);
+                newBtnPressed.put(KeyboardButtons.D, -1);
                 playerMovesCam = true;
                 break;
             case S:
-                dy = -fieldCore.getMoveRange();
-                newBtnPressed.put(KeyboardButtons.S, true);
+                newBtnPressed.put(KeyboardButtons.S, -1);
                 playerMovesCam = true;
                 break;
             case ESCAPE:
@@ -67,24 +63,24 @@ public class Controller {
         if (playerMovesCam)startCameraMovement(fieldCore);
     }
 
-    public static void keyReleased(KeyCode code) {
+    public static void keyReleased(KeyCode code, FieldCore fieldCore) {
         switch (code) {
             case W:
                 //обнуляем расстояние, нак оторое камера должна пермещаться по оси OY
-                dy = 0;
+                dy -= fieldCore.getMoveRange();
                 //удаляем кнопку из списка зажатых сейчас
                 newBtnPressed.remove(KeyboardButtons.W);
                 break;
             case A:
-                dx = 0;
+                dx -= fieldCore.getMoveRange();
                 newBtnPressed.remove(KeyboardButtons.A);
                 break;
             case D:
-                dx = 0;
+                dx += fieldCore.getMoveRange();
                 newBtnPressed.remove(KeyboardButtons.D);
                 break;
             case S:
-                dy = 0;
+                dy += fieldCore.getMoveRange();
                 newBtnPressed.remove(KeyboardButtons.S);
                 break;
         }
@@ -104,6 +100,10 @@ public class Controller {
             TimerTask timerTask = new TimerTask() {
                 @Override
                 public void run() {
+                    dy = (curBtnPressed.getOrDefault(KeyboardButtons.W, 0)
+                            + curBtnPressed.getOrDefault(KeyboardButtons.S, 0)) * fieldCore.getMoveRange();
+                    dx = (curBtnPressed.getOrDefault(KeyboardButtons.A, 0)
+                            + curBtnPressed.getOrDefault(KeyboardButtons.D, 0)) * fieldCore.getMoveRange();
                     fieldCore.move(dx, dy);
                 }
             };
