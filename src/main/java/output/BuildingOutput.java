@@ -37,13 +37,18 @@ public class BuildingOutput extends Polygon {
         //задаем расположение
         this.relocate(x - areaWidth / 2, y - height);
 
-        //добавляем обработчик щелчка
+        //добавляем обработчик щелчка для передачи события клетке
         this.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            Controller.clickOnBuilding(core, event);
+        });
+
+        this.addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
             try {
-                Controller.clickOnBuilding(core, event);
+                Controller.clickOnBuildingInBuildingMod(core, event);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
+            event.consume();
         });
     }
 

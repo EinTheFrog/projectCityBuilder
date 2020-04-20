@@ -21,13 +21,13 @@ import java.io.FileNotFoundException;
 
 public class GameApplication {
     //задаем параметры создания игрвого поля
-    static final double indent = 50;
-    static final int fieldSize = 20;
-    static final double paneWidth = 1000 ;
-    static final double paneSide = paneWidth / (2 * Math.cos(Math.PI / 6));
+    public static final double indent = 50;
+    public static final int fieldSize = 20;
+    public static final double paneWidth = 1200 ;
+    public static final double paneSide = paneWidth / (2 * Math.cos(Math.PI / 6));
     static double paneHeight = 2 * paneSide * Math.sin(Math.PI / 6);
-    static final double cellSide = paneSide / fieldSize;
-    static final Color cellColor = Color.rgb(178, 178, 177 );
+    public static final double cellSide = paneSide / fieldSize;
+    public static final Color cellColor = Color.rgb(178, 178, 177 );
     //создаем объекты для игрвого окна и корневой панели
     static Stage gameWindow;
     public static BorderPane mainPane;

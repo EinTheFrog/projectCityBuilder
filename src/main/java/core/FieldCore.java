@@ -8,6 +8,9 @@ import output.CellOutput;
 import output.FieldOutput;
 import render.Main;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class FieldCore {
     CellCore[][] cellsArray;
@@ -29,6 +32,7 @@ public class FieldCore {
     private double height;
     private double cellIndentX;
     private double cellIndentY;
+    private List<BuildingCore> buildingList;
 
     public FieldCore (int size, double cellSide, double fieldSide, Color cellColor, Pane parentPane, double indent) {
         //задаем параметры поля
@@ -46,7 +50,7 @@ public class FieldCore {
         this.width = 2 * fieldSide * Math.cos(Math.PI / 6);
         this.height = 2 * fieldSide * Math.sin(Math.PI / 6);
         output = new FieldOutput(this);
-
+        buildingList = new ArrayList<>();
         //создаем массив для хранения клеток
         cellsArray = new CellCore[size][size];
         //создаем клетки
@@ -90,14 +94,14 @@ public class FieldCore {
 
     //метод для нахождения клетки по координатам (используется в Controller.clickOnBuilding)
     public CellCore findCell(double x, double y) {
-        int j = 0;
+        int j = -1;
         x -= cellWidth / 2;
         y -= fieldSide * Math.sin(Math.PI / 6) + cellHeight / 2;
         while (y <= Math.tan(Math.PI / 6) * x - j * cellHeight) {
             j++;
         }
         j--;
-        int i = 0;
+        int i = -1;
         while (y >= - Math.tan(Math.PI / 6) * x + i * cellHeight) {
             i++;
         }
@@ -127,30 +131,25 @@ public class FieldCore {
         }
     }
 
-    //метод для занимания зданием соседних клеток (нужен когда здание занимает более 1ой клетки)
-    public void setBuildingForNeighbours (CellCore cell, int buildingCellScale) {
-        BuildingCore building = cell.getBuilding();
-        int cellX = cell.getIndices().first;
-        int cellY = cell.getIndices().second;
-        for (int i = cellY + 1 - buildingCellScale; i <= cellY; i ++) {
-            for(int j = cellX; j <= cellX - 1 + buildingCellScale; j ++) {
-                if (i >= 0 && j >= 0 && i < size && j < size) cellsArray[j][i].setBuilding(building);
-            }
-        }
-    }
 
-    //метод для проверки свободности соседних клеток, необходим для постройки зданий размером больше 1ой клетки
-    public boolean neighboursFree(CellCore cell, int buildingCellScale) {
+    //метод для получения соседей клетки
+    public List<CellCore> getNeighbours(CellCore cell, int buildingCellScale) {
+        List<CellCore> neighbours = new ArrayList<>();
         int cellX = cell.getIndices().first;
         int cellY = cell.getIndices().second;
         for (int i = cellY + 1 - buildingCellScale; i <= cellY; i ++) {
             for(int j = cellX; j <= cellX - 1 + buildingCellScale; j ++) {
                 if (i >= 0 && j >= 0 && i < size && j < size ) {
-                     if (cellsArray[j][i].getBuilding() != null) return false;
-                } else return false;
+                    neighbours.add(cellsArray[j][i]);
+                }
             }
         }
-        return true;
+        return neighbours;
+    }
+
+    //
+    public void addBuilding(BuildingCore building) {
+        buildingList.add(building);
     }
 
     //getters
@@ -162,4 +161,5 @@ public class FieldCore {
     public double getIndent() {return indent;}
     public double getWidth() {return width;}
     public double getHeight() {return height;}
+    public List<BuildingCore> getBuildingsList() {return buildingList;}
 }

@@ -14,11 +14,11 @@ public class BuildingCore {
     private BuildingTypes type;
     private static double width = 128.0;
     private static double height = 128.0;
-    private static int scaleInCells; // сколько клеток в одном измерении занимает здание
+    public static final int scaleInCells = 2; // сколько клеток в одном измерении занимает здание
+    public static int numOfCellsInArea = scaleInCells * scaleInCells;
 
     //конструктор
-    public BuildingCore (double x, double y, double cellWidth, double cellHeight, FieldOutput field, BuildingTypes type,
-    int scaleInCells) throws FileNotFoundException {
+    public BuildingCore (double x, double y, double cellWidth, double cellHeight, FieldOutput field, BuildingTypes type)  {
         //задаем параметры
         this.x = x;
         this.y = y;
@@ -26,7 +26,6 @@ public class BuildingCore {
         height *= cellWidth/ width * scaleInCells;
         width = cellWidth * scaleInCells;
         this.type = type;
-        this.scaleInCells = scaleInCells;
         //отрисовываем
         output = new BuildingOutput(x, y, width, height,
                 cellWidth * scaleInCells, cellHeight * scaleInCells, type, this);
@@ -38,10 +37,19 @@ public class BuildingCore {
         parentField.add(output);
     }
 
+    public void delete() {
+        parentField.getChildren().remove(output);
+    }
+
+    public void setOpacity(double opacity) {
+        output.setOpacity(opacity);
+    }
+
     //getters
     public double getHeight() {return height;}
     public double getX() {return x;}
     public double getY() {return y;}
     public FieldOutput getParentField() {return parentField;}
     public BuildingOutput getOutput() {return output;}
+    public BuildingTypes getType() {return type;}
 }

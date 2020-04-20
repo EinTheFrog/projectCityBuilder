@@ -30,11 +30,13 @@ public class CellOutput extends Polygon {
 
         //доабвляем оработчик события для щелчка
         this.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            try {
-                Controller.buildBuilding(core);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
+            Controller.buildBuilding(core);
+            event.consume();
+        });
+
+        //обработчик события входа мышки на клетку
+        this.addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
+            Controller.showBuilding(core);
             event.consume();
         });
     }

@@ -4,11 +4,14 @@ import controller.Controller;
 import core.FieldCore;
 import javafx.scene.Node;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+
+import java.io.FileNotFoundException;
 
 public class FieldOutput extends Pane{
     private Pane parentPane;
@@ -36,7 +39,7 @@ public class FieldOutput extends Pane{
 
         //добавляем обработчиков событий для взаимодействия с пользователем,
         // сама обработка событий реализуется в Controller
-        this.addEventHandler(ScrollEvent.SCROLL, event -> {
+        this.parentPane.addEventHandler(ScrollEvent.SCROLL, event -> {
             Controller.zoom(event.getDeltaY(), core);
         });
         this.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
@@ -44,6 +47,12 @@ public class FieldOutput extends Pane{
         });
         this.addEventHandler(KeyEvent.KEY_RELEASED, event -> {
             Controller.keyReleased(event.getCode(), core);
+        });
+
+        //удаление призрака с последней выбранной клетки, когда курсор игрока вышел за пределы игрвого поля
+        this.addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
+            Controller.hideBuilding();
+            event.consume();
         });
     }
 
@@ -64,6 +73,8 @@ public class FieldOutput extends Pane{
         this.getChildren().remove(node);
         this.getChildren().add(node);
     }
+
+
 
     //getters
     public FieldCore getCore() {return core;}
