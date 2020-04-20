@@ -29,7 +29,8 @@ public class BuildingOutput extends Polygon {
 
         // загружаем текстуру для здания
         try {
-            Image img = new Image(new FileInputStream("src/main/resources/thatched.png"));
+            String sep = System.getProperty("file.separator");
+            Image img = new Image(new FileInputStream("src" + sep +"main" + sep +"resources" + sep +"thatched.png"));
             this.setFill(new ImagePattern(img, areaWidth / 2, 0, width, height, false));
         } catch (FileNotFoundException e) {
             e.printStackTrace();

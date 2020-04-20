@@ -161,5 +161,7 @@ public class FieldCore {
     public double getIndent() {return indent;}
     public double getWidth() {return width;}
     public double getHeight() {return height;}
+    public double getCellWidth() {return cellWidth;}
+    public double getCellHeight() {return cellHeight;}
     public List<BuildingCore> getBuildingsList() {return buildingList;}
 }

@@ -4,8 +4,6 @@ import logic.BuildingTypes;
 import output.BuildingOutput;
 import output.FieldOutput;
 
-import java.io.FileNotFoundException;
-
 public class BuildingCore {
     private double x;
     private double y;
@@ -46,7 +44,6 @@ public class BuildingCore {
     }
 
     //getters
-    public double getHeight() {return height;}
     public double getX() {return x;}
     public double getY() {return y;}
     public FieldOutput getParentField() {return parentField;}
