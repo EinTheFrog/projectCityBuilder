@@ -11,20 +11,22 @@ public class CasernOutput extends AbstractBuildingOutput {
     public CasernOutput(AbstractBuilding core) {
         super(core);
         double cellHeight=  core.getParentField().getCellHeight() * core.getScale();
+        final double w = core.getPicWidth();
+        final double h = core.getPicHeight();
         this.getPoints().addAll(
                 0.0 , 0.0,
-                -  core.getPicWidth() / 2, - cellHeight / 2,
-                -  core.getPicWidth() / 2, - core.getPicHeight(),
-                core.getPicWidth()/ 2, - core.getPicHeight(),
-                core.getPicWidth() / 2, - cellHeight / 2
+                -  w / 2, - cellHeight / 2,
+                -  w / 2, - h,
+                w/ 2, - h,
+                w / 2, - cellHeight / 2
         );
-        this.relocate(core.getX() - core.getPicWidth() / 2, core.getY() - core.getPicHeight());
+        this.relocate(core.getX() - w / 2, core.getY() - h);
 
         try {
             String sep = System.getProperty("file.separator");
             Image img = new Image(new FileInputStream("src" + sep +"main" + sep +"resources" + sep +"casern.png"));
-            this.setFill(new ImagePattern(img, core.getPicWidth() / 2, 0,
-                    core.getPicWidth(), core.getPicHeight(), false));
+            this.setFill(new ImagePattern(img, w / 2, 0,
+                    w, h, false));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

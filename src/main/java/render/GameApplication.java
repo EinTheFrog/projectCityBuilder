@@ -84,7 +84,7 @@ public class GameApplication {
         });
 
 
-        toolsPane.getItems().addAll(btnHouse, btnNone);
+        toolsPane.getItems().addAll(btnHouse, btnCasern, btnNone);
         //создаем обработку щелчка мыши при открытом окне меню для закрытия этог самого меню
         mainPane.addEventFilter(MouseEvent.ANY, event -> {
             if (event.getEventType() == MouseEvent.MOUSE_CLICKED) {

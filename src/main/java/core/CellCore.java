@@ -32,28 +32,6 @@ public class CellCore {
         indY = i;
     }
 
-    //метод для добавления здания
-/*
-    public void buildBuilding () {
-        building = new HouseCore(x, y, 1,  1, 2, field, 1);
-        this.getField().addBuilding(building);
-        Controller.mod = Mod.CHOOSING_MOD;
-        //Возвращаем прозрачность всем строениям
-        for (AbstractBuilding building: field.getBuildingsList()) {
-            building.setOpacity(1);
-        }
-    }
-*/
-
-/*    //метод создания призрака здания
-    public void showBuilding (AbstractBuilding buildingGhost) {
-        *//*buildingGhost = new HouseCore(x, y, 1,  1, 2, field, 0.5);
-        for (CellCore neighbour: field.getNeighbours(this, buildingGhost)) {
-            neighbour.setBuildingGhost(buildingGhost);
-        }*//*
-    }*/
-
-
 
     //метод для удаления здания
     public void removeGhostForArea() {
