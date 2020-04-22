@@ -8,18 +8,19 @@ import output.FieldOutput;
 public abstract class AbstractBuilding {
     protected double x;
     protected double y;
-    protected AbstractBuildingOutput output;
     protected FieldCore parentField;
     protected BuildingTypes type;
-    protected static double picWidth = 128.0;
-    protected static double picHeight = 128.0;
+    protected double picWidth = 128.0;
+    protected double picHeight = 128.0;
     protected int scale; // множитель, определяющий сколько клеток в одном измерении занимает здание
     protected int width;
     protected int length;
+    protected double opacity;
     protected int numOfCellsInArea;
 
     //конструктор
-    public AbstractBuilding (double x, double y, int width, int length, int scale, FieldCore field, BuildingTypes type) {
+    public AbstractBuilding (double x, double y, int width, int length, int scale, FieldCore field,
+                             BuildingTypes type, double opacity) {
         //задаем параметры
         this.x = x;
         this.y = y;
@@ -28,24 +29,26 @@ public abstract class AbstractBuilding {
         this.scale = scale;
         parentField = field;
         this.type = type;
+        this.opacity = opacity;
 
         //вычисляем параметры
-        picHeight *= field.getWidth()/ width * scale;
-        picWidth = field.getWidth() * scale;
+        picHeight *= field.getCellWidth()/ picWidth * scale;
+        picWidth = field.getCellWidth() * scale;
     }
 
     //перерисовываем здание (нужно чтобы перисовывать поверх новго здания старые, находящие по перспективе ближе к игроку)
     public void redraw() {
-        if (output != null) parentField.getOutput().add(output);
+        if (getOutput() != null) parentField.getOutput().add(getOutput());
     }
 
     public void delete() {
-        if (output != null) parentField.getOutput().getChildren().remove(output);
+        if (getOutput() != null) parentField.getOutput().getChildren().remove(getOutput());
     }
 
-    public void setOpacity(double opacity) {
-        output.setOpacity(opacity);
-    }
+    public void setOpacity(double opacity) { getOutput().setOpacity(opacity); }
+
+    //метод обязательного создания графической оболчки
+    abstract protected AbstractBuildingOutput getOutput();
 
     //getters
     public double getX() {return x;}
@@ -56,6 +59,6 @@ public abstract class AbstractBuilding {
     public double getPicHeight() {return picHeight;}
     public int getScale() {return scale;}
     public FieldCore getParentField() {return parentField;}
-    public AbstractBuildingOutput getOutput() {return output;}
     public BuildingTypes getType() {return type;}
+    public double getOpacity() {return opacity;}
 }

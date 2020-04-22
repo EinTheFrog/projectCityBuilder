@@ -16,8 +16,8 @@ public class CellCore {
     private FieldCore field;
     private double width;
     private double height;
-    private BuildingCore building;
-    private BuildingCore buildingGhost;
+    private AbstractBuilding building;
+    private AbstractBuilding buildingGhost;
     private int indX;
     private int indY;
 
@@ -36,20 +36,20 @@ public class CellCore {
 
     //метод для добавления здания
     public void buildBuilding () {
-        building = new BuildingCore(x, y, width,  height, field.getOutput(), buildingGhost.getType());
+        building = new HouseCore(x, y, 1,  1, 2, field, buildingGhost.getType(), 1);
         this.getField().addBuilding(building);
         Controller.mod = Mod.CHOOSING_MOD;
         //Возвращаем прозрачность всем строениям
-        for (BuildingCore building: field.getBuildingsList()) {
+        for (AbstractBuilding building: field.getBuildingsList()) {
             building.setOpacity(1);
         }
     }
 
     //метод создания призрака здания
     public void showBuilding (BuildingTypes type) {
-        buildingGhost = new BuildingCore(x, y, width,  height, field.getOutput(), type);
-        buildingGhost.setOpacity(0.5);
-        for (CellCore neighbour: field.getNeighbours(this, BuildingCore.scaleInCells)) {
+        buildingGhost = new HouseCore(x, y, 1,  1, 2, field, type, 0.5);
+        System.out.println("New show");
+        for (CellCore neighbour: field.getNeighbours(this, buildingGhost.getScale())) {
             neighbour.setBuildingGhost(buildingGhost);
         }
     }
@@ -57,9 +57,10 @@ public class CellCore {
     //метод для удаления призрака
     public void hideBuilding() {
         if (buildingGhost != null) {
+            int scale = buildingGhost.getScale();
             buildingGhost.delete();
             buildingGhost = null;
-            for (CellCore neighbour: field.getNeighbours(this, BuildingCore.scaleInCells)) {
+            for (CellCore neighbour: field.getNeighbours(this, scale)) {
                 neighbour.setBuildingGhost(null);
             }
         }
@@ -67,7 +68,8 @@ public class CellCore {
 
     //метод для установки здания на соседей (большое здание)
     public void setBuildingForNeighbours() {
-        for (CellCore neighbour: field.getNeighbours(this, BuildingCore.scaleInCells)) {
+        int scale = buildingGhost.getScale();
+        for (CellCore neighbour: field.getNeighbours(this, scale)) {
             neighbour.setBuilding(building);
         }
     }
@@ -82,12 +84,12 @@ public class CellCore {
 
 
     //метод для присвоения клетке уже существующего здания (нужен, чтобы задать здание, занимающее более 1 клетки)
-    public void setBuilding (BuildingCore building) {
+    public void setBuilding (AbstractBuilding building) {
         this.building = building;
     }
 
     //метод для присвоения клетке уже существующего призрака здания
-    public void setBuildingGhost (BuildingCore building) {
+    public void setBuildingGhost (AbstractBuilding building) {
         this.buildingGhost = building;
     }
 
@@ -95,7 +97,7 @@ public class CellCore {
     public FieldCore getField() {
         return field;
     }
-    public BuildingCore getBuilding () {
+    public AbstractBuilding getBuilding () {
         return building;
     }
     public Pair<Integer> getIndices() {

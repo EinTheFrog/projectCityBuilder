@@ -26,7 +26,7 @@ public class BuildingCore {
         this.type = type;
         //отрисовываем
         output = new BuildingOutput(x, y, width, height,
-                cellWidth * scaleInCells, cellHeight * scaleInCells, type, this);
+                cellWidth * scaleInCells, cellHeight * scaleInCells, type);
         parentField.add(output);
     }
 

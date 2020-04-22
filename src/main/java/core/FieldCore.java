@@ -32,7 +32,7 @@ public class FieldCore {
     private double height;
     private double cellIndentX;
     private double cellIndentY;
-    private List<BuildingCore> buildingList;
+    private List<AbstractBuilding> buildingList;
 
     public FieldCore (int size, double cellSide, double fieldSide, Color cellColor, Pane parentPane, double indent) {
         //задаем параметры поля
@@ -148,7 +148,7 @@ public class FieldCore {
     }
 
     //
-    public void addBuilding(BuildingCore building) {
+    public void addBuilding(AbstractBuilding building) {
         buildingList.add(building);
     }
 
@@ -163,5 +163,7 @@ public class FieldCore {
     public double getHeight() {return height;}
     public double getCellWidth() {return cellWidth;}
     public double getCellHeight() {return cellHeight;}
-    public List<BuildingCore> getBuildingsList() {return buildingList;}
+    public List<AbstractBuilding> getBuildingsList() {
+        System.out.println("BuildingList");
+        return buildingList;}
 }

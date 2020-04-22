@@ -1,5 +1,6 @@
 package controller;
 
+import core.AbstractBuilding;
 import core.BuildingCore;
 import core.CellCore;
 import core.FieldCore;
@@ -145,11 +146,11 @@ public class Controller {
 
     //метод для создания призрака здания на клетке
     public static void showBuilding (CellCore cellCore) {
-        //System.out.println("SHOW");
         //int numOfNeighbours = cellCore.getField().getNeighbours(cellCore, BuildingCore.scaleInCells).size();
         if (mod == Mod.BUILDING_MOD && enteredCell != cellCore) {
             if (enteredCell!= null) hideBuilding();
             cellCore.showBuilding(BuildingTypes.SQUARE);
+            System.out.println("SHOW");
             enteredCell = cellCore;
         }
     }
@@ -162,21 +163,21 @@ public class Controller {
 
     //методы для Building
     //строим здание на клетке,которую закрывает здание
-    public static void clickOnBuilding (BuildingCore buildingCore, MouseEvent event) {
+    public static void clickOnBuilding (AbstractBuilding buildingCore, MouseEvent event) {
         //находим клетку по координатам щелчка мыши
         double x = buildingCore.getX();
         double y = buildingCore.getY();
-        CellCore targetCell = buildingCore.getParentField().getCore().findCell(
+        CellCore targetCell = buildingCore.getParentField().findCell(
                 x + event.getX(), y + event.getY());
         //если клетка с такими координатами существует пытаемся построить на ней здание
         if (targetCell != null) buildBuilding(targetCell);
     }
     //показываем призрак здания на клетке,которую закрывает уже построенное здание
-    public static void clickOnBuildingInBuildingMod (BuildingCore buildingCore, MouseEvent event) throws FileNotFoundException {
-        //находим клетку по координатам щелчка мыши
+    public static void cursorOnBuildingInBuildingMod (AbstractBuilding buildingCore, MouseEvent event) {
+        //находим клетку по координатам курсора
         double x = buildingCore.getX();
         double y = buildingCore.getY();
-        CellCore targetCell = buildingCore.getParentField().getCore().findCell(
+        CellCore targetCell = buildingCore.getParentField().findCell(
                 x + event.getX(), y + event.getY());
         //если клетка с такими координатами существует пытаемся построить на ней здание
         if (targetCell != null) showBuilding(targetCell);
@@ -196,7 +197,7 @@ public class Controller {
         Controller.mod = Mod.BUILDING_MOD;
         //устанавливаем фокус на этом игровом поле
         fieldCore.getOutput().requestFocus();
-        for (BuildingCore building: fieldCore.getBuildingsList()) {
+        for (AbstractBuilding building: fieldCore.getBuildingsList()) {
             building.setOpacity(0.5);
         }
     }
@@ -206,7 +207,7 @@ public class Controller {
         //устанавливаем фокус на этом игровом поле
         fieldCore.getOutput().requestFocus();
         enteredCell.hideBuilding();
-        for (BuildingCore building: fieldCore.getBuildingsList()) {
+        for (AbstractBuilding building: fieldCore.getBuildingsList()) {
             building.setOpacity(1);
         }
     }

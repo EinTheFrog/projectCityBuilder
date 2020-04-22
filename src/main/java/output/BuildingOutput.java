@@ -15,7 +15,7 @@ public class BuildingOutput extends Polygon {
 
     //конструктор
     public BuildingOutput (double x, double y, double width, double height, double areaWidth, double areaHeight,
-                           BuildingTypes type, BuildingCore core) {
+                           BuildingTypes type) {
         //отрисовываем базувую форму (в зависимости от типа здания)
         if (type == BuildingTypes.SQUARE) {
             this.getPoints().addAll(
@@ -39,7 +39,7 @@ public class BuildingOutput extends Polygon {
         this.relocate(x - areaWidth / 2, y - height);
 
         //добавляем обработчик щелчка для передачи события клетке
-        this.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+        /*this.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             Controller.clickOnBuilding(core, event);
         });
 
@@ -50,7 +50,7 @@ public class BuildingOutput extends Polygon {
                 e.printStackTrace();
             }
             event.consume();
-        });
+        });*/
     }
 
 
