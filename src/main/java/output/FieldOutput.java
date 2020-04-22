@@ -51,7 +51,7 @@ public class FieldOutput extends Pane{
 
         //удаление призрака с последней выбранной клетки, когда курсор игрока вышел за пределы игрвого поля
         this.addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
-            Controller.hideBuilding();
+            Controller.cursorLeftField();
             event.consume();
         });
     }

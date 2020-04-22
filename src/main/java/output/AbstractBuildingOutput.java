@@ -16,7 +16,6 @@ public abstract class AbstractBuildingOutput extends Polygon {
 
         //обработчик движения мыши, чтобы показывать призрак здания на клетке за этим зданием
         this.addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
-                System.out.println("MouseMoved");
                 Controller.cursorOnBuildingInBuildingMod(core, event);
             event.consume();
         });

@@ -1,7 +1,9 @@
 package render;
 
 import controller.Controller;
+import core.CasernCore;
 import core.FieldCore;
+import core.HouseCore;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -56,18 +58,29 @@ public class GameApplication {
         imgHouseBtn.setFitHeight(paneHeight / 10 );
         Button btnHouse = new Button("", imgHouseBtn);
         btnHouse.setId("control_button");
+
         Button btnNone = new Button();
         btnNone.setPrefWidth(paneHeight / 10 );
         btnNone.setPrefHeight(paneHeight / 10 );
         btnHouse.setId("control_button");
 
+        ImageView imgCasernBtn = new ImageView(new Image(new FileInputStream("src/main/resources/buttons0006.png")));
+        imgCasernBtn.setFitWidth(paneHeight / 10 );
+        imgCasernBtn.setFitHeight(paneHeight / 10 );
+        Button btnCasern = new Button("", imgCasernBtn);
+        btnHouse.setId("control_button");
+
         //создаем события для нажатия на кнопки на панели
         btnHouse.setOnAction(event -> {
-            Controller.pressOnBuildingButton(fieldCore);
+            Controller.pressOnBuildingButton(fieldCore, new HouseCore(0,0, 1, 1, 2, fieldCore, 0));
         });
 
         btnNone.setOnAction(event -> {
             Controller.pressOnChooseButton(fieldCore);
+        });
+
+        btnCasern.setOnAction(event -> {
+            Controller.pressOnBuildingButton(fieldCore, new CasernCore(0,0, 1, 1, 2, fieldCore, 0));
         });
 
 

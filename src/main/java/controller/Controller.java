@@ -1,19 +1,15 @@
 package controller;
 
 import core.AbstractBuilding;
-import core.BuildingCore;
 import core.CellCore;
 import core.FieldCore;
 import javafx.event.Event;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
-import logic.BuildingTypes;
 import logic.KeyboardButtons;
 import logic.Mod;
-import render.GameApplication;
 import render.Menu;
 
-import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
@@ -27,6 +23,8 @@ public class Controller {
     private static Timer timer = new Timer(true);
     public static Mod mod = Mod.CHOOSING_MOD;
     private static CellCore enteredCell;
+    private static AbstractBuilding chosenBuilding;
+    private static FieldCore chosenField;
 
     //запрещаем создавать объекты класса Controller
     private Controller() { }
@@ -60,7 +58,7 @@ public class Controller {
                     Menu.open();
                     mod = Mod.MENU_MOD;
                 }
-                else pressOnChooseButton(fieldCore);
+                else setChoosingMod();
                 break;
         }
         //если игрок двигает камеру, то вызываем метод для перемещения камеры
@@ -130,54 +128,60 @@ public class Controller {
         //System.out.println("BUILD");
         if (mod != Mod.BUILDING_MOD) return;
         //проверяем, что клетка свободна
-        int numOfNeighbours = cellCore.getField().getNeighbours(cellCore, BuildingCore.scaleInCells).size();
-        if (cellCore.neighboursFree(BuildingCore.scaleInCells) && numOfNeighbours == BuildingCore.numOfCellsInArea) {
-            //обнуляем значение клетки в которой находимся, чтобы при вохждении в новую клетку здание не было удалено
-            //enteredCell = null;
-            //добавляем здание с помощью метода в Cell
-            cellCore.buildBuilding();
+        int numOfNeighbours = cellCore.getField().getNeighbours(cellCore, cellCore.getBuildingGhost()).size();
+        if (cellCore.neighboursFree(cellCore.getBuildingGhost()) && numOfNeighbours == cellCore.getBuildingGhost().getCellArea()) {
+            //перемещаем здание в выбранную клетку
+            chosenBuilding.move(cellCore.getX(), cellCore.getY());
+            chosenBuilding.setOpacity(1);
+            AbstractBuilding newBuilding = chosenBuilding.copy();
+            cellCore.getField().addBuilding(newBuilding);
             //перерисовываем здания, находящиеся по перспективе ближе к игроку поверх нового,
             // чтобы новое здание их не перекрывало
             cellCore.getField().redrawCloserBuildings(cellCore.getIndices());
             //если здание занимает больше 1 клетки говорим соседним клеткам, что на них теперь тоже находится здание
-            cellCore.setBuildingForNeighbours();
+            cellCore.setBuildingForArea(newBuilding);
+
+            setChoosingMod();
         }
     }
 
     //метод для создания призрака здания на клетке
     public static void showBuilding (CellCore cellCore) {
-        //int numOfNeighbours = cellCore.getField().getNeighbours(cellCore, BuildingCore.scaleInCells).size();
         if (mod == Mod.BUILDING_MOD && enteredCell != cellCore) {
-            if (enteredCell!= null) hideBuilding();
-            cellCore.showBuilding(BuildingTypes.SQUARE);
-            System.out.println("SHOW");
+            if (enteredCell == null)  chosenBuilding.setOpacity(0.5);
+            else enteredCell.removeGhostForArea();
+            chosenBuilding.move(cellCore.getX(), cellCore.getY());
             enteredCell = cellCore;
+            enteredCell.setBuildingGhostForArea(chosenBuilding);
         }
     }
 
     //метод для удаления призрака здания c клетки
-    public static void hideBuilding () {
-        //System.out.println("HIDE");
-        if (enteredCell != null) enteredCell.hideBuilding();
+    public static void cursorLeftField () {
+        if (chosenBuilding != null) {
+            chosenBuilding.setOpacity(0);
+            enteredCell = null;
+        }
     }
 
     //методы для Building
     //строим здание на клетке,которую закрывает здание
-    public static void clickOnBuilding (AbstractBuilding buildingCore, MouseEvent event) {
+    public static void clickOnBuilding (AbstractBuilding building, MouseEvent event) {
         //находим клетку по координатам щелчка мыши
-        double x = buildingCore.getX();
-        double y = buildingCore.getY();
-        CellCore targetCell = buildingCore.getParentField().findCell(
+        double x = building.getX();
+        double y = building.getY();
+        CellCore targetCell = building.getParentField().findCell(
                 x + event.getX(), y + event.getY());
         //если клетка с такими координатами существует пытаемся построить на ней здание
         if (targetCell != null) buildBuilding(targetCell);
     }
     //показываем призрак здания на клетке,которую закрывает уже построенное здание
-    public static void cursorOnBuildingInBuildingMod (AbstractBuilding buildingCore, MouseEvent event) {
+    public static void cursorOnBuildingInBuildingMod (AbstractBuilding building, MouseEvent event) {
+        if (mod != Mod.BUILDING_MOD) return;
         //находим клетку по координатам курсора
-        double x = buildingCore.getX();
-        double y = buildingCore.getY();
-        CellCore targetCell = buildingCore.getParentField().findCell(
+        double x = building.getX();
+        double y = building.getY();
+        CellCore targetCell = building.getParentField().findCell(
                 x + event.getX(), y + event.getY());
         //если клетка с такими координатами существует пытаемся построить на ней здание
         if (targetCell != null) showBuilding(targetCell);
@@ -193,22 +197,37 @@ public class Controller {
     }
 
     //для кнопок на toolsPane
-    public static void pressOnBuildingButton(FieldCore fieldCore) {
-        Controller.mod = Mod.BUILDING_MOD;
-        //устанавливаем фокус на этом игровом поле
-        fieldCore.getOutput().requestFocus();
-        for (AbstractBuilding building: fieldCore.getBuildingsList()) {
-            building.setOpacity(0.5);
-        }
+    public static void pressOnBuildingButton(FieldCore fieldCore, AbstractBuilding building) {
+        chosenField = fieldCore;
+        setBuildingMod(building);
     }
 
     public static void pressOnChooseButton(FieldCore fieldCore) {
-        Controller.mod = Mod.CHOOSING_MOD;
+        chosenField = fieldCore;
+        setChoosingMod();
+    }
+
+    public static void chooseBuilding(AbstractBuilding newBuilding) {
+        if (chosenBuilding != null) chosenBuilding.delete();
+        chosenBuilding = newBuilding;
+    }
+
+    private static void setChoosingMod() {
+        mod = Mod.CHOOSING_MOD;
+        for (AbstractBuilding b: chosenField.getBuildingsList()) {
+            b.setOpacity(1);
+        }
+        chosenBuilding.delete();
+        chosenBuilding = null;
+    }
+
+    private static void setBuildingMod(AbstractBuilding building) {
+        mod = Mod.BUILDING_MOD;
+        chooseBuilding(building);
         //устанавливаем фокус на этом игровом поле
-        fieldCore.getOutput().requestFocus();
-        enteredCell.hideBuilding();
-        for (AbstractBuilding building: fieldCore.getBuildingsList()) {
-            building.setOpacity(1);
+        chosenField.getOutput().requestFocus();
+        for (AbstractBuilding b: chosenField.getBuildingsList()) {
+            b.setOpacity(0.5);
         }
     }
 }

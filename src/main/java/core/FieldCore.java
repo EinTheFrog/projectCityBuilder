@@ -133,12 +133,12 @@ public class FieldCore {
 
 
     //метод для получения соседей клетки
-    public List<CellCore> getNeighbours(CellCore cell, int buildingCellScale) {
+    public List<CellCore> getNeighbours(CellCore cell, AbstractBuilding building) {
         List<CellCore> neighbours = new ArrayList<>();
         int cellX = cell.getIndices().first;
         int cellY = cell.getIndices().second;
-        for (int i = cellY + 1 - buildingCellScale; i <= cellY; i ++) {
-            for(int j = cellX; j <= cellX - 1 + buildingCellScale; j ++) {
+        for (int i = cellY + 1 - building.getScale() * building.getLength(); i <= cellY; i ++) {
+            for(int j = cellX; j <= cellX - 1 + building.getScale() * building.getWidth(); j ++) {
                 if (i >= 0 && j >= 0 && i < size && j < size ) {
                     neighbours.add(cellsArray[j][i]);
                 }
@@ -164,6 +164,5 @@ public class FieldCore {
     public double getCellWidth() {return cellWidth;}
     public double getCellHeight() {return cellHeight;}
     public List<AbstractBuilding> getBuildingsList() {
-        System.out.println("BuildingList");
         return buildingList;}
 }

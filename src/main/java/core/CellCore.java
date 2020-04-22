@@ -2,11 +2,9 @@ package core;
 
 import controller.Controller;
 import javafx.scene.paint.Color;
-import logic.BuildingTypes;
 import logic.Mod;
 import logic.Pair;
 import output.CellOutput;
-import java.io.FileNotFoundException;
 
 public class CellCore {
     private double x;
@@ -35,8 +33,9 @@ public class CellCore {
     }
 
     //метод для добавления здания
+/*
     public void buildBuilding () {
-        building = new HouseCore(x, y, 1,  1, 2, field, buildingGhost.getType(), 1);
+        building = new HouseCore(x, y, 1,  1, 2, field, 1);
         this.getField().addBuilding(building);
         Controller.mod = Mod.CHOOSING_MOD;
         //Возвращаем прозрачность всем строениям
@@ -44,39 +43,44 @@ public class CellCore {
             building.setOpacity(1);
         }
     }
+*/
 
-    //метод создания призрака здания
-    public void showBuilding (BuildingTypes type) {
-        buildingGhost = new HouseCore(x, y, 1,  1, 2, field, type, 0.5);
-        System.out.println("New show");
-        for (CellCore neighbour: field.getNeighbours(this, buildingGhost.getScale())) {
+/*    //метод создания призрака здания
+    public void showBuilding (AbstractBuilding buildingGhost) {
+        *//*buildingGhost = new HouseCore(x, y, 1,  1, 2, field, 0.5);
+        for (CellCore neighbour: field.getNeighbours(this, buildingGhost)) {
             neighbour.setBuildingGhost(buildingGhost);
-        }
-    }
+        }*//*
+    }*/
 
-    //метод для удаления призрака
-    public void hideBuilding() {
+
+
+    //метод для удаления здания
+    public void removeGhostForArea() {
+        AbstractBuilding thisGhost = buildingGhost;
         if (buildingGhost != null) {
-            int scale = buildingGhost.getScale();
-            buildingGhost.delete();
-            buildingGhost = null;
-            for (CellCore neighbour: field.getNeighbours(this, scale)) {
+            for (CellCore neighbour: field.getNeighbours(this, buildingGhost)) {
                 neighbour.setBuildingGhost(null);
             }
         }
     }
 
     //метод для установки здания на соседей (большое здание)
-    public void setBuildingForNeighbours() {
-        int scale = buildingGhost.getScale();
-        for (CellCore neighbour: field.getNeighbours(this, scale)) {
+    public void setBuildingForArea(AbstractBuilding building) {
+        for (CellCore neighbour: field.getNeighbours(this, building)) {
             neighbour.setBuilding(building);
         }
     }
 
+    public void setBuildingGhostForArea(AbstractBuilding buildingGhost) {
+        for (CellCore neighbour: field.getNeighbours(this, buildingGhost)) {
+            neighbour.setBuildingGhost(buildingGhost);
+        }
+    }
+
     //проверка свободности соседей
-    public boolean neighboursFree(int buildingScale) {
-        for (CellCore neighbour: field.getNeighbours(this, buildingScale)) {
+    public boolean neighboursFree(AbstractBuilding building) {
+        for (CellCore neighbour: field.getNeighbours(this, building)) {
             if (neighbour.getBuilding() != null) return false;
         }
         return true;
@@ -94,11 +98,17 @@ public class CellCore {
     }
 
     //getters
+
+    public double getX() { return x; }
+    public double getY() { return y; }
     public FieldCore getField() {
         return field;
     }
     public AbstractBuilding getBuilding () {
         return building;
+    }
+    public AbstractBuilding getBuildingGhost () {
+        return buildingGhost;
     }
     public Pair<Integer> getIndices() {
         return new Pair<>(indX, indY);
