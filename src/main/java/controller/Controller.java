@@ -20,6 +20,8 @@ public class Controller {
     private static Map <KeyboardButtons, Integer> newBtnPressed = new HashMap<>();
     private static double dx = 0.0;
     private static double dy = 0.0;
+    private static double cursorX = 0.0;
+    private static double cursorY = 0.0;
     private static Timer timer = new Timer(true);
     public static Mod mod = Mod.CHOOSING_MOD;
     private static CellCore enteredCell;
@@ -107,6 +109,7 @@ public class Controller {
                     dx = (curBtnPressed.getOrDefault(KeyboardButtons.A, 0)
                             + curBtnPressed.getOrDefault(KeyboardButtons.D, 0)) * fieldCore.getMoveRange();
                     fieldCore.move(dx, dy);
+                    if (mod == Mod.BUILDING_MOD) moveCursor(cursorX - dx, cursorY - dy);
                 }
             };
             timer.schedule(timerTask, 0, 20);
@@ -124,22 +127,22 @@ public class Controller {
 
     //методы для cell
     //метод для добавления здания
-    public static void buildBuilding (CellCore cellCore)  {
+    public static void buildBuilding ()  {
         //System.out.println("BUILD");
         if (mod != Mod.BUILDING_MOD) return;
         //проверяем, что клетка свободна
-        int numOfNeighbours = cellCore.getField().getNeighbours(cellCore, cellCore.getBuildingGhost()).size();
-        if (cellCore.neighboursFree(cellCore.getBuildingGhost()) && numOfNeighbours == cellCore.getBuildingGhost().getCellArea()) {
+        int numOfNeighbours = enteredCell.getField().getNeighbours(enteredCell, enteredCell.getBuildingGhost()).size();
+        if (enteredCell.neighboursFree(enteredCell.getBuildingGhost()) && numOfNeighbours == enteredCell.getBuildingGhost().getCellArea()) {
             //перемещаем здание в выбранную клетку
-            chosenBuilding.move(cellCore.getX(), cellCore.getY());
+            chosenBuilding.move(enteredCell.getX(), enteredCell.getY());
             chosenBuilding.setOpacity(1);
             AbstractBuilding newBuilding = chosenBuilding.copy();
-            cellCore.getField().addBuilding(newBuilding);
+            enteredCell.getField().addBuilding(newBuilding);
             //перерисовываем здания, находящиеся по перспективе ближе к игроку поверх нового,
             // чтобы новое здание их не перекрывало
-            cellCore.getField().redrawCloserBuildings(cellCore.getIndices());
+            enteredCell.getField().redrawCloserBuildings(enteredCell.getIndices());
             //если здание занимает больше 1 клетки говорим соседним клеткам, что на них теперь тоже находится здание
-            cellCore.setBuildingForArea(newBuilding);
+            enteredCell.setBuildingForArea(newBuilding);
 
             setChoosingMod();
         }
@@ -148,7 +151,7 @@ public class Controller {
     //метод для создания призрака здания на клетке
     public static void showBuilding (CellCore cellCore) {
         if (mod == Mod.BUILDING_MOD && enteredCell != cellCore) {
-            if (enteredCell == null)  chosenBuilding.setOpacity(0.5);
+            if (enteredCell == null) chosenBuilding.setOpacity(0.5);
             else enteredCell.removeGhostForArea();
             chosenBuilding.move(cellCore.getX(), cellCore.getY());
             enteredCell = cellCore;
@@ -157,7 +160,7 @@ public class Controller {
     }
 
     //метод для удаления призрака здания c клетки
-    public static void cursorLeftField () {
+    private static void cursorLeftField () {
         if (chosenBuilding != null) {
             chosenBuilding.setOpacity(0);
             enteredCell = null;
@@ -168,23 +171,21 @@ public class Controller {
     //строим здание на клетке,которую закрывает здание
     public static void clickOnBuilding (AbstractBuilding building, MouseEvent event) {
         //находим клетку по координатам щелчка мыши
-        double x = building.getX();
-        double y = building.getY();
         CellCore targetCell = building.getParentField().findCell(
-                x + event.getX(), y + event.getY());
+                cursorX + event.getX(), cursorY + event.getY());
         //если клетка с такими координатами существует пытаемся построить на ней здание
-        if (targetCell != null) buildBuilding(targetCell);
+        if (targetCell != null) buildBuilding();
     }
-    //показываем призрак здания на клетке,которую закрывает уже построенное здание
-    public static void cursorOnBuildingInBuildingMod (AbstractBuilding building, MouseEvent event) {
+    //событие которое обрабатывает движение курсора, когда мышка не двигается (при движении камеры)
+    // или когда курсор движется поверх здания
+    public static void moveCursor (double x, double y) {
+        setCursorCoords(x, y);
         if (mod != Mod.BUILDING_MOD) return;
-        //находим клетку по координатам курсора
-        double x = building.getX();
-        double y = building.getY();
-        CellCore targetCell = building.getParentField().findCell(
-                x + event.getX(), y + event.getY());
+        CellCore targetCell = chosenField.findCell(cursorX, cursorY);
         //если клетка с такими координатами существует пытаемся построить на ней здание
-        if (targetCell != null) showBuilding(targetCell);
+        if (targetCell != null) {
+            showBuilding(targetCell);
+        } else cursorLeftField();
     }
 
     //для mainPane
@@ -200,6 +201,10 @@ public class Controller {
     public static void pressOnBuildingButton(FieldCore fieldCore, AbstractBuilding building) {
         chosenField = fieldCore;
         setBuildingMod(building);
+    }
+
+    public static void chooseField (FieldCore fieldCore) {
+        chosenField = fieldCore;
     }
 
     public static void pressOnChooseButton(FieldCore fieldCore) {
@@ -229,5 +234,10 @@ public class Controller {
         for (AbstractBuilding b: chosenField.getBuildingsList()) {
             b.setOpacity(0.5);
         }
+    }
+
+    private static void setCursorCoords(double x, double y) {
+        cursorX = x;
+        cursorY = y;
     }
 }

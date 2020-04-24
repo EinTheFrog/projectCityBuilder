@@ -30,13 +30,7 @@ public class CellOutput extends Polygon {
 
         //доабвляем оработчик события для щелчка
         this.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            Controller.buildBuilding(core);
-            event.consume();
-        });
-
-        //обработчик события входа мышки на клетку
-        this.addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
-            Controller.showBuilding(core);
+            Controller.buildBuilding();
             event.consume();
         });
     }

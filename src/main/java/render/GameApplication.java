@@ -52,6 +52,7 @@ public class GameApplication {
         FieldCore fieldCore = new FieldCore(fieldSize, cellSide, paneSide, cellColor, fieldPane, indent);
         //устанавливаем фокус на этом игровом поле
         fieldCore.getOutput().requestFocus();
+        Controller.chooseField(fieldCore);
         //задаем параметры для кнопки в меню построек
         ImageView imgHouseBtn = new ImageView(new Image(new FileInputStream("src/main/resources/buttons0014.png")));
         imgHouseBtn.setFitWidth(paneHeight / 10 );
@@ -93,9 +94,7 @@ public class GameApplication {
         });
 
         //добавляем объекты
-        fieldPane.toBack();
         mainPane.setCenter(fieldPane);
-        toolsPane.toFront();
         mainPane.setBottom(toolsPane);
 
         //рендерим окно и запускаем таймер
