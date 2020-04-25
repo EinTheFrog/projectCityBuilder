@@ -1,11 +1,13 @@
 package core;
 
+import controller.Controller;
 import javafx.scene.Parent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import logic.Pair;
 import output.CellOutput;
 import output.FieldOutput;
+import render.GameApplication;
 import render.Main;
 
 import java.util.ArrayList;
@@ -16,6 +18,14 @@ public class FieldCore {
     CellCore[][] cellsArray;
     private double fieldX;
     private double fieldY;
+    private double fieldMoveX;
+    private double fieldMoveY;
+    private double fieldCenterX;
+    private double fieldCenterY;
+/*    private double fieldScrollX;
+    private double fieldScrollY;*/
+/*    private double fieldRealX;
+    private double fieldRealY;*/
     private int size = 0; //кол-во клеток на одной стороне игрвого поля
     private double cellSide;
     private double moveRange;
@@ -36,8 +46,10 @@ public class FieldCore {
 
     public FieldCore (int size, double cellSide, double fieldSide, Color cellColor, Pane parentPane, double indent) {
         //задаем параметры поля
-        fieldX = indent;
-        fieldY = indent;
+        fieldMoveX = indent;
+        fieldMoveY = indent;
+/*        fieldRealX = fieldX;
+        fieldRealY = fieldY;*/
         this.indent = indent;
         this.size = size;
         this.cellSide = cellSide;
@@ -59,18 +71,43 @@ public class FieldCore {
 
     //метод для приближения камеры
     public void zoom (double scrollValue) {
+        //высчитываеи относительные координаты курсора на поле
+        double centerRelatX = fieldX / GameApplication.paneWidth;
+        double centerRelatY = fieldY / GameApplication.paneHeight;
         //увеличивая значение scale создаем эфект приближения камеры
-        scaleValue += scrollValue / 100;
+        if (scaleValue + scrollValue / Controller.baseScroll > 0 && scaleValue + scrollValue / Controller.baseScroll < 20)
+            scaleValue += scrollValue / Controller.baseScroll;
         output.zoom(scaleValue);
+
+        //вычисляем новую ширину и высоту
+        width = GameApplication.paneWidth * scaleValue;
+        height = GameApplication.paneHeight * scaleValue;
+
+        move(0, 0);
+        //высчитываеи относительные координаты курсора на поле после масштабирования поля
+/*        double centerRelatNewX = fieldX / (GameApplication.paneWidth * scaleValue);
+        double centerRelatNewY = fieldY / (GameApplication.paneHeight * scaleValue);*/
+        //debug
+/*        System.out.println("common  " + centerX + " " + centerY);
+        System.out.println("old " + centerRelatX + " " + centerRelatY);
+        System.out.println("new " + centerRelatNewX + " " + centerRelatNewY);*/
+        //передвигаем поле так, чтобы относительные координаты курсора в итоге остались прежними
+/*        double dx = (centerRelatX - centerRelatNewX) * width;
+        double dy = (centerRelatY - centerRelatNewY) * height;
+        output.move( fieldX- dx,fieldY - dy);
+        fieldScrollY = dx;
+        fieldScrollY = dy;*/
         //изменяем скорость перемщения камеры, чтобы при сильном приближении камера не двигалась слишком быстро
         moveRange = cellSide * scaleValue / moveSpeedDenom;
     }
 
     // метод для перемщения камеры (самого поля относительно камеры)
     public void move(double dx, double dy) {
-        fieldX += dx;
-        fieldY += dy;
-        output.move(fieldX, fieldY, Math.abs(dx), Math.abs(dy));
+        fieldMoveX += dx;
+        fieldMoveY += dy;
+        fieldX = (fieldMoveX - GameApplication.paneWidth / 2) * scaleValue + GameApplication.paneWidth / 2;
+        fieldY = (fieldMoveY - GameApplication.paneHeight / 2) * scaleValue + GameApplication.paneHeight / 2;
+        output.move(fieldX, fieldY);
     }
 
     // метод заполнения поля клетками
@@ -157,12 +194,14 @@ public class FieldCore {
     public double getMoveRange() {return moveRange;}
     public double getX() {return fieldX;}
     public double getY() {return  fieldY;}
+/*    public double getRealX() {return fieldRealX;}
+    public double getRealY() {return  fieldRealY;}*/
     public Pane getParentPane() {return  parentPane;}
     public double getIndent() {return indent;}
     public double getWidth() {return width;}
     public double getHeight() {return height;}
     public double getCellWidth() {return cellWidth;}
     public double getCellHeight() {return cellHeight;}
-    public List<AbstractBuilding> getBuildingsList() {
-        return buildingList;}
+    public double getCellScale() {return cellsArray[0][0].getOutput().getScaleX();}
+    public List<AbstractBuilding> getBuildingsList() { return buildingList;}
 }

@@ -10,15 +10,15 @@ import java.io.FileNotFoundException;
 public class HouseOutput extends AbstractBuildingOutput {
     public HouseOutput(AbstractBuilding core) {
         super(core);
-        double cellHeight=  core.getParentField().getCellHeight() * core.getScale();
+        double areaHeight=  core.getParentField().getCellHeight() * core.getScale();
         final double w = core.getPicWidth();
         final double h = core.getPicHeight();
         this.getPoints().addAll(
                 0.0 , 0.0,
-                -  w / 2, - cellHeight / 2,
+                -  w / 2, - areaHeight / 2,
                 -  w / 2, - h,
                 w/ 2, - h,
-                w / 2, - cellHeight / 2
+                w / 2, - areaHeight / 2
         );
         //this.relocate(core.getX() - core.getPicWidth() / 2, core.getY() - core.getPicHeight());
 

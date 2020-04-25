@@ -8,6 +8,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import logic.KeyboardButtons;
 import logic.Mod;
+import render.GameApplication;
 import render.Menu;
 
 import java.util.HashMap;
@@ -22,6 +23,9 @@ public class Controller {
     private static double dy = 0.0;
     private static double cursorX = 0.0;
     private static double cursorY = 0.0;
+/*    private static double screenCenterX;
+    private static double screenCenterY;*/
+    public static final double baseScroll = 100;
     private static Timer timer = new Timer(true);
     public static Mod mod = Mod.CHOOSING_MOD;
     private static CellCore enteredCell;
@@ -109,7 +113,7 @@ public class Controller {
                     dx = (curBtnPressed.getOrDefault(KeyboardButtons.A, 0)
                             + curBtnPressed.getOrDefault(KeyboardButtons.D, 0)) * fieldCore.getMoveRange();
                     fieldCore.move(dx, dy);
-                    if (mod == Mod.BUILDING_MOD) moveCursor(cursorX - dx, cursorY - dy);
+                    moveCursor(cursorX - dx, cursorY - dy);
                 }
             };
             timer.schedule(timerTask, 0, 20);
@@ -199,17 +203,20 @@ public class Controller {
 
     //для кнопок на toolsPane
     public static void pressOnBuildingButton(FieldCore fieldCore, AbstractBuilding building) {
-        chosenField = fieldCore;
+        chooseField(fieldCore);
         setBuildingMod(building);
     }
 
-    public static void chooseField (FieldCore fieldCore) {
-        chosenField = fieldCore;
+    public static void pressOnChooseButton(FieldCore fieldCore) {
+        chooseField(fieldCore);
+        setChoosingMod();
     }
 
-    public static void pressOnChooseButton(FieldCore fieldCore) {
+    public static void chooseField (FieldCore fieldCore)
+    {
+/*        screenCenterX = fieldCore.getWidth() / 2;
+        screenCenterY = fieldCore.getHeight() / 2;*/
         chosenField = fieldCore;
-        setChoosingMod();
     }
 
     public static void chooseBuilding(AbstractBuilding newBuilding) {
@@ -236,7 +243,12 @@ public class Controller {
         }
     }
 
-    private static void setCursorCoords(double x, double y) {
+    public static void setCenterCoords(double x, double y) {
+/*        screenCenterX = x;
+        screenCenterY = y;*/
+    }
+
+    public static void setCursorCoords(double x, double y) {
         cursorX = x;
         cursorY = y;
     }

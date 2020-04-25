@@ -24,7 +24,7 @@ public class HouseCore extends AbstractBuilding {
 
     @Override
     public double getPicHeight() {
-        return PIC_HEIGHT * field.getCellWidth()/ picWidth * scale;
+        return PIC_HEIGHT * field.getCellWidth()/ PIC_WIDTH * scale;
     }
 
     @Override

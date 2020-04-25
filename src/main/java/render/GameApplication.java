@@ -4,7 +4,6 @@ import controller.Controller;
 import core.CasernCore;
 import core.FieldCore;
 import core.HouseCore;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToolBar;
@@ -13,9 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import logic.Mod;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -25,9 +22,11 @@ public class GameApplication {
     //задаем параметры создания игрвого поля
     public static final double indent = 50;
     public static final int fieldSize = 20;
-    public static final double paneWidth = 1200 ;
+    public static final double windowWidth = 1200;
+    public static final double windowHeight = 2 * windowWidth / (2 * Math.cos(Math.PI / 6)) * Math.sin(Math.PI / 6);
+    public static final double paneWidth = windowWidth - 2 * indent;
     public static final double paneSide = paneWidth / (2 * Math.cos(Math.PI / 6));
-    static double paneHeight = 2 * paneSide * Math.sin(Math.PI / 6);
+    public static double paneHeight = 2 * paneSide * Math.sin(Math.PI / 6);
     public static final double cellSide = paneSide / fieldSize;
     public static final Color cellColor = Color.rgb(178, 178, 177 );
     //создаем объекты для игрвого окна и корневой панели
@@ -41,7 +40,7 @@ public class GameApplication {
         Scene gameScene;
         mainPane = new BorderPane();
 
-        mainPane.setPrefSize(paneWidth + 2 * indent, paneHeight + 2 * indent);
+        mainPane.setPrefSize(windowWidth, windowHeight);
         gameScene = new Scene(mainPane);
         gameScene.getStylesheets().add("RedLord.css");
 
@@ -53,6 +52,13 @@ public class GameApplication {
         //устанавливаем фокус на этом игровом поле
         fieldCore.getOutput().requestFocus();
         Controller.chooseField(fieldCore);
+
+        fieldPane.addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
+            double cursorOnFieldX = event.getX() - fieldCore.getX();
+            double cursorOnFieldY = event.getY() - fieldCore.getY();
+            Controller.moveCursor(cursorOnFieldX, cursorOnFieldY);
+            event.consume();
+        });
         //задаем параметры для кнопки в меню построек
         ImageView imgHouseBtn = new ImageView(new Image(new FileInputStream("src/main/resources/buttons0014.png")));
         imgHouseBtn.setFitWidth(paneHeight / 10 );
