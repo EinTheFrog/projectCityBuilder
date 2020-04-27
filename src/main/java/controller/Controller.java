@@ -98,6 +98,7 @@ public class Controller {
     //обработчик приближения на колесико мыши
     public static void zoom (double deltaY, FieldCore fieldCore) {
         fieldCore.zoom(deltaY);
+        moveCursor(cursorX, cursorY);
     }
 
 

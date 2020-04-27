@@ -22,11 +22,11 @@ public class GameApplication {
     //задаем параметры создания игрвого поля
     public static final double indent = 50;
     public static final int fieldSize = 20;
-    public static final double windowWidth = 1200;
-    public static final double windowHeight = 2 * windowWidth / (2 * Math.cos(Math.PI / 6)) * Math.sin(Math.PI / 6);
-    public static final double paneWidth = windowWidth - 2 * indent;
+    public static final double mainWindowWidth = 1200;
+    public static final double paneWidth = mainWindowWidth - 2 * indent;
     public static final double paneSide = paneWidth / (2 * Math.cos(Math.PI / 6));
     public static double paneHeight = 2 * paneSide * Math.sin(Math.PI / 6);
+    public static final double mainWindowHeight = paneHeight + 2 * indent;
     public static final double cellSide = paneSide / fieldSize;
     public static final Color cellColor = Color.rgb(178, 178, 177 );
     //создаем объекты для игрвого окна и корневой панели
@@ -39,13 +39,12 @@ public class GameApplication {
         gameWindow = new Stage();
         Scene gameScene;
         mainPane = new BorderPane();
-
-        mainPane.setPrefSize(windowWidth, windowHeight);
         gameScene = new Scene(mainPane);
         gameScene.getStylesheets().add("RedLord.css");
 
         //создаем панели, на которых будут располагаться все элементы
         Pane fieldPane = new Pane(); //панель для игрвого поля
+        fieldPane.setPrefSize(mainWindowWidth, mainWindowHeight);
         ToolBar toolsPane = new ToolBar(); //панель для интерфейса построек
         //fieldOutput добавиться в fieldPane в своем конструкторе, поэтому просто инициализируем игровое поле
         FieldCore fieldCore = new FieldCore(fieldSize, cellSide, paneSide, cellColor, fieldPane, indent);
@@ -54,8 +53,8 @@ public class GameApplication {
         Controller.chooseField(fieldCore);
 
         fieldPane.addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
-            double cursorOnFieldX = event.getX() - fieldCore.getX();
-            double cursorOnFieldY = event.getY() - fieldCore.getY();
+            double cursorOnFieldX = event.getX() - fieldCore.getX() * fieldCore.getScale();
+            double cursorOnFieldY = event.getY() - fieldCore.getY() * fieldCore.getScale();
             Controller.moveCursor(cursorOnFieldX, cursorOnFieldY);
             event.consume();
         });
