@@ -18,7 +18,7 @@ public class HouseCore extends AbstractBuilding {
     }
 
     @Override
-    public HouseCore copy() {
+    public AbstractBuilding copy() {
         return new HouseCore(x, y, width, length, scale, field, opacity);
     }
 

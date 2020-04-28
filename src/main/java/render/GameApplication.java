@@ -1,9 +1,7 @@
 package render;
 
 import controller.Controller;
-import core.CasernCore;
-import core.FieldCore;
-import core.HouseCore;
+import core.*;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToolBar;
@@ -34,7 +32,7 @@ public class GameApplication {
     static Stage gameWindow;
     public static BorderPane mainPane;
 
-    public static void run () throws FileNotFoundException {
+    public static void run () {
         //инициализируем stage, scene и корневой layout
         gameWindow = new Stage();
         Scene gameScene;
@@ -46,6 +44,7 @@ public class GameApplication {
         Pane fieldPane = new Pane(); //панель для игрвого поля
         fieldPane.setPrefSize(mainWindowWidth, mainWindowHeight);
         ToolBar toolsPane = new ToolBar(); //панель для интерфейса построек
+        ToolBar resourcesPane = new ToolBar(); //панель для информации о ресурсах
         //fieldOutput добавиться в fieldPane в своем конструкторе, поэтому просто инициализируем игровое поле
         FieldCore fieldCore = new FieldCore(fieldSize, cellSide, paneSide, cellColor, fieldPane, indent);
         //устанавливаем фокус на этом игровом поле
@@ -60,7 +59,7 @@ public class GameApplication {
             event.consume();
         });
         //задаем параметры для кнопки в меню построек
-        String respath = "/textures/thatched.png";
+        String respath = "/textures/btnHouse.png";
         InputStream in = GameApplication.class.getResourceAsStream(respath);
         ImageView imgHouseBtn = new ImageView(new Image(in));
         imgHouseBtn.setFitWidth(paneHeight / 10 );
@@ -68,19 +67,35 @@ public class GameApplication {
         Button btnHouse = new Button("", imgHouseBtn);
         btnHouse.setId("control_button");
 
-        Button btnNone = new Button();
-        btnNone.setPrefWidth(paneHeight / 10 );
-        btnNone.setPrefHeight(paneHeight / 10 );
-        btnHouse.setId("control_button");
+        ImageView imgNoneBtn = new ImageView();
+        imgNoneBtn.setFitWidth(paneHeight / 10 );
+        imgNoneBtn.setFitHeight(paneHeight / 10 );
+        Button btnNone = new Button("", imgNoneBtn);
+        btnNone.setId("control_button");
 
-
-        respath = "/textures/casern.png";
+        respath = "/textures/btnCasern.png";
         in = GameApplication.class.getResourceAsStream(respath);
         ImageView imgCasernBtn = new ImageView(new Image(in));
         imgCasernBtn.setFitWidth(paneHeight / 10 );
         imgCasernBtn.setFitHeight(paneHeight / 10 );
         Button btnCasern = new Button("", imgCasernBtn);
-        btnHouse.setId("control_button");
+        btnCasern.setId("control_button");
+
+        respath = "/textures/btnCastle.png";
+        in = GameApplication.class.getResourceAsStream(respath);
+        ImageView imgCastleBtn = new ImageView(new Image(in));
+        imgCastleBtn.setFitWidth(paneHeight / 10 );
+        imgCastleBtn.setFitHeight(paneHeight / 10 );
+        Button btnCastle = new Button("", imgCastleBtn);
+        btnCastle.setId("control_button");
+
+        respath = "/textures/btnTavern.png";
+        in = GameApplication.class.getResourceAsStream(respath);
+        ImageView imgTavernBtn = new ImageView(new Image(in));
+        imgTavernBtn.setFitWidth(paneHeight / 10 );
+        imgTavernBtn.setFitHeight(paneHeight / 10 );
+        Button btnTavern = new Button("", imgTavernBtn);
+        btnTavern.setId("control_button");
 
         //создаем события для нажатия на кнопки на панели
         btnHouse.setOnAction(event -> {
@@ -92,9 +107,21 @@ public class GameApplication {
         btnCasern.setOnAction(event -> {
             Controller.pressOnBuildingButton(fieldCore, new CasernCore(0,0, 1, 1, 2, fieldCore, 0));
         });
+        btnCastle.setOnAction(event -> {
+            Controller.pressOnBuildingButton(fieldCore, new CastleCore(0,0, 1, 1, 8, fieldCore, 0));
+        });
+        btnTavern.setOnAction(event -> {
+            Controller.pressOnBuildingButton(fieldCore, new TavernCore(0,0, 1, 1, 2, fieldCore, 0));
+        });
 
 
-        toolsPane.getItems().addAll(btnHouse, btnCasern, btnNone);
+        //добавляем кнопки на панель
+        toolsPane.getItems().addAll(btnHouse, btnCasern, btnTavern, btnCastle, btnNone);
+
+        //задаем параметры элементов панели ресурсов
+
+
+
         //создаем обработку щелчка мыши при открытом окне меню для закрытия этог самого меню
         mainPane.addEventFilter(MouseEvent.ANY, event -> {
             if (event.getEventType() == MouseEvent.MOUSE_CLICKED) {

@@ -179,6 +179,7 @@ public class Controller {
         //если клетка с такими координатами существует пытаемся построить на ней здание
         if (targetCell != null) buildBuilding();
     }
+
     //событие которое обрабатывает движение курсора, когда мышка не двигается (при движении камеры)
     // или когда курсор движется поверх здания
     public static void moveCursor (double x, double y) {
@@ -213,8 +214,6 @@ public class Controller {
 
     public static void chooseField (FieldCore fieldCore)
     {
-/*        screenCenterX = fieldCore.getWidth() / 2;
-        screenCenterY = fieldCore.getHeight() / 2;*/
         chosenField = fieldCore;
     }
 
@@ -225,17 +224,20 @@ public class Controller {
 
     private static void setChoosingMod() {
         mod = Mod.CHOOSING_MOD;
+        //возвращаем фокус на игровое поле
+        chosenField.getOutput().requestFocus();
         for (AbstractBuilding b: chosenField.getBuildingsList()) {
             b.setOpacity(1);
         }
-        chosenBuilding.delete();
+        if (chosenBuilding != null) chosenBuilding.delete();
         chosenBuilding = null;
     }
 
     private static void setBuildingMod(AbstractBuilding building) {
         mod = Mod.BUILDING_MOD;
+        enteredCell = null;
         chooseBuilding(building);
-        //устанавливаем фокус на этом игровом поле
+        //возвращаем фокус на игровое поле
         chosenField.getOutput().requestFocus();
         for (AbstractBuilding b: chosenField.getBuildingsList()) {
             b.setOpacity(0.5);

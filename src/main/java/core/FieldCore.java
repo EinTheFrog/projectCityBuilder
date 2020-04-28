@@ -124,7 +124,6 @@ public class FieldCore {
         j--;
         int i = -1;
         while (cursorY >= - Math.tan(Math.PI / 6) * cursorX + i * cellHeight) { i++; }
-        System.out.println("cursor " + cursorX + " " + cursorY);
         if (i >= 0 && j >= 0 && i < size && j < size) System.out.println("cell " + cellsArray[j][i].getX() + " " + cellsArray[j][i].getY());
         if (i >= 0 && j >= 0 && i < size && j < size) return cellsArray[j][i];
         else return null;

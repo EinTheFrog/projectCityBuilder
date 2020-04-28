@@ -1,24 +1,25 @@
 package core;
 
 import output.AbstractBuildingOutput;
-import output.CasernOutput;
+import output.CastleOutput;
 
-public class CasernCore extends AbstractBuilding {
+public class CastleCore extends AbstractBuilding {
     private AbstractBuildingOutput output;
-    private static final double PIC_WIDTH = 128.0;
-    private static final double PIC_HEIGHT = 197.0;
-    public CasernCore(double x, double y, int width, int length, int scale, FieldCore field, double opacity) {
+    private static final double PIC_WIDTH = 368.0;
+    private static final double PIC_HEIGHT = 345.0;
+    public CastleCore(double x, double y, int width, int length, int scale, FieldCore field, double opacity) {
         super(x, y, width, length, scale, field, opacity);
     }
 
     @Override
     protected AbstractBuildingOutput getOutput() {
-        if (output == null) output = new CasernOutput(this);
+        if (output == null) output = new CastleOutput(this);
         return output;
     }
+
     @Override
     public AbstractBuilding copy() {
-        return new CasernCore(x, y, width, length, scale, field, opacity);
+        return new CastleCore(x, y, width, length, scale, field, opacity);
     }
 
     @Override
