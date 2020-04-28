@@ -9,6 +9,7 @@ import output.CellOutput;
 public class CellCore {
     private double x;
     private double y;
+    private static final Color color = Color.rgb(200, 200, 200);
     private double side;
     private CellOutput output;
     private FieldCore field;
@@ -21,15 +22,17 @@ public class CellCore {
 
     //конструктор
     public CellCore (double x, double y, double side, double width, double height, Color color, FieldCore field, int i, int j) {
+        //задаем значения параметров
         this.x = x;
         this.y = y;
         this.side = side;
         this.field = field;
         this.width = width;
         this.height = height;
-        output = new CellOutput(x, y, width, height, color, field.getOutput(), this);
         indX = j;
         indY = i;
+        //создаем графическую оболочку
+        output = new CellOutput(this);
     }
 
 
@@ -50,6 +53,7 @@ public class CellCore {
         }
     }
 
+    //метод для создания призрака здания (на некоторой площади из клеток)
     public void setBuildingGhostForArea(AbstractBuilding buildingGhost) {
         for (CellCore neighbour: field.getNeighbours(this, buildingGhost)) {
             neighbour.setBuildingGhost(buildingGhost);
@@ -76,9 +80,11 @@ public class CellCore {
     }
 
     //getters
-
     public double getX() { return x; }
     public double getY() { return y; }
+    public double getWidth() { return width; }
+    public double getHeight() { return height; }
+    public Color getColor() { return color;}
     public FieldCore getField() {
         return field;
     }

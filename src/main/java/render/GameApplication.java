@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 
 public class GameApplication {
@@ -34,7 +35,6 @@ public class GameApplication {
     public static BorderPane mainPane;
 
     public static void run () throws FileNotFoundException {
-
         //инициализируем stage, scene и корневой layout
         gameWindow = new Stage();
         Scene gameScene;
@@ -52,6 +52,7 @@ public class GameApplication {
         fieldCore.getOutput().requestFocus();
         Controller.chooseField(fieldCore);
 
+        //добавляем обрабочик перемещения курсора внутри игрового окна
         fieldPane.addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
             double cursorOnFieldX = event.getX() - fieldCore.getX() * fieldCore.getScale();
             double cursorOnFieldY = event.getY() - fieldCore.getY() * fieldCore.getScale();
@@ -59,7 +60,9 @@ public class GameApplication {
             event.consume();
         });
         //задаем параметры для кнопки в меню построек
-        ImageView imgHouseBtn = new ImageView(new Image(new FileInputStream("src/main/resources/buttons0014.png")));
+        String respath = "/textures/thatched.png";
+        InputStream in = GameApplication.class.getResourceAsStream(respath);
+        ImageView imgHouseBtn = new ImageView(new Image(in));
         imgHouseBtn.setFitWidth(paneHeight / 10 );
         imgHouseBtn.setFitHeight(paneHeight / 10 );
         Button btnHouse = new Button("", imgHouseBtn);
@@ -70,7 +73,10 @@ public class GameApplication {
         btnNone.setPrefHeight(paneHeight / 10 );
         btnHouse.setId("control_button");
 
-        ImageView imgCasernBtn = new ImageView(new Image(new FileInputStream("src/main/resources/buttons0006.png")));
+
+        respath = "/textures/casern.png";
+        in = GameApplication.class.getResourceAsStream(respath);
+        ImageView imgCasernBtn = new ImageView(new Image(in));
         imgCasernBtn.setFitWidth(paneHeight / 10 );
         imgCasernBtn.setFitHeight(paneHeight / 10 );
         Button btnCasern = new Button("", imgCasernBtn);
@@ -80,11 +86,9 @@ public class GameApplication {
         btnHouse.setOnAction(event -> {
             Controller.pressOnBuildingButton(fieldCore, new HouseCore(0,0, 1, 1, 2, fieldCore, 0));
         });
-
         btnNone.setOnAction(event -> {
             Controller.pressOnChooseButton(fieldCore);
         });
-
         btnCasern.setOnAction(event -> {
             Controller.pressOnBuildingButton(fieldCore, new CasernCore(0,0, 1, 1, 2, fieldCore, 0));
         });

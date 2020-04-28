@@ -39,12 +39,15 @@ public abstract class AbstractBuilding {
         if (getOutput() != null) field.getOutput().add(getOutput());
     }
 
+    //метод для удаления здания с поля
     public void delete() {
         if (getOutput() != null) field.getOutput().getChildren().remove(getOutput());
     }
 
+    //метод для задания прозрачности здания
     public void setOpacity(double opacity) { getOutput().setOpacity(opacity); }
 
+    //метод для перемещения здания
     public void move(double x, double y) {
         this.x = x;
         this.y = y;
@@ -54,6 +57,7 @@ public abstract class AbstractBuilding {
     //метод обязательного создания графической оболчки
     abstract protected AbstractBuildingOutput getOutput();
 
+    //метод для создания копии здания
     public  abstract AbstractBuilding copy();
 
     //getters
@@ -61,10 +65,11 @@ public abstract class AbstractBuilding {
     public double getY() {return y;}
     public int getWidth() {return width;}
     public int getLength() {return length;}
-    abstract public double getPicWidth();
-    abstract public double getPicHeight();
-    public int getScale() {return scale;}
     public FieldCore getParentField() {return field;}
     public double getOpacity() {return opacity;}
     public int getCellArea() {return cellArea;}
+    public int getScale() {return scale;}
+    //абстрактные методы, гарантирующие наличие переменных picWidth и picHeight в классах наследниках
+    abstract public double getPicWidth();
+    abstract public double getPicHeight();
 }

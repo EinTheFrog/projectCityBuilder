@@ -31,6 +31,7 @@ public class FieldOutput extends Pane{
         this.setLayoutY(core.getY());
         this.core = core;
         this.setPrefSize(core.getWidth(), core.getHeight());
+        //задаем нужные параметры для преобразования scale и применяем его
         scale.setPivotX(0);
         scale.setPivotY(0);
         scale.setX(1);
@@ -63,15 +64,12 @@ public class FieldOutput extends Pane{
 
     //метод для симуляции приближения камеры к игрвому полю
     public void zoom (double scaleValue) {
-        /*this.setScaleX(scaleValue);
-        this.setScaleY(scaleValue);*/
         scale.setX(scaleValue);
         scale.setY(scaleValue);
     }
 
-    //метод для симуляции движения игровго поля
+    //метод для симуляции движения камеры над полем
     public void move (double x, double y) {
-        //parentPane.setPrefSize(this.getPrefWidth() + dw, this.getPrefHeight() + dh);
         this.relocate(x, y);
     }
 
@@ -80,8 +78,6 @@ public class FieldOutput extends Pane{
         this.getChildren().remove(node);
         this.getChildren().add(node);
     }
-
-
 
     //getters
     public FieldCore getCore() {return core;}

@@ -3,9 +3,9 @@ package output;
 import core.AbstractBuilding;
 import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
+import render.GameApplication;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 public class CasernOutput extends AbstractBuildingOutput {
     public CasernOutput(AbstractBuilding core) {
@@ -22,14 +22,11 @@ public class CasernOutput extends AbstractBuildingOutput {
         );
         this.relocate(core.getX() - w / 2, core.getY() - h);
 
-        try {
-            String sep = System.getProperty("file.separator");
-            Image img = new Image(new FileInputStream("src" + sep +"main" + sep +"resources" + sep +"casern.png"));
-            this.setFill(new ImagePattern(img, w / 2, 0,
-                    w, h, false));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        String respath = "/textures/casern.png";
+        InputStream in = GameApplication.class.getResourceAsStream(respath);
+        Image img = new Image(in);
+        this.setFill(new ImagePattern(img, w / 2, 0,
+                w, h, false));
         this.setOpacity(core.getOpacity());
     }
 }

@@ -6,18 +6,23 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 
-import java.io.FileNotFoundException;
-
 public class CellOutput extends Polygon {
     private FieldOutput parentField;
     CellCore core;
 
     //конструктор
-    public CellOutput (double x, double y, double width, double height, Color color, FieldOutput field, CellCore core) {
+    public CellOutput (CellCore core) {
         //задаем параметры клетки
         this.core = core;
+        double x = core.getX();
+        double y = core.getY();
         this.relocate(x, y);
-        parentField = field;
+        parentField = core.getField().getOutput();
+        double width = core.getWidth();
+        double height = core.getHeight();
+        Color color = core.getColor();
+        parentField.add(this);
+
         //отрисовывем клетку
         this.getPoints().addAll(
                 0.0 , 0.0,

@@ -3,9 +3,9 @@ package output;
 import core.AbstractBuilding;
 import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
+import render.GameApplication;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 public class HouseOutput extends AbstractBuildingOutput {
     public HouseOutput(AbstractBuilding core) {
@@ -20,16 +20,12 @@ public class HouseOutput extends AbstractBuildingOutput {
                 w/ 2, - h,
                 w / 2, - areaHeight / 2
         );
-        //this.relocate(core.getX() - core.getPicWidth() / 2, core.getY() - core.getPicHeight());
 
-        try {
-            String sep = System.getProperty("file.separator");
-            Image img = new Image(new FileInputStream("src" + sep +"main" + sep +"resources" + sep +"thatched.png"));
-            this.setFill(new ImagePattern(img, w / 2, 0,
-                    w, h, false));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        String respath = "/textures/thatched.png";
+        InputStream in = GameApplication.class.getResourceAsStream(respath);
+        Image img = new Image(in);
+        this.setFill(new ImagePattern(img, w / 2, 0,
+                w, h, false));
         this.setOpacity(core.getOpacity());
     }
 }

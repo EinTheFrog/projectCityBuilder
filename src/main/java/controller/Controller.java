@@ -8,7 +8,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import logic.KeyboardButtons;
 import logic.Mod;
-import render.GameApplication;
 import render.Menu;
 
 import java.util.HashMap;
@@ -23,14 +22,13 @@ public class Controller {
     private static double dy = 0.0;
     private static double cursorX = 0.0;
     private static double cursorY = 0.0;
-/*    private static double screenCenterX;
-    private static double screenCenterY;*/
     public static final double baseScroll = 100;
     private static Timer timer = new Timer(true);
     public static Mod mod = Mod.CHOOSING_MOD;
     private static CellCore enteredCell;
     private static AbstractBuilding chosenBuilding;
     private static FieldCore chosenField;
+    public static final double moveSpeedDenom = 8.0; //постоянная, отвечающая за скорость перемещения камеры (делитель)
 
     //запрещаем создавать объекты класса Controller
     private Controller() { }
@@ -244,13 +242,11 @@ public class Controller {
         }
     }
 
-    public static void setCenterCoords(double x, double y) {
-/*        screenCenterX = x;
-        screenCenterY = y;*/
-    }
-
     public static void setCursorCoords(double x, double y) {
         cursorX = x;
         cursorY = y;
     }
+
+    public static double getCursorX() { return cursorX; }
+    public static double getCursorY() { return cursorY; }
 }
