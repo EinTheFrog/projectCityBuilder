@@ -32,6 +32,11 @@ public class CasernCore extends AbstractBuilding {
     }
 
     @Override
+    public String getName() {
+        return "Casern";
+    }
+
+    @Override
     public double getPicHeight() {
         return PIC_HEIGHT * field.getCellWidth()/ PIC_WIDTH * scale;
     }

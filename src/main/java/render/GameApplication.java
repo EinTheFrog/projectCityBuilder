@@ -32,12 +32,11 @@ public class GameApplication {
     private static Label lblGold;
 
     //создаем объекты для игрвого окна и корневой панели
-    static Stage gameWindow;
+    static Stage gameWindow = new Stage();
     public static BorderPane mainPane;
 
     public static void run () {
         //инициализируем stage, scene и корневой layout
-        gameWindow = new Stage();
         Scene gameScene;
         mainPane = new BorderPane();
         gameScene = new Scene(mainPane);
@@ -69,12 +68,14 @@ public class GameApplication {
         imgHouseBtn.setFitHeight(paneHeight / 10 );
         Button btnHouse = new Button("", imgHouseBtn);
         btnHouse.setId("control_button");
+        btnHouse.setFocusTraversable(false);
 
         ImageView imgNoneBtn = new ImageView();
         imgNoneBtn.setFitWidth(paneHeight / 10 );
         imgNoneBtn.setFitHeight(paneHeight / 10 );
         Button btnNone = new Button("", imgNoneBtn);
         btnNone.setId("control_button");
+        btnNone.setFocusTraversable(false);
 
         respath = "/textures/btnCasern.png";
         in = GameApplication.class.getResourceAsStream(respath);
@@ -83,6 +84,7 @@ public class GameApplication {
         imgCasernBtn.setFitHeight(paneHeight / 10 );
         Button btnCasern = new Button("", imgCasernBtn);
         btnCasern.setId("control_button");
+        btnCasern.setFocusTraversable(false);
 
         respath = "/textures/btnCastle.png";
         in = GameApplication.class.getResourceAsStream(respath);
@@ -91,6 +93,7 @@ public class GameApplication {
         imgCastleBtn.setFitHeight(paneHeight / 10 );
         Button btnCastle = new Button("", imgCastleBtn);
         btnCastle.setId("control_button");
+        btnCastle.setFocusTraversable(false);
 
         respath = "/textures/btnTavern.png";
         in = GameApplication.class.getResourceAsStream(respath);
@@ -99,6 +102,7 @@ public class GameApplication {
         imgTavernBtn.setFitHeight(paneHeight / 10 );
         Button btnTavern = new Button("", imgTavernBtn);
         btnTavern.setId("control_button");
+        btnTavern.setFocusTraversable(false);
 
         //создаем события для нажатия на кнопки на панели
         btnHouse.setOnAction(event -> {
@@ -148,8 +152,6 @@ public class GameApplication {
             //создаем обработку щелчка мыши при открытом окне меню для закрытия этог самого меню
             Controller.closeMenuOnClick(event);
         });
-        gameWindow.xProperty().addListener((obs, oldVal, newVal) -> Controller.moveMenu(gameWindow.getX(), gameWindow.getY()));
-        gameWindow.yProperty().addListener((obs, oldVal, newVal) -> Controller.moveMenu(gameWindow.getX(), gameWindow.getY()));
         gameWindow.setScene(gameScene);
         gameWindow.setTitle("Game");
         gameWindow.show();
@@ -157,6 +159,7 @@ public class GameApplication {
         //закрытие окна осуществляем через собственный метод
         gameWindow.setOnCloseRequest(event -> {
             event.consume();
+            Controller.stopTimer();
             stop();
         });
     }
@@ -175,6 +178,7 @@ public class GameApplication {
         gameWindow.close();
     }
 
+    public static void focusOnGameWindow() {gameWindow.requestFocus();}
     public static void writeGold(int gold) {
         lblGold.setText(String.valueOf(gold));
     }

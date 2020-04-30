@@ -41,4 +41,9 @@ public class CastleCore extends AbstractBuilding {
     public double getPicWidth() {
         return field.getCellWidth() * scale;
     }
+
+    @Override
+    public String getName() {
+        return "Castle";
+    }
 }

@@ -42,4 +42,9 @@ public class TavernCore extends AbstractBuilding {
     public double getPicHeight() {
         return PIC_HEIGHT * field.getCellWidth() / PIC_WIDTH * scale;
     }
+
+    @Override
+    public String getName() {
+        return "Tavern";
+    }
 }

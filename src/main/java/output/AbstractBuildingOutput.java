@@ -13,6 +13,5 @@ public abstract class AbstractBuildingOutput extends Polygon {
         this.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             Controller.clickOnBuilding(core, event);
         });
-
     }
 }

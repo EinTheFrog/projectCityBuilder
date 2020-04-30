@@ -9,6 +9,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import logic.KeyboardButtons;
 import logic.Mod;
+import render.BuildingMenu;
 import render.GameApplication;
 import render.Menu;
 
@@ -63,11 +64,17 @@ public class Controller {
                 playerMovesCam = true;
                 break;
             case ESCAPE:
+                System.out.println("ESC");
                 if (mod == Mod.CHOOSING_MOD) {
                     openMenu();
                     moveMenu(GameApplication.getX(), GameApplication.getY());
                 } else {
-                    if (mod == Mod.MENU_MOD) Menu.close();
+                    if (mod == Mod.MENU_MOD) {
+                        GameApplication.resume();
+                        Menu.close();
+                    } else {
+                        setChoosingMod();
+                    }
                 }
                 break;
         }
@@ -161,11 +168,15 @@ public class Controller {
     //методы для Building
     //строим здание на клетке,которую закрывает здание
     public static void clickOnBuilding (AbstractBuilding building, MouseEvent event) {
-        //находим клетку по координатам щелчка мыши
-        CellCore targetCell = building.getParentField().findCell(
-                cursorX + event.getX(), cursorY + event.getY());
-        //если клетка с такими координатами существует пытаемся построить на ней здание
-        if (targetCell != null) buildBuilding();
+        if (mod == Mod.BUILDING_MOD) {
+            //находим клетку по координатам щелчка мыши
+            CellCore targetCell = building.getParentField().findCell(
+                    cursorX + event.getX(), cursorY + event.getY());
+            //если клетка с такими координатами существует пытаемся построить на ней здание
+            if (targetCell != null) buildBuilding();
+        } else {
+            BuildingMenu.show(building.getName(), building.getGoldCost());
+        }
     }
 
     //событие которое обрабатывает движение курсора, когда мышка не двигается (при движении камеры)
@@ -189,6 +200,7 @@ public class Controller {
     public static void closeMenuOnClick (Event event) {
         if (mod == Mod.MENU_MOD) {
             if (event.getEventType() == MouseEvent.MOUSE_CLICKED || event.getEventType() == MouseEvent.MOUSE_DRAGGED){
+                GameApplication.resume();
                 Menu.close();
             }
             event.consume();
@@ -215,6 +227,7 @@ public class Controller {
     public static void chooseField (FieldCore fieldCore)
     {
         chosenField = fieldCore;
+        chosenField.getOutput().requestFocus();
     }
 
     public static void chooseBuilding(AbstractBuilding newBuilding) {
@@ -225,7 +238,7 @@ public class Controller {
     private static void setChoosingMod() {
         mod = Mod.CHOOSING_MOD;
         //возвращаем фокус на игровое поле
-        chosenField.getOutput().requestFocus();
+       focusOnField();
         for (AbstractBuilding b: chosenField.getBuildingsList()) {
             b.setOpacity(1);
         }
@@ -238,7 +251,7 @@ public class Controller {
         enteredCell = null;
         chooseBuilding(building);
         //возвращаем фокус на игровое поле
-        chosenField.getOutput().requestFocus();
+       focusOnField();
         for (AbstractBuilding b: chosenField.getBuildingsList()) {
             b.setOpacity(0.5);
         }
@@ -274,15 +287,19 @@ public class Controller {
                         });
             }
         };
+        System.out.println("start");
         timer.schedule(timerTask, 0, 20);
         timer.schedule(timerGoldTask, timeBeforeGain, 500);
     }
 
     public static void stopTimer() {
+        System.out.println("stop");
         timerTask.cancel();
         timerGoldTask.cancel();
     }
 
     public static double getCursorX() { return cursorX; }
     public static double getCursorY() { return cursorY; }
+
+    public static void focusOnField() { chosenField.getOutput().requestFocus();}
 }

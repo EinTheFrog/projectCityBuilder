@@ -64,6 +64,8 @@ public abstract class AbstractBuilding {
 
     public abstract int getGoldCost();
 
+    public abstract String getName();
+
     //getters
     public double getX() {return x;}
     public double getY() {return y;}

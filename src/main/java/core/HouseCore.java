@@ -42,4 +42,9 @@ public class HouseCore extends AbstractBuilding {
         return field.getCellWidth() * scale;
     }
 
+    @Override
+    public String getName() {
+        return "House";
+    }
+
 }
