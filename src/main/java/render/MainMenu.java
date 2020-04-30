@@ -33,11 +33,7 @@ public class MainMenu {
 
         //создаем событие для открытия окна игры
         btnStart.setOnAction(e -> {
-            try {
-                GameApplication.run();
-            } catch (FileNotFoundException fileNotFoundException) {
-                fileNotFoundException.printStackTrace();
-            }
+            GameApplication.run();
             menuWindow.close();
         });
     }

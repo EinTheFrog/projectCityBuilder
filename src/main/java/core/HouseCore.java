@@ -23,6 +23,16 @@ public class HouseCore extends AbstractBuilding {
     }
 
     @Override
+    public int getGoldProfit() {
+        return 5;
+    }
+
+    @Override
+    public int getGoldCost() {
+        return 20;
+    }
+
+    @Override
     public double getPicHeight() {
         return PIC_HEIGHT * field.getCellWidth()/ PIC_WIDTH * scale;
     }

@@ -4,6 +4,7 @@ import controller.Controller;
 import core.*;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ToolBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -12,9 +13,9 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
+
+import static javafx.scene.input.MouseEvent.MOUSE_CLICKED;
 
 
 public class GameApplication {
@@ -28,6 +29,8 @@ public class GameApplication {
     public static final double mainWindowHeight = paneHeight + 2 * indent;
     public static final double cellSide = paneSide / fieldSize;
     public static final Color cellColor = Color.rgb(178, 178, 177 );
+    private static Label lblGold;
+
     //создаем объекты для игрвого окна и корневой панели
     static Stage gameWindow;
     public static BorderPane mainPane;
@@ -48,7 +51,7 @@ public class GameApplication {
         //fieldOutput добавиться в fieldPane в своем конструкторе, поэтому просто инициализируем игровое поле
         FieldCore fieldCore = new FieldCore(fieldSize, cellSide, paneSide, cellColor, fieldPane, indent);
         //устанавливаем фокус на этом игровом поле
-        fieldCore.getOutput().requestFocus();
+        //fieldCore.getOutput().requestFocus();
         Controller.chooseField(fieldCore);
 
         //добавляем обрабочик перемещения курсора внутри игрового окна
@@ -119,21 +122,34 @@ public class GameApplication {
         toolsPane.getItems().addAll(btnHouse, btnCasern, btnTavern, btnCastle, btnNone);
 
         //задаем параметры элементов панели ресурсов
+        respath = "/textures/gold.png";
+        in = GameApplication.class.getResourceAsStream(respath);
+        ImageView imgGoldPic = new ImageView(new Image(in));
+        imgGoldPic.setFitWidth(paneHeight / 20 );
+        imgGoldPic.setFitHeight(paneHeight / 20 );
+
+        lblGold = new Label(String.valueOf(fieldCore.getGold()));
 
 
+        resourcesPane.getItems().addAll(imgGoldPic, lblGold);
 
-        //создаем обработку щелчка мыши при открытом окне меню для закрытия этог самого меню
-        mainPane.addEventFilter(MouseEvent.ANY, event -> {
-            if (event.getEventType() == MouseEvent.MOUSE_CLICKED) {
-                Controller.closeMenu(event);
-            }
-        });
 
         //добавляем объекты
         mainPane.setCenter(fieldPane);
         mainPane.setBottom(toolsPane);
+        mainPane.setTop(resourcesPane);
+
 
         //рендерим окно и запускаем таймер
+        Controller.startTimer();
+
+       // gameWindow
+        gameWindow.addEventFilter(MouseEvent.ANY, event -> {
+            //создаем обработку щелчка мыши при открытом окне меню для закрытия этог самого меню
+            Controller.closeMenuOnClick(event);
+        });
+        gameWindow.xProperty().addListener((obs, oldVal, newVal) -> Controller.moveMenu(gameWindow.getX(), gameWindow.getY()));
+        gameWindow.yProperty().addListener((obs, oldVal, newVal) -> Controller.moveMenu(gameWindow.getX(), gameWindow.getY()));
         gameWindow.setScene(gameScene);
         gameWindow.setTitle("Game");
         gameWindow.show();
@@ -145,10 +161,23 @@ public class GameApplication {
         });
     }
 
+    public static void pause () {
+        Controller.stopTimer();
+    }
+    public static void resume () {
+        Controller.startTimer();
+    }
+
     //событие для закрытия игрвого окна
     public static void stop () {
+        Controller.stopTimer();
         Menu.close();
         gameWindow.close();
     }
 
+    public static void writeGold(int gold) {
+        lblGold.setText(String.valueOf(gold));
+    }
+    public static double getX() { return gameWindow.getX(); }
+    public static double getY() { return gameWindow.getY(); }
 }

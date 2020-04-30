@@ -58,7 +58,11 @@ public abstract class AbstractBuilding {
     abstract protected AbstractBuildingOutput getOutput();
 
     //метод для создания копии здания
-    public  abstract AbstractBuilding copy();
+    public abstract AbstractBuilding copy();
+
+    public abstract int getGoldProfit();
+
+    public abstract int getGoldCost();
 
     //getters
     public double getX() {return x;}

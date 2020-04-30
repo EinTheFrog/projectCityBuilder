@@ -30,6 +30,7 @@ public class FieldCore {
     private double cellIndentX;
     private double cellIndentY;
     private List<AbstractBuilding> buildingList;
+    private int gold;
     //для каждого поля у нас своё положение камеры, а значит у каждого поля должны быть свои параметры scale
     // и скорости перемщения камеры
     private double moveRange;
@@ -51,6 +52,7 @@ public class FieldCore {
         moveRange = cellSide / Controller.moveSpeedDenom;
         this.width = 2 * fieldSide * Math.cos(Math.PI / 6);
         this.height = 2 * fieldSide * Math.sin(Math.PI / 6);
+        gold = 100;
         //вычитываем координаты поля для его отрисовки
         fieldX = (fieldMoveX + indent - GameApplication.mainWindowWidth / 2) * scaleValue + GameApplication.mainWindowWidth / 2;
         fieldY = (fieldMoveY + indent - GameApplication.mainWindowHeight / 2) * scaleValue + GameApplication.mainWindowHeight / 2;
@@ -124,7 +126,6 @@ public class FieldCore {
         j--;
         int i = -1;
         while (cursorY >= - Math.tan(Math.PI / 6) * cursorX + i * cellHeight) { i++; }
-        if (i >= 0 && j >= 0 && i < size && j < size) System.out.println("cell " + cellsArray[j][i].getX() + " " + cellsArray[j][i].getY());
         if (i >= 0 && j >= 0 && i < size && j < size) return cellsArray[j][i];
         else return null;
     }
@@ -168,6 +169,18 @@ public class FieldCore {
         return neighbours;
     }
 
+    public void gainGold () {
+        for (AbstractBuilding building: buildingList) {
+            gold += building.getGoldProfit();
+        }
+        GameApplication.writeGold(gold);
+    }
+
+    public void buyBuilding (AbstractBuilding building) {
+        gold -= building.getGoldCost();
+        GameApplication.writeGold(gold);
+    }
+
     //метод для добавления новго здания в список зданий
     public void addBuilding(AbstractBuilding building) {
         buildingList.add(building);
@@ -187,4 +200,5 @@ public class FieldCore {
     public double getCellHeight() {return cellHeight;}
     public double getCellScale() {return cellsArray[0][0].getOutput().getScaleX();}
     public List<AbstractBuilding> getBuildingsList() { return buildingList;}
+    public int getGold() {return gold;}
 }

@@ -24,6 +24,16 @@ public class TavernCore extends AbstractBuilding {
     }
 
     @Override
+    public int getGoldProfit() {
+        return 10;
+    }
+
+    @Override
+    public int getGoldCost() {
+        return 100;
+    }
+
+    @Override
     public double getPicWidth() {
         return field.getCellWidth() * scale;
     }

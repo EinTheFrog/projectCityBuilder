@@ -12,8 +12,10 @@ import logic.Mod;
 
 
 public class Menu {
+    private static Stage owner = GameApplication.gameWindow;
     static Stage menuWindow;
     public static void open () {
+        GameApplication.pause();
         //задаем начальные элементы и параметры для них
         menuWindow = new Stage();
         Scene menuScene;
@@ -25,10 +27,13 @@ public class Menu {
         menuScene = new Scene(vbox);
         menuScene.getStylesheets().add("RedLord.css");
 
+        Controller.mod = Mod.MENU_MOD;
         //рендерим окно
         menuWindow.setScene(menuScene);
         menuWindow.setTitle("Menu");
         menuWindow.initStyle(StageStyle.UNDECORATED);
+        menuWindow.initOwner(owner);
+        menuWindow.setAlwaysOnTop(true);
         menuWindow.show();
 
         //создаем событие для открытия окна игры
@@ -42,6 +47,10 @@ public class Menu {
             close();
         });
 
+        menuWindow.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
+            if (e.getCode() == KeyCode.ESCAPE) close();
+        });
+
         vbox.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ESCAPE) menuWindow.close();
         });
@@ -49,8 +58,14 @@ public class Menu {
     }
     public static void close () {
         if (menuWindow != null) {
-            menuWindow.close();
             Controller.mod = Mod.CHOOSING_MOD;
+            GameApplication.resume();
+            menuWindow.close();
         }
+    }
+
+    public static void move (double x, double y) {
+        menuWindow.setX(x + owner.getWidth() / 2 - menuWindow.getWidth() / 2);
+        menuWindow.setY(y + owner.getHeight() / 2 - menuWindow.getHeight() / 2);
     }
 }

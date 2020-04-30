@@ -22,6 +22,16 @@ public class CasernCore extends AbstractBuilding {
     }
 
     @Override
+    public int getGoldProfit() {
+        return 0;
+    }
+
+    @Override
+    public int getGoldCost() {
+        return 50;
+    }
+
+    @Override
     public double getPicHeight() {
         return PIC_HEIGHT * field.getCellWidth()/ PIC_WIDTH * scale;
     }

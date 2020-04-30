@@ -23,6 +23,16 @@ public class CastleCore extends AbstractBuilding {
     }
 
     @Override
+    public int getGoldProfit() {
+        return 0;
+    }
+
+    @Override
+    public int getGoldCost() {
+        return 200;
+    }
+
+    @Override
     public double getPicHeight() {
         return PIC_HEIGHT * field.getCellWidth()/ PIC_WIDTH * scale;
     }

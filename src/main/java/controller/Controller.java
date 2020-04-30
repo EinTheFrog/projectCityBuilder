@@ -3,11 +3,13 @@ package controller;
 import core.AbstractBuilding;
 import core.CellCore;
 import core.FieldCore;
+import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import logic.KeyboardButtons;
 import logic.Mod;
+import render.GameApplication;
 import render.Menu;
 
 import java.util.HashMap;
@@ -29,13 +31,16 @@ public class Controller {
     private static AbstractBuilding chosenBuilding;
     private static FieldCore chosenField;
     public static final double moveSpeedDenom = 8.0; //постоянная, отвечающая за скорость перемещения камеры (делитель)
+    private static TimerTask timerTask;
+    private static TimerTask timerGoldTask;
+    private static int timeBeforeGain = 2000;
 
     //запрещаем создавать объекты класса Controller
     private Controller() { }
 
     //методы для field
     //обработка нажатия клавиш для перемещеная камеры
-    public static void keyPressed(KeyCode code, FieldCore fieldCore) {
+    public static void keyPressed(KeyCode code) {
         boolean playerMovesCam = false;
         switch (code) {
             case W:
@@ -59,14 +64,15 @@ public class Controller {
                 break;
             case ESCAPE:
                 if (mod == Mod.CHOOSING_MOD) {
-                    Menu.open();
-                    mod = Mod.MENU_MOD;
+                    openMenu();
+                    moveMenu(GameApplication.getX(), GameApplication.getY());
+                } else {
+                    if (mod == Mod.MENU_MOD) Menu.close();
                 }
-                else setChoosingMod();
                 break;
         }
         //если игрок двигает камеру, то вызываем метод для перемещения камеры
-        if (playerMovesCam)startCameraMovement(fieldCore);
+        if (playerMovesCam)startCameraMovement();
     }
 
     public static void keyReleased(KeyCode code, FieldCore fieldCore) {
@@ -101,29 +107,11 @@ public class Controller {
 
 
     //методы для запуска и остановки таймера во время движения
-    private static void startCameraMovement(FieldCore fieldCore) {
-        if (curBtnPressed.isEmpty() && !newBtnPressed.isEmpty()) {
-            timer = new Timer(true);
-            TimerTask timerTask = new TimerTask() {
-                @Override
-                public void run() {
-                    dy = (curBtnPressed.getOrDefault(KeyboardButtons.W, 0)
-                            + curBtnPressed.getOrDefault(KeyboardButtons.S, 0)) * fieldCore.getMoveRange();
-                    dx = (curBtnPressed.getOrDefault(KeyboardButtons.A, 0)
-                            + curBtnPressed.getOrDefault(KeyboardButtons.D, 0)) * fieldCore.getMoveRange();
-                    fieldCore.move(dx, dy);
-                    moveCursor(cursorX - dx, cursorY - dy);
-                }
-            };
-            timer.schedule(timerTask, 0, 20);
-        }
+    private static void startCameraMovement() {
         curBtnPressed.putAll(newBtnPressed);
     }
 
     private static void stopCameraMovement() {
-        if (newBtnPressed.isEmpty()) {
-            timer.cancel();
-        }
         curBtnPressed.clear();
         curBtnPressed.putAll(newBtnPressed);
     }
@@ -131,8 +119,7 @@ public class Controller {
     //методы для cell
     //метод для добавления здания
     public static void buildBuilding ()  {
-        //System.out.println("BUILD");
-        if (mod != Mod.BUILDING_MOD) return;
+        if (mod != Mod.BUILDING_MOD || chosenBuilding.getGoldCost() > chosenField.getGold()) return;
         //проверяем, что клетка свободна
         int numOfNeighbours = enteredCell.getField().getNeighbours(enteredCell, enteredCell.getBuildingGhost()).size();
         if (enteredCell.neighboursFree(enteredCell.getBuildingGhost()) && numOfNeighbours == enteredCell.getBuildingGhost().getCellArea()) {
@@ -147,6 +134,7 @@ public class Controller {
             //если здание занимает больше 1 клетки говорим соседним клеткам, что на них теперь тоже находится здание
             enteredCell.setBuildingForArea(newBuilding);
 
+            chosenField.buyBuilding(chosenBuilding);
             setChoosingMod();
         }
     }
@@ -193,11 +181,23 @@ public class Controller {
     }
 
     //для mainPane
+
+    public static void openMenu() {
+        Menu.open();
+    }
     //событие, закрывающее меню, когда игрок щелкает мимо него
-    public static void closeMenu (Event event) {
+    public static void closeMenuOnClick (Event event) {
         if (mod == Mod.MENU_MOD) {
-            if (event.getEventType() == MouseEvent.MOUSE_CLICKED) Menu.close();
+            if (event.getEventType() == MouseEvent.MOUSE_CLICKED || event.getEventType() == MouseEvent.MOUSE_DRAGGED){
+                Menu.close();
+            }
             event.consume();
+        }
+    }
+
+    public static void moveMenu (double x, double y) {
+        if (mod == Mod.MENU_MOD) {
+            Menu.move(x, y);
         }
     }
 
@@ -247,6 +247,40 @@ public class Controller {
     public static void setCursorCoords(double x, double y) {
         cursorX = x;
         cursorY = y;
+    }
+
+    public static void startTimer() {
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                //для передвижения
+                dy = (curBtnPressed.getOrDefault(KeyboardButtons.W, 0)
+                        + curBtnPressed.getOrDefault(KeyboardButtons.S, 0)) * chosenField.getMoveRange();
+                dx = (curBtnPressed.getOrDefault(KeyboardButtons.A, 0)
+                        + curBtnPressed.getOrDefault(KeyboardButtons.D, 0)) * chosenField.getMoveRange();
+                chosenField.move(dx, dy);
+                moveCursor(cursorX - dx, cursorY - dy);
+            }
+        };
+        timerGoldTask = new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    timeBeforeGain -= 500;
+                    if (timeBeforeGain == 0) {
+                        timeBeforeGain = 2000;
+                        chosenField.gainGold();
+                    }
+                        });
+            }
+        };
+        timer.schedule(timerTask, 0, 20);
+        timer.schedule(timerGoldTask, timeBeforeGain, 500);
+    }
+
+    public static void stopTimer() {
+        timerTask.cancel();
+        timerGoldTask.cancel();
     }
 
     public static double getCursorX() { return cursorX; }

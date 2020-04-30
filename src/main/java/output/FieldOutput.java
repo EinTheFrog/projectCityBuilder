@@ -52,7 +52,7 @@ public class FieldOutput extends Pane{
             Controller.zoom(event.getDeltaY(), core);
         });
         this.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
-            Controller.keyPressed(event.getCode(), core);
+            Controller.keyPressed(event.getCode());
             if (event.getCode() == KeyCode.X) Controller.zoom(50, core);
             if (event.getCode() == KeyCode.Z) Controller.zoom(-50, core);
         });
