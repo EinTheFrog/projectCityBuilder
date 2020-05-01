@@ -2,7 +2,7 @@ package output;
 
 import core.AbstractBuilding;
 
-public class HouseOutput extends SquareBuildingOutput {
+public class HouseOutput extends AbstractBuildingOutput {
     public HouseOutput(AbstractBuilding core) { super(core); }
 
     @Override

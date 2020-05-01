@@ -5,7 +5,7 @@ import output.CastleOutput;
 
 public class CastleCore extends AbstractBuilding {
     private AbstractBuildingOutput output;
-    private static final double PIC_WIDTH = 368.0;
+    private static final double PIC_WIDTH = 320.0;
     private static final double PIC_HEIGHT = 345.0;
     public CastleCore(double x, double y, int width, int length, int scale, FieldCore field, double opacity) {
         super(x, y, width, length, scale, field, opacity);

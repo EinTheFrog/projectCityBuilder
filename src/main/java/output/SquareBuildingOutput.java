@@ -1,8 +1,10 @@
+/*
 package output;
 
 import core.AbstractBuilding;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import render.GameApplication;
 
@@ -25,8 +27,10 @@ public abstract class SquareBuildingOutput extends AbstractBuildingOutput {
         );
 
 
-        this.setFill(new ImagePattern(getImg(), w / 2, 0,
-                w, h, false));
+
+        //this.setFill(new ImagePattern(getImg(), w / 2, 0, w, h, false));
+        //this.setFill(Color.rgb(0,0,0,0));
+        this.setStroke(Color.rgb(0,0,0,1));
         this.setOpacity(core.getOpacity());
     }
 
@@ -34,8 +38,9 @@ public abstract class SquareBuildingOutput extends AbstractBuildingOutput {
     protected Image getImg() {
         String respath = getImgPath();
         InputStream in = GameApplication.class.getResourceAsStream(respath);
-        return   new Image(in);
+        return new Image(in);
     }
 
     abstract protected String getImgPath();
 }
+*/
