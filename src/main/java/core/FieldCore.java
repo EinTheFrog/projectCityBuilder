@@ -52,7 +52,7 @@ public class FieldCore {
         moveRange = cellSide / Controller.moveSpeedDenom;
         this.width = 2 * fieldSide * Math.cos(Math.PI / 6);
         this.height = 2 * fieldSide * Math.sin(Math.PI / 6);
-        gold = 100;
+        gold = 10000;
         //вычитываем координаты поля для его отрисовки
         fieldX = (fieldMoveX + indent - GameApplication.mainWindowWidth / 2) * scaleValue + GameApplication.mainWindowWidth / 2;
         fieldY = (fieldMoveY + indent - GameApplication.mainWindowHeight / 2) * scaleValue + GameApplication.mainWindowHeight / 2;

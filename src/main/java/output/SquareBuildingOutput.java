@@ -2,6 +2,7 @@ package output;
 
 import core.AbstractBuilding;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.ImagePattern;
 import render.GameApplication;
 
@@ -23,12 +24,17 @@ public abstract class SquareBuildingOutput extends AbstractBuildingOutput {
                 w / 2, - areaHeight / 2
         );
 
-        String respath = getImgPath();
-        InputStream in = GameApplication.class.getResourceAsStream(respath);
-        Image img = new Image(in);
-        this.setFill(new ImagePattern(img, w / 2, 0,
+
+        this.setFill(new ImagePattern(getImg(), w / 2, 0,
                 w, h, false));
         this.setOpacity(core.getOpacity());
+    }
+
+    @Override
+    protected Image getImg() {
+        String respath = getImgPath();
+        InputStream in = GameApplication.class.getResourceAsStream(respath);
+        return   new Image(in);
     }
 
     abstract protected String getImgPath();

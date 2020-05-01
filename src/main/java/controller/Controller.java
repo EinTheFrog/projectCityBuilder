@@ -7,9 +7,9 @@ import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import logic.KeyboardButtons;
 import logic.Mod;
-import render.BuildingMenu;
 import render.GameApplication;
 import render.Menu;
 
@@ -35,7 +35,7 @@ public class Controller {
     private static TimerTask timerTask;
     private static TimerTask timerGoldTask;
     private static int timeBeforeGain = 2000;
-
+    private static boolean buildingInfoShows = false;
     //запрещаем создавать объекты класса Controller
     private Controller() { }
 
@@ -66,8 +66,11 @@ public class Controller {
             case ESCAPE:
                 System.out.println("ESC");
                 if (mod == Mod.CHOOSING_MOD) {
-                    openMenu();
-                    moveMenu(GameApplication.getX(), GameApplication.getY());
+                    if (buildingInfoShows) GameApplication.hideBuildingInfo();
+                    else {
+                        openMenu();
+                        moveMenu(GameApplication.getX(), GameApplication.getY());
+                    }
                 } else {
                     if (mod == Mod.MENU_MOD) {
                         GameApplication.resume();
@@ -109,7 +112,7 @@ public class Controller {
     //обработчик приближения на колесико мыши
     public static void zoom (double deltaY, FieldCore fieldCore) {
         fieldCore.zoom(deltaY);
-        moveCursor(cursorX, cursorY);
+        moveCursor(cursorX  - (fieldCore.getX() * (fieldCore.getScale() - 1)), cursorY - (fieldCore.getY() * (fieldCore.getScale() - 1)));
     }
 
 
@@ -134,6 +137,7 @@ public class Controller {
             chosenBuilding.move(enteredCell.getX(), enteredCell.getY());
             chosenBuilding.setOpacity(1);
             AbstractBuilding newBuilding = chosenBuilding.copy();
+            newBuilding.setClickable(true);
             enteredCell.getField().addBuilding(newBuilding);
             //перерисовываем здания, находящиеся по перспективе ближе к игроку поверх нового,
             // чтобы новое здание их не перекрывало
@@ -167,16 +171,9 @@ public class Controller {
 
     //методы для Building
     //строим здание на клетке,которую закрывает здание
-    public static void clickOnBuilding (AbstractBuilding building, MouseEvent event) {
-        if (mod == Mod.BUILDING_MOD) {
-            //находим клетку по координатам щелчка мыши
-            CellCore targetCell = building.getParentField().findCell(
-                    cursorX + event.getX(), cursorY + event.getY());
-            //если клетка с такими координатами существует пытаемся построить на ней здание
-            if (targetCell != null) buildBuilding();
-        } else {
-            BuildingMenu.show(building.getName(), building.getGoldCost());
-        }
+    public static void clickOnBuilding (AbstractBuilding building) {
+        GameApplication.showBuildingInfo(building.getGoldCost(), building.getName());
+        buildingInfoShows = true;
     }
 
     //событие которое обрабатывает движение курсора, когда мышка не двигается (при движении камеры)
@@ -236,17 +233,20 @@ public class Controller {
     }
 
     private static void setChoosingMod() {
+        GameApplication.hideBuildingInfo();
         mod = Mod.CHOOSING_MOD;
         //возвращаем фокус на игровое поле
        focusOnField();
         for (AbstractBuilding b: chosenField.getBuildingsList()) {
             b.setOpacity(1);
+            b.setClickable(true);
         }
         if (chosenBuilding != null) chosenBuilding.delete();
         chosenBuilding = null;
     }
 
     private static void setBuildingMod(AbstractBuilding building) {
+        GameApplication.showBuildingInfo(building.getGoldCost(), building.getName());
         mod = Mod.BUILDING_MOD;
         enteredCell = null;
         chooseBuilding(building);
@@ -254,6 +254,7 @@ public class Controller {
        focusOnField();
         for (AbstractBuilding b: chosenField.getBuildingsList()) {
             b.setOpacity(0.5);
+            b.setClickable(false);
         }
     }
 
@@ -272,7 +273,7 @@ public class Controller {
                 dx = (curBtnPressed.getOrDefault(KeyboardButtons.A, 0)
                         + curBtnPressed.getOrDefault(KeyboardButtons.D, 0)) * chosenField.getMoveRange();
                 chosenField.move(dx, dy);
-                moveCursor(cursorX - dx, cursorY - dy);
+                moveCursor(cursorX - dx * chosenField.getScale(), cursorY - dy * chosenField.getScale());
             }
         };
         timerGoldTask = new TimerTask() {

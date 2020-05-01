@@ -20,17 +20,18 @@ public class Menu {
     public static void open () {
         GameApplication.pause();
         //задаем начальные элементы и параметры для них
-        VBox vbox = new VBox();
+        VBox vBox = new VBox();
         Button btnMenu = new Button("menu");
         Button btnResume = new Button("resume");
-        vbox.getChildren().addAll(btnResume, btnMenu);
-        vbox.setPrefSize(200, 300);
-        vbox.setAlignment(Pos.CENTER);
-        vbox.setSpacing(20);
+        vBox.getChildren().addAll(btnResume, btnMenu);
+        vBox.getStylesheets().add("RedLord.css");
+        vBox.setAlignment(Pos.CENTER);
+        vBox.setSpacing(20);
+        vBox.setPrefSize(200, 300);
 
         Controller.mod = Mod.MENU_MOD;
         //рендерим окно
-        menuWindow.getContent().add(vbox);
+        menuWindow.getContent().add(vBox);
         menuWindow.show(owner);
 
         //создаем событие для открытия окна игры
@@ -52,7 +53,7 @@ public class Menu {
             }
         });
 
-        vbox.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+        vBox.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ESCAPE) menuWindow.hide();
         });
 
@@ -65,6 +66,7 @@ public class Menu {
     }
 
     public static void move (double x, double y) {
+        if (menuWindow == null) return;
         menuWindow.setX(x + (GameApplication.mainWindowWidth  - menuWindow.getWidth()) / 2);
         menuWindow.setY(y + (GameApplication.mainWindowHeight  - menuWindow.getHeight()) / 2);
     }

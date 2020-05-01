@@ -54,6 +54,10 @@ public abstract class AbstractBuilding {
         this.getOutput().relocate(x - picWidth / 2, y - picHeight);
     }
 
+    public void setClickable(boolean bool) {
+        getOutput().setMouseTransparent(!bool);
+    }
+
     //метод обязательного создания графической оболчки
     abstract protected AbstractBuildingOutput getOutput();
 

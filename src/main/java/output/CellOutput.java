@@ -35,6 +35,7 @@ public class CellOutput extends Polygon {
 
         //доабвляем оработчик события для щелчка
         this.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            System.out.println("click");
             Controller.buildBuilding();
             event.consume();
         });
