@@ -26,11 +26,10 @@ public abstract class AbstractBuildingOutput extends ImageView {
         this.setImage(img);
         //добавляем обработчик щелчка для передачи события клетке
         this.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-
-            //Color color = img.getPixelReader().getColor(100,100);
             Controller.clickOnBuilding(core);
         });
     }
+
 
     protected abstract String getImgPath();
 

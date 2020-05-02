@@ -8,8 +8,8 @@ public class TavernCore extends AbstractBuilding {
     private static final double PIC_WIDTH = 128.0;
     private static final double PIC_HEIGHT = 158.0;
 
-    public TavernCore(double x, double y, int width, int length, int scale, FieldCore field, double opacity) {
-        super(x, y, width, length, scale, field, opacity);
+    public TavernCore(double x, double y, int width, int length, int size, FieldCore field, double opacity) {
+        super(x, y, width, length, size, field, opacity);
     }
 
     @Override
@@ -20,7 +20,7 @@ public class TavernCore extends AbstractBuilding {
 
     @Override
     public AbstractBuilding copy() {
-        return new TavernCore(x, y, width, length, scale, field, opacity);
+        return new TavernCore(x, y, width, length, size, field, opacity);
     }
 
     @Override
@@ -35,12 +35,12 @@ public class TavernCore extends AbstractBuilding {
 
     @Override
     public double getPicWidth() {
-        return field.getCellWidth() * scale;
+        return field.getCellWidth() * size;
     }
 
     @Override
     public double getPicHeight() {
-        return PIC_HEIGHT * field.getCellWidth() / PIC_WIDTH * scale;
+        return PIC_HEIGHT * field.getCellWidth() / PIC_WIDTH * size;
     }
 
     @Override

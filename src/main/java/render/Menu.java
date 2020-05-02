@@ -11,7 +11,6 @@ import javafx.stage.Popup;
 import javafx.stage.PopupWindow;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import logic.Mod;
 
 
 public class Menu {
@@ -29,7 +28,7 @@ public class Menu {
         vBox.setSpacing(20);
         vBox.setPrefSize(200, 300);
 
-        Controller.mod = Mod.MENU_MOD;
+        Controller.setMenuMod();
         //рендерим окно
         menuWindow.getContent().add(vBox);
         menuWindow.show(owner);
@@ -60,7 +59,7 @@ public class Menu {
     }
     public static void close () {
         if (menuWindow != null) {
-            Controller.mod = Mod.CHOOSING_MOD;
+            Controller.setChoosingMod();
             menuWindow.hide();
         }
     }

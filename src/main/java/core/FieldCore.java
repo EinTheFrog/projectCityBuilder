@@ -3,7 +3,6 @@ package core;
 import controller.Controller;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import logic.Pair;
 import output.FieldOutput;
 import render.GameApplication;
 import java.util.ArrayList;
@@ -70,8 +69,8 @@ public class FieldCore {
     //метод для приближения камеры
     public void zoom (double scrollValue) {
         //увеличивая значение scale создаем эфект приближения камеры
-        if (scaleValue + scrollValue / Controller.baseScroll > 0 && scaleValue + scrollValue / Controller.baseScroll < 20)
-            scaleValue += scrollValue / Controller.baseScroll;
+        if (scaleValue + scrollValue / Controller.BASE_SCROLL > 0 && scaleValue + scrollValue / Controller.BASE_SCROLL < 20)
+            scaleValue += scrollValue / Controller.BASE_SCROLL;
         output.zoom(scaleValue);
 
         //вычисляем новую ширину и высоту
@@ -132,22 +131,29 @@ public class FieldCore {
 
 
     //метод для перерисовки зданий на переднем плане
-    public void redrawCloserBuildings (Pair<Integer> indices) {
-        int startX = indices.first;
-        int startY = indices.second;
+    public void redrawCloserBuildings (int x, int y, int buildingWidth, int buildingLength) {
+        int startX = x;
+        int startY = y + 1 - buildingLength;
         while (startX > 0 && startY > 0) {
             startX--;
             startY--;
         }
         while (startX > 0) {
             for (int i = 0; i + startX < size; i ++) {
-                if (cellsArray[startX + i][i].getBuilding() != null) cellsArray[startX + i][i].getBuilding().redraw();
+                if (cellsArray[startX + i][i].getBuilding() != null) {
+                    //вспомогательные перменные и вычисления (не работает)
+                    AbstractBuilding b = cellsArray[startX + i][i].getBuilding();
+                    CellCore c = b.getCells().get(0);
+                    int bx = c.getIndX();
+                    int by = c.getIndY();
+                    if (startX > bx && startY <= by || startY < by && startX >= bx) b.draw();
+                }
             }
             startX--;
         }
         while (startY < size) {
             for (int i = 0; i + startY < size; i ++) {
-                if (cellsArray[i][startY + i].getBuilding() != null) cellsArray[i][startY + i].getBuilding().redraw();
+                if (cellsArray[i][startY + i].getBuilding() != null) cellsArray[i][startY + i].getBuilding().draw();
             }
             startY++;
         }
@@ -157,10 +163,10 @@ public class FieldCore {
     //метод для получения соседей клетки
     public List<CellCore> getNeighbours(CellCore cell, AbstractBuilding building) {
         List<CellCore> neighbours = new ArrayList<>();
-        int cellX = cell.getIndices().first;
-        int cellY = cell.getIndices().second;
-        for (int i = cellY + 1 - building.getScale() * building.getLength(); i <= cellY; i ++) {
-            for(int j = cellX; j <= cellX - 1 + building.getScale() * building.getWidth(); j ++) {
+        int cellX = cell.getIndX();
+        int cellY = cell.getIndY();
+        for (int i = cellY + 1 - building.getSize() * building.getLength(); i <= cellY; i ++) {
+            for(int j = cellX; j <= cellX - 1 + building.getSize() * building.getWidth(); j ++) {
                 if (i >= 0 && j >= 0 && i < size && j < size ) {
                     neighbours.add(cellsArray[j][i]);
                 }
@@ -184,6 +190,10 @@ public class FieldCore {
     //метод для добавления новго здания в список зданий
     public void addBuilding(AbstractBuilding building) {
         buildingList.add(building);
+    }
+
+    public void removeBuilding(AbstractBuilding building) {
+        buildingList.remove(building);
     }
 
     //getters

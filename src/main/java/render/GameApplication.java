@@ -2,8 +2,6 @@ package render;
 
 import controller.Controller;
 import core.*;
-import javafx.beans.property.DoubleProperty;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -11,13 +9,12 @@ import javafx.scene.control.ToolBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import output.AbstractBuildingOutput;
 
 import java.io.InputStream;
+import java.util.function.Supplier;
 
 
 public class GameApplication {
@@ -79,96 +76,52 @@ public class GameApplication {
             Controller.moveCursor(cursorOnFieldX, cursorOnFieldY);
             event.consume();
         });
-        //задаем параметры для кнопки в меню построек
-        String respath = "/textures/btnHouse.png";
-        InputStream in = GameApplication.class.getResourceAsStream(respath);
-        ImageView imgHouseBtn = new ImageView(new Image(in));
-        imgHouseBtn.setFitWidth(mainWindowHeight / 10 );
-        imgHouseBtn.setFitHeight(mainWindowHeight / 10 );
-        Button btnHouse = new Button("", imgHouseBtn);
-        btnHouse.setId("control_button");
-        btnHouse.setFocusTraversable(false);
-
-        ImageView imgNoneBtn = new ImageView();
-        imgNoneBtn.setFitWidth(mainWindowHeight / 10 );
-        imgNoneBtn.setFitHeight(mainWindowHeight / 10 );
-        Button btnNone = new Button("", imgNoneBtn);
-        btnNone.setId("control_button");
-        btnNone.setFocusTraversable(false);
-
-        respath = "/textures/btnCasern.png";
-        in = GameApplication.class.getResourceAsStream(respath);
-        ImageView imgCasernBtn = new ImageView(new Image(in));
-        imgCasernBtn.setFitWidth(mainWindowHeight / 10 );
-        imgCasernBtn.setFitHeight(mainWindowHeight / 10 );
-        Button btnCasern = new Button("", imgCasernBtn);
-        btnCasern.setId("control_button");
-        btnCasern.setFocusTraversable(false);
-
-        respath = "/textures/btnCastle.png";
-        in = GameApplication.class.getResourceAsStream(respath);
-        ImageView imgCastleBtn = new ImageView(new Image(in));
-        imgCastleBtn.setFitWidth(mainWindowHeight / 10 );
-        imgCastleBtn.setFitHeight(mainWindowHeight / 10 );
-        Button btnCastle = new Button("", imgCastleBtn);
-        btnCastle.setId("control_button");
-        btnCastle.setFocusTraversable(false);
-
-        respath = "/textures/btnTavern.png";
-        in = GameApplication.class.getResourceAsStream(respath);
-        ImageView imgTavernBtn = new ImageView(new Image(in));
-        imgTavernBtn.setFitWidth(mainWindowHeight / 10 );
-        imgTavernBtn.setFitHeight(mainWindowHeight / 10 );
-        Button btnTavern = new Button("", imgTavernBtn);
-        btnTavern.setId("control_button");
-        btnTavern.setFocusTraversable(false);
-
-        //создаем события для нажатия на кнопки на панели
-        btnHouse.setOnAction(event -> {
-            Controller.pressOnBuildingButton(fieldCore, new HouseCore(0,0, 1, 1, 2, fieldCore, 0));
-        });
-        btnNone.setOnAction(event -> {
-            Controller.pressOnChooseButton(fieldCore);
-        });
-        btnCasern.setOnAction(event -> {
-            Controller.pressOnBuildingButton(fieldCore, new CasernCore(0,0, 1, 1, 2, fieldCore, 0));
-        });
-        btnCastle.setOnAction(event -> {
-            Controller.pressOnBuildingButton(fieldCore, new CastleCore(0,0, 1, 1, 8, fieldCore, 0));
-        });
-        btnTavern.setOnAction(event -> {
-            Controller.pressOnBuildingButton(fieldCore, new TavernCore(0,0, 1, 1, 2, fieldCore, 0));
-        });
-
+        //создаем кнопки для меню построек
+        Button btnHouse = createBuildingButton("/textures/btnHouse.png", () ->
+                new HouseCore(0,0, 1, 1, 2, Controller.getChosenField(), 0));
+        Button btnCasern = createBuildingButton("/textures/btnCasern.png", () ->
+                new CasernCore(0,0, 1, 1, 2, Controller.getChosenField(), 0));
+        Button btnTavern = createBuildingButton("/textures/btnTavern.png", () ->
+                new TavernCore(0,0, 1, 1, 2, Controller.getChosenField(), 0));
+        Button btnCastle = createBuildingButton("/textures/btnCastle.png", () ->
+                new CastleCore(0,0, 1, 1, 8, Controller.getChosenField(), 0));
 
         //добавляем кнопки на панель
-        toolsPane.getItems().addAll(btnHouse, btnCasern, btnTavern, btnCastle, btnNone);
+        toolsPane.getItems().addAll(btnHouse, btnCasern, btnTavern, btnCastle);
 
         //задаем параметры элементов панели ресурсов
-        respath = "/textures/gold.png";
-        in = GameApplication.class.getResourceAsStream(respath);
+        HBox resourceGold = new HBox();
+        String respath = "/textures/gold.png";
+        InputStream in = GameApplication.class.getResourceAsStream(respath);
         ImageView imgGoldPic = new ImageView(new Image(in));
         imgGoldPic.setFitWidth(mainWindowHeight / 20 );
         imgGoldPic.setFitHeight(mainWindowHeight / 20 );
 
         lblGold = new Label(String.valueOf(fieldCore.getGold()));
 
-        resourcesPane.getItems().addAll(imgGoldPic, lblGold);
+        resourceGold.getChildren().addAll(imgGoldPic, lblGold);
+        resourcesPane.getItems().addAll(resourceGold);
 
         //задаем параметры для панели здания
         lblBuildingCost = new Label("0");
         lblBuildingName = new Label("Building");
-        buildingPane.getChildren().addAll(lblBuildingName, lblBuildingCost);
+        Button btnDestroy = new Button("destroy");
+        btnDestroy.setMinWidth(btnDestroy.getPrefWidth());
+        btnDestroy.setOnAction(event -> {
+            Controller.destroyBuilding();
+            Controller.focusOnField();
+        });
+        buildingPane.getChildren().addAll(lblBuildingName, lblBuildingCost, btnDestroy);
+        buildingPane.setFocusTraversable(false);
         buildingPane.setVisible(false);
 
         //добавляем объекты
         Pane p1 = new Pane();
-        DoubleProperty d;
         p1.prefWidthProperty().bind(fieldPane.widthProperty().subtract(buildingPane.widthProperty()));
         p1.setVisible(false);
+        gridPane.setPickOnBounds(false);
         gridPane.add(p1, 0,0);
         gridPane.add(buildingPane, 1,0);
-        gridPane.setMouseTransparent(true);
         stackPane.getChildren().addAll(fieldPane, gridPane);
         mainPane.setCenter(stackPane);
         mainPane.setBottom(toolsPane);
@@ -217,22 +170,38 @@ public class GameApplication {
         gameWindow.close();
     }
 
-    //public static void focusOnGameWindow() {gameWindow.requestFocus();}
     public static void writeGold(int gold) {
         lblGold.setText(String.valueOf(gold));
     }
     public static double getX() { return gameWindow.getX(); }
     public static double getY() { return gameWindow.getY(); }
 
-    public static void showBuildingInfo (int cost, String name){
+    public static void showBuildingInfo (int cost, String name) {
         lblBuildingName.setText(name);
         lblBuildingCost.setText(String.valueOf(cost));
         buildingPane.setVisible(true);
     }
-    public static void hideBuildingInfo (){
+    public static void hideBuildingInfo () {
         buildingPane.setVisible(false);
     }
 
-    public static double getResourcesPaneHeight() { return resourcesPane.getHeight(); }
-    public static double getToolsPaneHeight() { return resourcesPane.getHeight(); }
+    //вспомогательные методы
+    private static Button createBuildingButton (String respath, Supplier sup) {
+        if (!(sup.get() instanceof AbstractBuilding)){
+            System.err.println("wrong Supplier.get() implementation!" + System.lineSeparator() +
+                    " sup should return instance of AbstractBuilding implementation");
+            return null;
+        }
+        InputStream in = GameApplication.class.getResourceAsStream(respath);
+        ImageView imgBuildingBtn = new ImageView(new Image(in));
+        imgBuildingBtn.setFitWidth(mainWindowHeight / 10 );
+        imgBuildingBtn.setFitHeight(mainWindowHeight / 10 );
+        Button btnBuilding = new Button("", imgBuildingBtn);
+        btnBuilding.setId("control_button");
+        btnBuilding.setFocusTraversable(false);
+        btnBuilding.setOnAction(event -> {
+            Controller.pressOnBuildingButton(Controller.getChosenField(),(AbstractBuilding) sup.get());
+        });
+        return btnBuilding;
+    }
 }

@@ -18,7 +18,7 @@ public class CasernCore extends AbstractBuilding {
     }
     @Override
     public AbstractBuilding copy() {
-        return new CasernCore(x, y, width, length, scale, field, opacity);
+        return new CasernCore(x, y, width, length, size, field, opacity);
     }
 
     @Override
@@ -38,11 +38,11 @@ public class CasernCore extends AbstractBuilding {
 
     @Override
     public double getPicHeight() {
-        return PIC_HEIGHT * field.getCellWidth()/ PIC_WIDTH * scale;
+        return PIC_HEIGHT * field.getCellWidth()/ PIC_WIDTH * size;
     }
 
     @Override
     public double getPicWidth() {
-        return field.getCellWidth() * scale;
+        return field.getCellWidth() * size;
     }
 }

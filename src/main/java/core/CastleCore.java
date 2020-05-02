@@ -7,8 +7,8 @@ public class CastleCore extends AbstractBuilding {
     private AbstractBuildingOutput output;
     private static final double PIC_WIDTH = 320.0;
     private static final double PIC_HEIGHT = 345.0;
-    public CastleCore(double x, double y, int width, int length, int scale, FieldCore field, double opacity) {
-        super(x, y, width, length, scale, field, opacity);
+    public CastleCore(double x, double y, int width, int length, int size, FieldCore field, double opacity) {
+        super(x, y, width, length, size, field, opacity);
     }
 
     @Override
@@ -19,7 +19,7 @@ public class CastleCore extends AbstractBuilding {
 
     @Override
     public AbstractBuilding copy() {
-        return new CastleCore(x, y, width, length, scale, field, opacity);
+        return new CastleCore(x, y, width, length, size, field, opacity);
     }
 
     @Override
@@ -34,12 +34,12 @@ public class CastleCore extends AbstractBuilding {
 
     @Override
     public double getPicHeight() {
-        return PIC_HEIGHT * field.getCellWidth()/ PIC_WIDTH * scale;
+        return PIC_HEIGHT * field.getCellWidth()/ PIC_WIDTH * size;
     }
 
     @Override
     public double getPicWidth() {
-        return field.getCellWidth() * scale;
+        return field.getCellWidth() * size;
     }
 
     @Override

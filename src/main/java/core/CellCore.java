@@ -1,9 +1,6 @@
 package core;
 
-import controller.Controller;
 import javafx.scene.paint.Color;
-import logic.Mod;
-import logic.Pair;
 import output.CellOutput;
 
 public class CellCore {
@@ -38,12 +35,15 @@ public class CellCore {
 
     //метод для удаления здания
     public void removeGhostForArea() {
-        AbstractBuilding thisGhost = buildingGhost;
         if (buildingGhost != null) {
             for (CellCore neighbour: field.getNeighbours(this, buildingGhost)) {
                 neighbour.setBuildingGhost(null);
             }
         }
+    }
+
+    public void removeBuilding() {
+        setBuilding(null);
     }
 
     //метод для установки здания на соседей (большое здание)
@@ -70,7 +70,7 @@ public class CellCore {
 
 
     //метод для присвоения клетке уже существующего здания (нужен, чтобы задать здание, занимающее более 1 клетки)
-    public void setBuilding (AbstractBuilding building) {
+    private void setBuilding (AbstractBuilding building) {
         this.building = building;
     }
 
@@ -94,8 +94,7 @@ public class CellCore {
     public AbstractBuilding getBuildingGhost () {
         return buildingGhost;
     }
-    public Pair<Integer> getIndices() {
-        return new Pair<>(indX, indY);
-    }
+    public int getIndX() { return indX; }
+    public int getIndY() { return indY; }
     public CellOutput getOutput() {return output;}
 }
