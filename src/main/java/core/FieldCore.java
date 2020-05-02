@@ -146,14 +146,23 @@ public class FieldCore {
                     CellCore c = b.getCells().get(0);
                     int bx = c.getIndX();
                     int by = c.getIndY();
-                    if (startX > bx && startY <= by || startY < by && startX >= bx) b.draw();
+                    int t = startY - startX;
+                    if (by > bx + t) b.draw();
                 }
             }
             startX--;
         }
         while (startY < size) {
             for (int i = 0; i + startY < size; i ++) {
-                if (cellsArray[i][startY + i].getBuilding() != null) cellsArray[i][startY + i].getBuilding().draw();
+                if (cellsArray[i][startY + i].getBuilding() != null) {
+                    //вспомогательные перменные и вычисления (не работает)
+                    AbstractBuilding b = cellsArray[i][startY + i].getBuilding();
+                    CellCore c = b.getCells().get(0);
+                    int bx = c.getIndX();
+                    int by = c.getIndY();
+                    int t = startY - startX;
+                    if (by > bx + t) b.draw();
+                }
             }
             startY++;
         }
