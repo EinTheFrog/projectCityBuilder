@@ -30,6 +30,7 @@ public class FieldCore {
     private double cellIndentY;
     private List<AbstractBuilding> buildingList;
     private int gold;
+    private static final int START_GOLD = 300;
     //для каждого поля у нас своё положение камеры, а значит у каждого поля должны быть свои параметры scale
     // и скорости перемщения камеры
     private double moveRange;
@@ -51,7 +52,7 @@ public class FieldCore {
         moveRange = cellSide / Controller.moveSpeedDenom;
         this.width = 2 * fieldSide * Math.cos(Math.PI / 6);
         this.height = 2 * fieldSide * Math.sin(Math.PI / 6);
-        gold = 10000;
+        gold = START_GOLD;
         //вычитываем координаты поля для его отрисовки
         fieldX = (fieldMoveX + indent - GameApplication.mainWindowWidth / 2) * scaleValue + GameApplication.mainWindowWidth / 2;
         fieldY = (fieldMoveY + indent - GameApplication.mainWindowHeight / 2) * scaleValue + GameApplication.mainWindowHeight / 2;

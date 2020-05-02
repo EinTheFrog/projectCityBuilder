@@ -33,11 +33,13 @@
 }
 
 .vbox {
+    -fx-font-family: 'Times New Roman', Serif;
+    -fx-font-size: 30;
+    -fx-alignment: CENTER;
+    -fx-base: #922B21;
     -fx-border-color: #F5B041 ;
     -fx-background-color: #C0392B ;
-    -fx-font-family: 'Times New Roman', Serif;
-    -fx-font-size: 10;
-    -fx-alignment: CENTER;
+    -fx-spacing: 20;
 }
 
 

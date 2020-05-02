@@ -2,6 +2,7 @@ package render;
 
 import controller.Controller;
 import core.*;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -28,7 +29,7 @@ public class GameApplication {
     public static final double mainWindowHeight = paneHeight + 2 * indent;
     public static final double cellSide = paneSide / fieldSize;
     public static final Color cellColor = Color.rgb(178, 178, 177 );
-    private static Label lblGold;
+    private static SimpleIntegerProperty gold = new SimpleIntegerProperty();
 
     //создаем объекты для игрвого окна и корневой панели
     static Stage gameWindow = new Stage();
@@ -90,16 +91,9 @@ public class GameApplication {
         toolsPane.getItems().addAll(btnHouse, btnCasern, btnTavern, btnCastle);
 
         //задаем параметры элементов панели ресурсов
-        HBox resourceGold = new HBox();
-        String respath = "/textures/gold.png";
-        InputStream in = GameApplication.class.getResourceAsStream(respath);
-        ImageView imgGoldPic = new ImageView(new Image(in));
-        imgGoldPic.setFitWidth(mainWindowHeight / 20 );
-        imgGoldPic.setFitHeight(mainWindowHeight / 20 );
+        gold.set(fieldCore.getGold());
+        HBox resourceGold = createResource(new Label("Gold"),"/textures/gold.png");
 
-        lblGold = new Label(String.valueOf(fieldCore.getGold()));
-
-        resourceGold.getChildren().addAll(imgGoldPic, lblGold);
         resourcesPane.getItems().addAll(resourceGold);
 
         //задаем параметры для панели здания
@@ -116,6 +110,7 @@ public class GameApplication {
         buildingPane.setVisible(false);
 
         //добавляем объекты
+        //p1 нужен для сдвига панели здания
         Pane p1 = new Pane();
         p1.prefWidthProperty().bind(fieldPane.widthProperty().subtract(buildingPane.widthProperty()));
         p1.setVisible(false);
@@ -170,8 +165,8 @@ public class GameApplication {
         gameWindow.close();
     }
 
-    public static void writeGold(int gold) {
-        lblGold.setText(String.valueOf(gold));
+    public static void writeGold(int newGold) {
+        gold.set(newGold);
     }
     public static double getX() { return gameWindow.getX(); }
     public static double getY() { return gameWindow.getY(); }
@@ -203,5 +198,18 @@ public class GameApplication {
             Controller.pressOnBuildingButton(Controller.getChosenField(),(AbstractBuilding) sup.get());
         });
         return btnBuilding;
+    }
+
+    private static HBox createResource(Label lblName, String respath) {
+        HBox resourceGold = new HBox();
+        resourceGold.setSpacing(10);
+        InputStream in = GameApplication.class.getResourceAsStream(respath);
+        ImageView imgGoldPic = new ImageView(new Image(in));
+        imgGoldPic.setFitWidth(mainWindowHeight / 20 );
+        imgGoldPic.setFitHeight(mainWindowHeight / 20 );
+        Label lblCount = new Label();
+        lblCount.textProperty().bind(gold.asString());
+        resourceGold.getChildren().addAll(lblName, lblCount, imgGoldPic);
+        return resourceGold;
     }
 }

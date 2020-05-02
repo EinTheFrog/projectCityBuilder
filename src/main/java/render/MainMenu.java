@@ -22,9 +22,10 @@ public class MainMenu {
         vbox.getChildren().add(btnStart);
         //задаем параметы панели
         vbox.setPrefSize(300, 400);
+        vbox.getStylesheets().add("RedLord.css");
         //инициализируем сцену и задаем ее параметры
         menuScene = new Scene(vbox);
-        menuScene.getStylesheets().add("RedLord.css");
+        //menuScene.getStylesheets().add("RedLord.css");
 
         //рендерим окно
         menuWindow.setScene(menuScene);

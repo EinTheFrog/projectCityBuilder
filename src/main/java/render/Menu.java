@@ -2,20 +2,17 @@ package render;
 
 import controller.Controller;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
-import javafx.stage.PopupWindow;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 
 public class Menu {
     private static Stage owner = GameApplication.gameWindow;
-    private static Popup menuWindow = new Popup();
+    private static Popup menuPopup = new Popup();
     public static void open () {
         GameApplication.pause();
         //задаем начальные элементы и параметры для них
@@ -30,8 +27,8 @@ public class Menu {
 
         Controller.setMenuMod();
         //рендерим окно
-        menuWindow.getContent().add(vBox);
-        menuWindow.show(owner);
+        menuPopup.getContent().add(vBox);
+        menuPopup.show(owner);
 
         //создаем событие для открытия окна игры
         btnMenu.setOnAction(e -> {
@@ -45,7 +42,7 @@ public class Menu {
             close();
         });
 
-        menuWindow.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
+        menuPopup.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
             if (e.getCode() == KeyCode.ESCAPE) {
                 GameApplication.resume();
                 close();
@@ -53,20 +50,20 @@ public class Menu {
         });
 
         vBox.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            if (event.getCode() == KeyCode.ESCAPE) menuWindow.hide();
+            if (event.getCode() == KeyCode.ESCAPE) menuPopup.hide();
         });
 
     }
     public static void close () {
-        if (menuWindow != null) {
+        if (menuPopup != null) {
             Controller.setChoosingMod();
-            menuWindow.hide();
+            menuPopup.hide();
         }
     }
 
     public static void move (double x, double y) {
-        if (menuWindow == null) return;
-        menuWindow.setX(x + (GameApplication.mainWindowWidth  - menuWindow.getWidth()) / 2);
-        menuWindow.setY(y + (GameApplication.mainWindowHeight  - menuWindow.getHeight()) / 2);
+        if (menuPopup == null) return;
+        menuPopup.setX(x + (GameApplication.mainWindowWidth  - menuPopup.getWidth()) / 2);
+        menuPopup.setY(y + (GameApplication.mainWindowHeight  - menuPopup.getHeight()) / 2);
     }
 }
