@@ -71,7 +71,7 @@ public class Controller {
                     timeBeforeGain -= 500;
                     if (timeBeforeGain == 0) {
                         timeBeforeGain = 2000;
-                        chosenField.gainGold();
+                        chosenField.gainResources();
                     }
                 });
             }
@@ -193,23 +193,20 @@ public class Controller {
     //методы для cell
     //метод для добавления здания
     public static void buildBuilding ()  {
-        if (mod != Mod.BUILDING_MOD || buildingGhost.getGoldCost() > chosenField.getGold()) return;
+        if (mod != Mod.BUILDING_MOD || buildingGhost.getGoldCost() > chosenField.getGold() ||
+                chosenField.getPeople() + buildingGhost.getPeopleChange() < 0) return;
         //проверяем, что площадь для постройки свободна
-        int numOfNeighbours = enteredCell.getField().getNeighbours(enteredCell, enteredCell.getBuildingGhost()).size();
+        int numOfNeighbours = enteredCell.getField().getCellsUnderBuilding(enteredCell, enteredCell.getBuildingGhost()).size();
         if (enteredCell.neighboursFree(enteredCell.getBuildingGhost()) && numOfNeighbours == enteredCell.getBuildingGhost().getCellArea()) {
             //перемещаем здание в выбранную клетку
             buildingGhost.move(enteredCell.getX(), enteredCell.getY());
             buildingGhost.setOpacity(1);
             AbstractBuilding newBuilding = buildingGhost.copy();
             newBuilding.draw();
-            newBuilding.setCellArea(chosenField.getNeighbours(enteredCell, newBuilding));
+            newBuilding.setCellArea(chosenField.getCellsUnderBuilding(enteredCell, newBuilding));
             buildingGhost.delete();
             newBuilding.setClickable(true);
             enteredCell.getField().addBuilding(newBuilding);
-            //перерисовываем здания, находящиеся по перспективе ближе к игроку поверх нового,
-            // чтобы новое здание их не перекрывало
-            enteredCell.getField().redrawCloserBuildings(enteredCell.getIndX(), enteredCell.getIndY(),
-                    newBuilding.getSize() * newBuilding.getWidth(), newBuilding.getSize() * newBuilding.getLength());
             //если здание занимает больше 1 клетки говорим соседним клеткам, что на них теперь тоже находится здание
             enteredCell.setBuildingForArea(newBuilding);
 
@@ -242,7 +239,7 @@ public class Controller {
     //метод для выбора здания
     public static void clickOnBuilding (AbstractBuilding building) {
         if (chosenBuilding != null) chosenBuilding.highlight(false);
-        GameApplication.showBuildingInfo(building.getGoldCost(), building.getName());
+        GameApplication.showBuildingInfo(building.getName(), building.getGoldCost(), building.getPeopleChange());
         chosenBuilding = building;
         chosenBuilding.highlight(true);
     }
@@ -309,7 +306,7 @@ public class Controller {
 
     private static void setBuildingMod(AbstractBuilding building) {
         building.draw();
-        GameApplication.showBuildingInfo(building.getGoldCost(), building.getName());
+        GameApplication.showBuildingInfo (building.getName(), building.getGoldCost(), building.getPeopleChange());
         mod = Mod.BUILDING_MOD;
         enteredCell = null;
         chooseNewBuilding(building);

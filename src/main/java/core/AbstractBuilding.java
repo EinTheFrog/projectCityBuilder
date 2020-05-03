@@ -1,9 +1,7 @@
 package core;
 
-import javafx.scene.effect.InnerShadow;
 import output.AbstractBuildingOutput;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractBuilding {
@@ -77,6 +75,10 @@ public abstract class AbstractBuilding {
 
     public abstract int getGoldCost();
 
+    public abstract int getForceProfit();
+
+    public abstract int getPeopleChange();
+
     public abstract String getName();
 
     //getters
@@ -84,8 +86,6 @@ public abstract class AbstractBuilding {
     public double getY() {return y;}
     public int getWidth() {return width;}
     public int getLength() {return length;}
-    public FieldCore getParentField() {return field;}
-    public double getOpacity() {return opacity;}
     public int getCellArea() {return width * length * size * size;}
     public List<CellCore> getCells() {return cellArea;}
     public int getSize() {return size;}

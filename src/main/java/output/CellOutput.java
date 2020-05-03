@@ -20,7 +20,7 @@ public class CellOutput extends Polygon {
         parentField = core.getField().getOutput();
         double width = core.getWidth();
         double height = core.getHeight();
-        Color color = core.getColor();
+        Color borderColor = core.getBorderColor();
         parentField.add(this);
 
         //отрисовывем клетку
@@ -30,7 +30,7 @@ public class CellOutput extends Polygon {
                 0.0 , - height,
                 width / 2, - height / 2
         );
-        this.setStroke(color);
+        this.setStroke(borderColor);
         this.setFill(Color.rgb(0,0,0, 0));
 
         //доабвляем оработчик события для щелчка

@@ -32,6 +32,16 @@ public class CasernCore extends AbstractBuilding {
     }
 
     @Override
+    public int getForceProfit() {
+        return 5;
+    }
+
+    @Override
+    public int getPeopleChange() {
+        return -10;
+    }
+
+    @Override
     public String getName() {
         return "Casern";
     }

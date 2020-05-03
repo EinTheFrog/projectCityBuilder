@@ -2,6 +2,7 @@ package render;
 
 import controller.Controller;
 import core.*;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -29,7 +30,11 @@ public class GameApplication {
     public static final double mainWindowHeight = paneHeight + 2 * indent;
     public static final double cellSide = paneSide / fieldSize;
     public static final Color cellColor = Color.rgb(178, 178, 177 );
+
+    //создаем игровые параметры
     private static SimpleIntegerProperty gold = new SimpleIntegerProperty();
+    private static SimpleIntegerProperty force = new SimpleIntegerProperty();
+    private static SimpleIntegerProperty people = new SimpleIntegerProperty();
 
     //создаем объекты для игрвого окна и корневой панели
     static Stage gameWindow = new Stage();
@@ -41,7 +46,8 @@ public class GameApplication {
     private static ToolBar resourcesPane;
     private static ToolBar toolsPane;
 
-    private static Label lblBuildingCost;
+    private static SimpleIntegerProperty goldCost = new SimpleIntegerProperty();
+    private static SimpleIntegerProperty peopleCost = new SimpleIntegerProperty();
     private static Label lblBuildingName;
 
     public static void run () {
@@ -92,20 +98,25 @@ public class GameApplication {
 
         //задаем параметры элементов панели ресурсов
         gold.set(fieldCore.getGold());
-        HBox resourceGold = createResource(new Label("Gold"),"/textures/gold.png");
+        HBox resourceGold = createResource(new Label("Gold"),"/textures/gold.png", gold);
+        force.set(fieldCore.getForce());
+        HBox resourceForce = createResource(new Label("Force"),"/textures/force.png", force);
+        force.set(fieldCore.getPeople());
+        HBox resourcePeople = createResource(new Label("People"),"/textures/people.png", people);
 
-        resourcesPane.getItems().addAll(resourceGold);
+        resourcesPane.getItems().addAll(resourceGold, resourceForce, resourcePeople);
 
         //задаем параметры для панели здания
-        lblBuildingCost = new Label("0");
         lblBuildingName = new Label("Building");
+        HBox hBoxCost = createResource(new Label("Gold"), "/textures/gold.png", goldCost);
+        HBox hBoxPeople = createResource(new Label("People"), "/textures/people.png", peopleCost);
         Button btnDestroy = new Button("destroy");
         btnDestroy.setMinWidth(btnDestroy.getPrefWidth());
         btnDestroy.setOnAction(event -> {
             Controller.destroyBuilding();
             Controller.focusOnField();
         });
-        buildingPane.getChildren().addAll(lblBuildingName, lblBuildingCost, btnDestroy);
+        buildingPane.getChildren().addAll(lblBuildingName, hBoxCost, hBoxPeople, btnDestroy);
         buildingPane.setFocusTraversable(false);
         buildingPane.setVisible(false);
 
@@ -165,15 +176,18 @@ public class GameApplication {
         gameWindow.close();
     }
 
-    public static void writeGold(int newGold) {
+    public static void updateResources(int newGold, int newForce, int newPeople) {
         gold.set(newGold);
+        force.set(newForce);
+        people.set(newPeople);
     }
     public static double getX() { return gameWindow.getX(); }
     public static double getY() { return gameWindow.getY(); }
 
-    public static void showBuildingInfo (int cost, String name) {
+    public static void showBuildingInfo (String name, int price, int peopleChange) {
         lblBuildingName.setText(name);
-        lblBuildingCost.setText(String.valueOf(cost));
+        goldCost.set(price);
+        peopleCost.set(peopleChange);
         buildingPane.setVisible(true);
     }
     public static void hideBuildingInfo () {
@@ -200,7 +214,7 @@ public class GameApplication {
         return btnBuilding;
     }
 
-    private static HBox createResource(Label lblName, String respath) {
+    private static HBox createResource(Label lblName, String respath, IntegerProperty resource) {
         HBox resourceGold = new HBox();
         resourceGold.setSpacing(10);
         InputStream in = GameApplication.class.getResourceAsStream(respath);
@@ -208,7 +222,7 @@ public class GameApplication {
         imgGoldPic.setFitWidth(mainWindowHeight / 20 );
         imgGoldPic.setFitHeight(mainWindowHeight / 20 );
         Label lblCount = new Label();
-        lblCount.textProperty().bind(gold.asString());
+        lblCount.textProperty().bind(resource.asString());
         resourceGold.getChildren().addAll(lblName, lblCount, imgGoldPic);
         return resourceGold;
     }

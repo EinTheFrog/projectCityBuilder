@@ -34,6 +34,16 @@ public class HouseCore extends AbstractBuilding {
     }
 
     @Override
+    public int getForceProfit() {
+        return 0;
+    }
+
+    @Override
+    public int getPeopleChange() {
+        return +5;
+    }
+
+    @Override
     public double getPicHeight() {
         return PIC_HEIGHT * field.getCellWidth()/ PIC_WIDTH * size;
     }

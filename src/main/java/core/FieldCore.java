@@ -6,6 +6,7 @@ import javafx.scene.paint.Color;
 import output.FieldOutput;
 import render.GameApplication;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -15,44 +16,51 @@ public class FieldCore {
     private double fieldY;
     private double fieldMoveX;
     private double fieldMoveY;
-    private int size; //кол-во клеток на одной стороне игрвого поля
-    private double cellSide;
-    private FieldOutput output;
-    private Color cellColor;
-    private double cellHeight;
-    private double cellWidth;
-    private double fieldSide;
-    private double indent;
-    private Pane parentPane;
+    private final int size; //кол-во клеток на одной стороне игрвого поля
+    private final double cellSide;
+    private final FieldOutput output;
+    private final Color cellBorderColor;
+    private final double cellHeight;
+    private final double cellWidth;
+    private final double fieldSide;
+    private final double indent;
+    private final Pane parentPane;
     private double width;
     private double height;
-    private double cellIndentX;
-    private double cellIndentY;
-    private List<AbstractBuilding> buildingList;
+    private final List<AbstractBuilding> buildingList;
     private int gold;
+    private int force;
+    private int people;
     private static final int START_GOLD = 300;
+    private static final int START_FORCE = 0;
+    private static final int START_PEOPLE = 0;
     //для каждого поля у нас своё положение камеры, а значит у каждого поля должны быть свои параметры scale
     // и скорости перемщения камеры
     private double moveRange;
     private double scaleValue = 1.0;
 
     public FieldCore (int size, double cellSide, double fieldSide, Color cellColor, Pane parentPane, double indent) {
-        //задаем параметры поля
+        //задаем параметры для перемещения поля
         fieldMoveX = 0;
         fieldMoveY = 0;
         this.indent = indent;
+        //задаем параметры размера и клеток
         this.size = size;
-        this.cellSide = cellSide;
         this.fieldSide = fieldSide;
+        this.cellSide = cellSide;
+        this.cellBorderColor = cellColor;
+        //задаем игроввые параметры
+        gold = START_GOLD;
+        force = START_FORCE;
+        people = START_PEOPLE;
+        //задаем панель, нак которой находимся и тип клетки
         this.parentPane = parentPane;
         //раситываем параметры
         cellHeight = 2 * cellSide * Math.sin(Math.PI / 6);
         cellWidth = 2 * cellSide * Math.cos(Math.PI / 6);
-        this.cellColor = cellColor;
         moveRange = cellSide / Controller.moveSpeedDenom;
         this.width = 2 * fieldSide * Math.cos(Math.PI / 6);
         this.height = 2 * fieldSide * Math.sin(Math.PI / 6);
-        gold = START_GOLD;
         //вычитываем координаты поля для его отрисовки
         fieldX = (fieldMoveX + indent - GameApplication.mainWindowWidth / 2) * scaleValue + GameApplication.mainWindowWidth / 2;
         fieldY = (fieldMoveY + indent - GameApplication.mainWindowHeight / 2) * scaleValue + GameApplication.mainWindowHeight / 2;
@@ -73,14 +81,11 @@ public class FieldCore {
         if (scaleValue + scrollValue / Controller.BASE_SCROLL > 0 && scaleValue + scrollValue / Controller.BASE_SCROLL < 20)
             scaleValue += scrollValue / Controller.BASE_SCROLL;
         output.zoom(scaleValue);
-
         //вычисляем новую ширину и высоту
         width = GameApplication.paneWidth * scaleValue;
         height = GameApplication.paneHeight * scaleValue;
-
         //перемещаем поле таким образом, чтобы поле не перемещалось относительно камеры при масштабировании
         move(0, 0);
-
         //изменяем скорость перемщения камеры, чтобы при сильном приближении камера не двигалась слишком быстро
         moveRange = cellSide * scaleValue / Controller.moveSpeedDenom;
     }
@@ -98,14 +103,14 @@ public class FieldCore {
     // метод заполнения поля клетками
     private void createCells() {
         //вспомогательная переменные
-        cellIndentX = cellWidth / 2;
-        cellIndentY = fieldSide * Math.sin(Math.PI / 6) + cellHeight / 2;
+        double cellIndentX = cellWidth / 2;
+        double cellIndentY = fieldSide * Math.sin(Math.PI / 6) + cellHeight / 2;
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 double x = j * cellWidth / 2 + cellIndentX;
                 double y = cellIndentY - j * cellHeight / 2;
                 //создаем клетку
-                CellCore cell = new CellCore(x, y, cellSide, cellWidth, cellHeight, cellColor, this, i, j);
+                CellCore cell = new CellCore(x, y, cellSide, cellWidth, cellHeight, cellBorderColor, this, i, j);
                 cellsArray[j][i] = cell; //добавляем ее в массив
             }
             cellIndentX += (cellWidth / 2);
@@ -113,7 +118,7 @@ public class FieldCore {
         }
     }
 
-    //метод для нахождения клетки по координатам (используется в Controller.clickOnBuilding)
+    //метод для нахождения клетки по координатам (используется в Controller.moveCursor)
     public CellCore findCell(double x, double y) {
         //изменяем координаты курсора так, чтобы его положение правильно вопронималось относительно клеток при масштабировании поля
         double cursorX = (x - GameApplication.mainWindowWidth / 2) / scaleValue + GameApplication.mainWindowWidth / 2 - indent;
@@ -131,47 +136,9 @@ public class FieldCore {
     }
 
 
-    //метод для перерисовки зданий на переднем плане
-    public void redrawCloserBuildings (int x, int y, int buildingWidth, int buildingLength) {
-        int startX = x;
-        int startY = y + 1 - buildingLength;
-        while (startX > 0 && startY > 0) {
-            startX--;
-            startY--;
-        }
-        while (startX > 0) {
-            for (int i = 0; i + startX < size; i ++) {
-                if (cellsArray[startX + i][i].getBuilding() != null) {
-                    //вспомогательные перменные и вычисления (не работает)
-                    AbstractBuilding b = cellsArray[startX + i][i].getBuilding();
-                    CellCore c = b.getCells().get(0);
-                    int bx = c.getIndX();
-                    int by = c.getIndY();
-                    int t = startY - startX;
-                    if (by > bx + t) b.draw();
-                }
-            }
-            startX--;
-        }
-        while (startY < size) {
-            for (int i = 0; i + startY < size; i ++) {
-                if (cellsArray[i][startY + i].getBuilding() != null) {
-                    //вспомогательные перменные и вычисления (не работает)
-                    AbstractBuilding b = cellsArray[i][startY + i].getBuilding();
-                    CellCore c = b.getCells().get(0);
-                    int bx = c.getIndX();
-                    int by = c.getIndY();
-                    int t = startY - startX;
-                    if (by > bx + t) b.draw();
-                }
-            }
-            startY++;
-        }
-    }
 
-
-    //метод для получения соседей клетки
-    public List<CellCore> getNeighbours(CellCore cell, AbstractBuilding building) {
+    //метод для получения клеток того же здания
+    public List<CellCore> getCellsUnderBuilding(CellCore cell, AbstractBuilding building) {
         List<CellCore> neighbours = new ArrayList<>();
         int cellX = cell.getIndX();
         int cellY = cell.getIndY();
@@ -185,25 +152,42 @@ public class FieldCore {
         return neighbours;
     }
 
-    public void gainGold () {
-        for (AbstractBuilding building: buildingList) {
-            gold += building.getGoldProfit();
+    //метод для добавления нового здания
+    //вспомогательный метод для определения какое здание на каком плане находится
+    private int getVerticalShift(AbstractBuilding building) {
+        CellCore cell = building.getCells().get(0);
+        int x = cell.getIndX();
+        int y = cell.getIndY();
+        return y - x;
+    }
+    public void addBuilding(AbstractBuilding newBuilding) {
+        buildingList.add(newBuilding);
+        buildingList.sort(Comparator.comparingInt(this::getVerticalShift));
+        int k = buildingList.indexOf(newBuilding);
+        for (int i = k; i < buildingList.size(); i++) {
+            buildingList.get(i).draw();
         }
-        GameApplication.writeGold(gold);
     }
 
-    public void buyBuilding (AbstractBuilding building) {
-        gold -= building.getGoldCost();
-        GameApplication.writeGold(gold);
-    }
-
-    //метод для добавления новго здания в список зданий
-    public void addBuilding(AbstractBuilding building) {
-        buildingList.add(building);
-    }
-
+    //метод для удаления здания
     public void removeBuilding(AbstractBuilding building) {
         buildingList.remove(building);
+    }
+
+    //метод для получения золота со зданий
+    public void gainResources () {
+        for (AbstractBuilding building: buildingList) {
+            gold += building.getGoldProfit();
+            force = force + building.getForceProfit() >= 0? force + building.getForceProfit(): 0;
+        }
+        GameApplication.updateResources(gold, force, people);
+    }
+
+    //метод для покупки здания
+    public void buyBuilding (AbstractBuilding building) {
+        gold -= building.getGoldCost();
+        people += building.getPeopleChange();
+        GameApplication.updateResources(gold, force, people);
     }
 
     //getters
@@ -220,5 +204,8 @@ public class FieldCore {
     public double getCellHeight() {return cellHeight;}
     public double getCellScale() {return cellsArray[0][0].getOutput().getScaleX();}
     public List<AbstractBuilding> getBuildingsList() { return buildingList;}
+
     public int getGold() {return gold;}
+    public int getForce() {return force;}
+    public int getPeople() {return people;}
 }

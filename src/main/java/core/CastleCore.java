@@ -29,7 +29,17 @@ public class CastleCore extends AbstractBuilding {
 
     @Override
     public int getGoldCost() {
-        return 200;
+        return 300;
+    }
+
+    @Override
+    public int getForceProfit() {
+        return 0;
+    }
+
+    @Override
+    public int getPeopleChange() {
+        return -20;
     }
 
     @Override

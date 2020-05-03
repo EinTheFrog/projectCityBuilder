@@ -34,6 +34,16 @@ public class TavernCore extends AbstractBuilding {
     }
 
     @Override
+    public int getForceProfit() {
+        return -1;
+    }
+
+    @Override
+    public int getPeopleChange() {
+        return -5;
+    }
+
+    @Override
     public double getPicWidth() {
         return field.getCellWidth() * size;
     }
