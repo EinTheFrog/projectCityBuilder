@@ -7,6 +7,7 @@ import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
+import render.EnemyMenu;
 import render.GameApplication;
 import render.Menu;
 
@@ -17,7 +18,7 @@ import java.util.TimerTask;
 
 public class Controller {
     private enum Mod {
-        BUILDING_MOD, CHOOSING_MOD, MENU_MOD
+        BUILDING_MOD, CHOOSING_MOD, MENU_MOD, ENEMY_MOD
     }
 
     private enum KeyboardButtons {
@@ -38,8 +39,11 @@ public class Controller {
 
     private static Timer timer = new Timer(true);
     private static TimerTask timerMoveTask;
-    private static TimerTask timerGoldTask;
-    private static int timeBeforeGain = 2000;
+    private static TimerTask timerGainTask;
+    private static TimerTask timerEnemyTask;
+    private static int timeBeforeGain = 0;
+    private static int timeBeforeEnemy = 5_000;
+    private static double time = 0;
 
     public static Mod mod = Mod.CHOOSING_MOD;
     private static CellCore enteredCell;
@@ -64,25 +68,48 @@ public class Controller {
                 moveCursor(cursorX - dx * chosenField.getScale(), cursorY - dy * chosenField.getScale());
             }
         };
-        timerGoldTask = new TimerTask() {
+        timerGainTask = new TimerTask() {
             @Override
             public void run() {
                 Platform.runLater(() -> {
-                    timeBeforeGain -= 500;
                     if (timeBeforeGain == 0) {
                         timeBeforeGain = 2000;
                         chosenField.gainResources();
                     }
+                    timeBeforeGain -= 500;
+                    time += 0.5;
+                    GameApplication.updateTime((int) time);
                 });
             }
         };
+        timerEnemyTask = new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    if (timeBeforeEnemy == 0) {
+                        timeBeforeEnemy = 5_000;
+                        EnemyMenu.open();
+                    }
+                });
+                timeBeforeEnemy -= 500;
+            }
+        };
         timer.schedule(timerMoveTask, 0, 20);
-        timer.schedule(timerGoldTask, timeBeforeGain, 500);
+        timer.schedule(timerGainTask, timeBeforeGain, 500);
+        timer.schedule(timerEnemyTask, timeBeforeEnemy, 500);
     }
 
     public static void stopTimer() {
         timerMoveTask.cancel();
-        timerGoldTask.cancel();
+        timerGainTask.cancel();
+        timerEnemyTask.cancel();
+    }
+
+    //появление кочевников
+    private static void showEnemy () {
+        GameApplication.pause();
+        EnemyMenu.open();
+        mod = Mod.ENEMY_MOD;
     }
 
     //методы для field
@@ -258,6 +285,7 @@ public class Controller {
             }
             event.consume();
         }
+        if (mod == Mod.ENEMY_MOD) event.consume();
     }
 
     public static void moveMenu (double x, double y) {
@@ -320,6 +348,10 @@ public class Controller {
 
     public static void setMenuMod() {
         mod = Mod.MENU_MOD;
+    }
+
+    public static void setEnemyMod() {
+        mod = Mod.ENEMY_MOD;
     }
 
     //для buildingPane

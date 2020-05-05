@@ -36,6 +36,7 @@ public class GameApplication {
     private static SimpleIntegerProperty gold = new SimpleIntegerProperty();
     private static SimpleIntegerProperty force = new SimpleIntegerProperty();
     private static SimpleIntegerProperty people = new SimpleIntegerProperty();
+    private static SimpleIntegerProperty time = new SimpleIntegerProperty();
 
     //создаем объекты для игрвого окна и корневой панели
     static Stage gameWindow = new Stage();
@@ -106,8 +107,10 @@ public class GameApplication {
         HBox resourceForce = createResource(new Label("Force"),"/textures/force.png", force);
         force.set(fieldCore.getPeople());
         HBox resourcePeople = createResource(new Label("People"),"/textures/people.png", people);
+        time.set(0);
+        HBox hBoxTime = createResource(new Label("Time"),"/textures/time.png", time);
 
-        resourcesPane.getItems().addAll(resourceGold, resourceForce, resourcePeople);
+        resourcesPane.getItems().addAll(resourceGold, resourceForce, resourcePeople, hBoxTime);
 
         //задаем параметры для панели здания
         lblBuildingName = new Label("Building");
@@ -183,6 +186,9 @@ public class GameApplication {
         gold.set(newGold);
         force.set(newForce);
         people.set(newPeople);
+    }
+    public static void updateTime (int newTime) {
+        time.setValue(newTime);
     }
     public static double getX() { return gameWindow.getX(); }
     public static double getY() { return gameWindow.getY(); }
