@@ -14,6 +14,7 @@ public abstract class AbstractBuilding {
     protected int width;
     protected int length;
     protected double opacity;
+    protected boolean works= true;
     protected List<CellCore> cellArea;
 
     //конструктор
@@ -63,6 +64,10 @@ public abstract class AbstractBuilding {
     public void highlight (boolean bool) {
         if(bool) getOutput().setStyle("-fx-effect: dropshadow(gaussian,#F5B041 , 5, 0.5, 0, 0)");
         else  getOutput().setStyle("-fx-effect: dropshadow(gaussian, rgba(0, 0, 0 ,0) , 10, 1.0, 0, 0)");
+    }
+
+    public void isWorking (boolean bool) {
+        works = bool;
     }
 
     //метод обязательного создания графической оболчки

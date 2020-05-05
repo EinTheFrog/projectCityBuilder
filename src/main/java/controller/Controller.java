@@ -40,6 +40,7 @@ public class Controller {
     private static Timer timer = new Timer(true);
     private static TimerTask timerMoveTask;
     private static TimerTask timerGainTask;
+    private static TimerTask timerTimeTask;
     private static TimerTask timerEnemyTask;
     private static int timeBeforeGain = 0;
     private static int timeBeforeEnemy = 0;
@@ -68,18 +69,25 @@ public class Controller {
                 moveCursor(cursorX - dx * chosenField.getScale(), cursorY - dy * chosenField.getScale());
             }
         };
+        timerTimeTask = new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    time += 0.5;
+                    GameApplication.updateTime((int) time);
+                });
+            }
+        };
         timerGainTask = new TimerTask() {
             @Override
             public void run() {
                 Platform.runLater(() -> {
                     timeBeforeGain -= 500;
-                    time += 0.5;
-                    if (timeBeforeGain < 0) timeBeforeGain = 2000;
+                    if (timeBeforeGain < 0) timeBeforeGain = 2_000;
                     if (timeBeforeGain == 0) {
-                        timeBeforeGain = 2000;
+                        timeBeforeGain = 2_000;
                         chosenField.gainResources();
                     }
-                    GameApplication.updateTime((int) time);
                 });
             }
         };
@@ -90,17 +98,20 @@ public class Controller {
                     timeBeforeEnemy -= 500;
                     if (timeBeforeEnemy < 0) timeBeforeEnemy = 5_000;
                     if (timeBeforeEnemy == 0) {
-                        EnemyMenu.open();
+                        timeBeforeEnemy = 5_000;
+                        showEnemy();
                     }
                 });
             }
         };
         timer.schedule(timerMoveTask, 0, 20);
-        timer.schedule(timerGainTask, timeBeforeGain, 500);
-        timer.schedule(timerEnemyTask, timeBeforeEnemy, 500);
+        timer.schedule(timerTimeTask, 500, 500);
+        timer.schedule(timerGainTask, 500, 500);
+        timer.schedule(timerEnemyTask, 500, 500);
     }
 
     public static void stopTimer() {
+        timerTimeTask.cancel();
         timerMoveTask.cancel();
         timerGainTask.cancel();
         timerEnemyTask.cancel();
@@ -139,7 +150,6 @@ public class Controller {
                 playerMovesCam = true;
                 break;
             case ESCAPE:
-                System.out.println("ESC");
                 if (mod == Mod.CHOOSING_MOD) {
                     if (chosenBuilding != null) {
                         GameApplication.hideBuildingInfo();

@@ -4,6 +4,7 @@ import controller.Controller;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import output.FieldOutput;
+import render.DefeatMenu;
 import render.GameApplication;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -175,9 +176,22 @@ public class FieldCore {
     //метод для получения золота со зданий
     public void gainResources () {
         int forceIncome = 0;
+        int ppl = 0;
         for (AbstractBuilding building: buildingList) {
-            gold += building.getGoldProfit();
-            forceIncome += building.getForceProfit();
+            if (building.getClass() == HouseCore.class) {
+                ppl += building.getPeopleChange();
+                gold += building.getGoldProfit();
+                forceIncome += building.getForceProfit();
+            }
+        }
+        for (AbstractBuilding building: buildingList) {
+            if (building.getClass() != HouseCore.class) {
+                ppl += building.getPeopleChange();
+                if (ppl >= 0) {
+                    gold += building.getGoldProfit();
+                    forceIncome += building.getForceProfit();
+                }
+            }
         }
         force = force + forceIncome > 0? force + forceIncome: 0;
         GameApplication.updateResources(gold, force, people);
@@ -196,8 +210,17 @@ public class FieldCore {
         move(0, 0);
     }
 
+    //метод для EnemyMenu
     public void pay (int cost) {
-        gold = gold - cost > 0? gold - cost: 0;
+        gold = Math.max(gold - cost, 0);
+        GameApplication.updateResources(gold, force, people);
+        if (gold < 20 && buildingList.isEmpty()) {
+            DefeatMenu.open();
+            DefeatMenu.move(GameApplication.getX(), GameApplication.getY());
+        }
+    }
+    public void decreaseForce (int dec) {
+        force = Math.max(force - dec, 0);
         GameApplication.updateResources(gold, force, people);
     }
 

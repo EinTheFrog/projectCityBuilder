@@ -56,11 +56,12 @@ public class EnemyMenu {
             Random rnd = new Random();
             int result = rnd.nextInt(100);
             if (result > Controller.getChosenField().getForce() / (Controller.getChosenField().getForce() + force)) {
-                Controller.getChosenField().pay(force * 5);
                 if (Controller.getChosenField().getBuildingsList().size() > 0) {
                     result = rnd.nextInt(Controller.getChosenField().getBuildingsList().size());
                     Controller.destroyBuilding(Controller.getChosenField().getBuildingsList().get(result));
                 }
+                Controller.getChosenField().pay(force * 5);
+                Controller.getChosenField().decreaseForce(force);
             }
             GameApplication.resume();
             force *= 2;
