@@ -196,6 +196,11 @@ public class FieldCore {
         move(0, 0);
     }
 
+    public void pay (int cost) {
+        gold = gold - cost > 0? gold - cost: 0;
+        GameApplication.updateResources(gold, force, people);
+    }
+
     //getters
     public FieldOutput getOutput() { return output;}
     public double getMoveRange() {return moveRange;}

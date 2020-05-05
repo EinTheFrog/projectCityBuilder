@@ -42,7 +42,7 @@ public class Controller {
     private static TimerTask timerGainTask;
     private static TimerTask timerEnemyTask;
     private static int timeBeforeGain = 0;
-    private static int timeBeforeEnemy = 5_000;
+    private static int timeBeforeEnemy = 0;
     private static double time = 0;
 
     public static Mod mod = Mod.CHOOSING_MOD;
@@ -72,12 +72,13 @@ public class Controller {
             @Override
             public void run() {
                 Platform.runLater(() -> {
+                    timeBeforeGain -= 500;
+                    time += 0.5;
+                    if (timeBeforeGain < 0) timeBeforeGain = 2000;
                     if (timeBeforeGain == 0) {
                         timeBeforeGain = 2000;
                         chosenField.gainResources();
                     }
-                    timeBeforeGain -= 500;
-                    time += 0.5;
                     GameApplication.updateTime((int) time);
                 });
             }
@@ -86,12 +87,12 @@ public class Controller {
             @Override
             public void run() {
                 Platform.runLater(() -> {
+                    timeBeforeEnemy -= 500;
+                    if (timeBeforeEnemy < 0) timeBeforeEnemy = 5_000;
                     if (timeBeforeEnemy == 0) {
-                        timeBeforeEnemy = 5_000;
                         EnemyMenu.open();
                     }
                 });
-                timeBeforeEnemy -= 500;
             }
         };
         timer.schedule(timerMoveTask, 0, 20);
@@ -109,6 +110,7 @@ public class Controller {
     private static void showEnemy () {
         GameApplication.pause();
         EnemyMenu.open();
+        EnemyMenu.move(GameApplication.getX(), GameApplication.getY());
         mod = Mod.ENEMY_MOD;
     }
 
@@ -317,8 +319,6 @@ public class Controller {
         buildingGhost = newBuilding;
     }
 
-    public static FieldCore getChosenField() { return chosenField; }
-
     //методы для изменения режима взаимодействия с пользователем
     public static void setChoosingMod() {
         mod = Mod.CHOOSING_MOD;
@@ -355,14 +355,17 @@ public class Controller {
     }
 
     //для buildingPane
-    public static void destroyBuilding () {
-        chosenField.removeBuilding(chosenBuilding);
-        for (CellCore c:chosenBuilding.getCells()) {
+    public static void destroyBuilding (AbstractBuilding building) {
+        chosenField.removeBuilding(building);
+        for (CellCore c:building.getCells()) {
             c.removeBuilding();
         }
-        chosenBuilding.delete();
-        chosenBuilding = null;
+        building.delete();
+
     }
 
     public static void focusOnField() { chosenField.getOutput().requestFocus();}
+
+    public static FieldCore getChosenField() { return chosenField; }
+    public static AbstractBuilding getChosenBuilding() { return chosenBuilding; }
 }

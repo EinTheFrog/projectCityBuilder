@@ -119,7 +119,7 @@ public class GameApplication {
         Button btnDestroy = new Button("destroy");
         btnDestroy.setMinWidth(btnDestroy.getPrefWidth());
         btnDestroy.setOnAction(event -> {
-            Controller.destroyBuilding();
+            Controller.destroyBuilding(Controller.getChosenBuilding());
             Controller.focusOnField();
         });
         buildingPane.getChildren().addAll(lblBuildingName, hBoxCost, hBoxPeople, btnDestroy);
@@ -150,9 +150,11 @@ public class GameApplication {
         });
         gameWindow.xProperty().addListener(((observable, oldValue, newValue) -> {
             Menu.move(getX(), getY());
+            EnemyMenu.move(getX(), getY());
         }));
         gameWindow.yProperty().addListener(((observable, oldValue, newValue) -> {
             Menu.move(getX(), getY());
+            EnemyMenu.move(getX(), getY());
         }));
         gameWindow.setScene(gameScene);
         gameWindow.setTitle("Game");

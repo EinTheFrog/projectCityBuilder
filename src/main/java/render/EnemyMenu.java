@@ -14,24 +14,26 @@ import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 import java.io.InputStream;
+import java.util.Random;
 
 public class EnemyMenu {
     private static int force = 20;
     private static int cost = 100;
-    private static int forceUp;
-    private static int costUp;
+/*    private static int FORCE_UP;
+    private static int COST_UP;*/
     private static Stage owner = GameApplication.gameWindow;
     private static Popup menuPopup = new Popup();
     public static void open () {
         GameApplication.pause();
         //задаем начальные элементы и параметры для них
         VBox vBox = new VBox();
-        Label lblText = new Label("Пришли кочевники");
+        Label lblText = new Label("Nomads came");
         InputStream in = GameApplication.class.getResourceAsStream("/textures/nomads.jpg");
         ImageView imgNomads = new ImageView(new Image(in));
-        Button btnPay = new Button("Pay");
-        Button btnFight = new Button("Fight");
+        Button btnPay = new Button("Pay " + cost);
+        Button btnFight = new Button("Fight " + force);
         HBox hBox = new HBox(btnPay, btnFight);
+        hBox.setAlignment(Pos.CENTER);
         vBox.getStylesheets().add("Redlord.css");
         vBox.getChildren().addAll(lblText, imgNomads, hBox);
         vBox.setStyle(" -fx-font-family: 'Times New Roman', Serif;\n" +
@@ -43,12 +45,26 @@ public class EnemyMenu {
                 "    -fx-spacing: 20;");
 
         btnPay.setOnAction(event -> {
+            Controller.getChosenField().pay(cost);
             GameApplication.resume();
             close();
+            cost *= 2;
+            force -= 10;
         });
 
         btnFight.setOnAction(event -> {
+            Random rnd = new Random();
+            int result = rnd.nextInt(100);
+            if (result > Controller.getChosenField().getForce() / (Controller.getChosenField().getForce() + force)) {
+                Controller.getChosenField().pay(force * 5);
+                if (Controller.getChosenField().getBuildingsList().size() > 0) {
+                    result = rnd.nextInt(Controller.getChosenField().getBuildingsList().size());
+                    Controller.destroyBuilding(Controller.getChosenField().getBuildingsList().get(result));
+                }
+            }
             GameApplication.resume();
+            force *= 2;
+            cost -= 10;
             close();
         });
 
