@@ -24,7 +24,6 @@ public class MainMenu {
         //инициализируем сцену и задаем ее параметры
         menuScene = new Scene(vbox);
         menuScene.getStylesheets().add("RedLord.css");
-        //menuScene.getStylesheets().add("RedLord.css");
 
         //рендерим окно
         menuWindow.setScene(menuScene);

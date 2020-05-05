@@ -19,8 +19,15 @@ public class Menu {
         VBox vBox = new VBox();
         Button btnMenu = new Button("menu");
         Button btnResume = new Button("resume");
+        vBox.getStylesheets().add("Redlord.css");
         vBox.getChildren().addAll(btnResume, btnMenu);
-        vBox.getStylesheets().add("RedLord.css");
+        vBox.setStyle(" -fx-font-family: 'Times New Roman', Serif;\n" +
+                "    -fx-font-size: 30;\n" +
+                "    -fx-alignment: CENTER;\n" +
+                "    -fx-base: #922B21;\n" +
+                "    -fx-border-color: #F5B041 ;\n" +
+                "    -fx-background-color: #C0392B ;\n" +
+                "    -fx-spacing: 20;");
         vBox.setAlignment(Pos.CENTER);
         vBox.setSpacing(20);
         vBox.setPrefSize(200, 300);

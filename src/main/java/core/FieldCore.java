@@ -18,8 +18,9 @@ public class FieldCore {
     private double fieldMoveY;
     private final int size; //кол-во клеток на одной стороне игрвого поля
     private final double cellSide;
-    private final FieldOutput output;
+    private FieldOutput output;
     private final Color cellBorderColor;
+    private final Color cellFillColor;
     private final double cellHeight;
     private final double cellWidth;
     private final double fieldSide;
@@ -39,7 +40,7 @@ public class FieldCore {
     private double moveRange;
     private double scaleValue = 1.0;
 
-    public FieldCore (int size, double cellSide, double fieldSide, Color cellColor, Pane parentPane, double indent) {
+    public FieldCore (int size, double cellSide, double fieldSide, Color cellColor, Color cellFillColor, Pane parentPane, double indent) {
         //задаем параметры для перемещения поля
         fieldMoveX = 0;
         fieldMoveY = 0;
@@ -49,6 +50,7 @@ public class FieldCore {
         this.fieldSide = fieldSide;
         this.cellSide = cellSide;
         this.cellBorderColor = cellColor;
+        this.cellFillColor = cellFillColor;
         //задаем игроввые параметры
         gold = START_GOLD;
         force = START_FORCE;
@@ -64,15 +66,10 @@ public class FieldCore {
         //вычитываем координаты поля для его отрисовки
         fieldX = (fieldMoveX + indent - GameApplication.mainWindowWidth / 2) * scaleValue + GameApplication.mainWindowWidth / 2;
         fieldY = (fieldMoveY + indent - GameApplication.mainWindowHeight / 2) * scaleValue + GameApplication.mainWindowHeight / 2;
-        //создаем графическую оболочку и перемещаем ее на начальную позицию
-        output = new FieldOutput(this);
-        move(0, 0);
         //создаем список для хранения построенных зданий
         buildingList = new ArrayList<>();
         //создаем массив для хранения клеток
         cellsArray = new CellCore[size][size];
-        //создаем клетки
-        createCells();
     }
 
     //метод для приближения камеры
@@ -101,7 +98,7 @@ public class FieldCore {
     }
 
     // метод заполнения поля клетками
-    private void createCells() {
+    public void createCells() {
         //вспомогательная переменные
         double cellIndentX = cellWidth / 2;
         double cellIndentY = fieldSide * Math.sin(Math.PI / 6) + cellHeight / 2;
@@ -110,7 +107,8 @@ public class FieldCore {
                 double x = j * cellWidth / 2 + cellIndentX;
                 double y = cellIndentY - j * cellHeight / 2;
                 //создаем клетку
-                CellCore cell = new CellCore(x, y, cellSide, cellWidth, cellHeight, cellBorderColor, this, i, j);
+                CellCore cell = new CellCore(x, y, cellSide, cellWidth, cellHeight, cellBorderColor, cellFillColor, this, i, j);
+                cell.draw();
                 cellsArray[j][i] = cell; //добавляем ее в массив
             }
             cellIndentX += (cellWidth / 2);
@@ -176,10 +174,12 @@ public class FieldCore {
 
     //метод для получения золота со зданий
     public void gainResources () {
+        int forceIncome = 0;
         for (AbstractBuilding building: buildingList) {
             gold += building.getGoldProfit();
-            force = force + building.getForceProfit() >= 0? force + building.getForceProfit(): 0;
+            forceIncome += building.getForceProfit();
         }
+        force = force + forceIncome > 0? force + forceIncome: 0;
         GameApplication.updateResources(gold, force, people);
     }
 
@@ -188,6 +188,12 @@ public class FieldCore {
         gold -= building.getGoldCost();
         people += building.getPeopleChange();
         GameApplication.updateResources(gold, force, people);
+    }
+
+    //метод для создания графической оболочки
+    public void draw () {
+        output = new FieldOutput(this);
+        move(0, 0);
     }
 
     //getters

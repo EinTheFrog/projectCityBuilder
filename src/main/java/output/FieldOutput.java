@@ -38,8 +38,8 @@ public class FieldOutput extends Pane{
         scale.setY(1);
         this.getTransforms().add(scale);
         //окрашиваем панель (для наглядности на время разработки)
-        this.setBackground(
-                new Background(new BackgroundFill(Color.rgb(10, 106, 84), null, null)));
+        /*this.setBackground(
+                new Background(new BackgroundFill(Color.rgb(10, 106, 84), null, null)));*/
         //задаем цвет для панели, на которой нахидится игрвое поле и добавляем наше поле на панель
         this.parentPane.setBackground(
                 new Background(new BackgroundFill(Color.rgb(4, 10, 84), null, null)));

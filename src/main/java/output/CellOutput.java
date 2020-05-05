@@ -31,7 +31,7 @@ public class CellOutput extends Polygon {
                 width / 2, - height / 2
         );
         this.setStroke(borderColor);
-        this.setFill(Color.rgb(0,0,0, 0));
+        this.setFill(core.getFillColor());
 
         //доабвляем оработчик события для щелчка
         this.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {

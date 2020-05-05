@@ -29,7 +29,8 @@ public class GameApplication {
     public static final double paneHeight = 2 * paneSide * Math.sin(Math.PI / 6);
     public static final double mainWindowHeight = paneHeight + 2 * indent;
     public static final double cellSide = paneSide / fieldSize;
-    public static final Color cellColor = Color.rgb(178, 178, 177 );
+    public static final Color cellBorderColor = Color.rgb(178, 178, 177 );
+    public static final Color cellFillColor = Color.rgb(10, 106, 84);
 
     //создаем игровые параметры
     private static SimpleIntegerProperty gold = new SimpleIntegerProperty();
@@ -71,7 +72,9 @@ public class GameApplication {
         resourcesPane = new ToolBar(); //панель для информации о ресурсах
         resourcesPane.setFocusTraversable(false);
         //fieldOutput добавиться в fieldPane в своем конструкторе, поэтому просто инициализируем игровое поле
-        FieldCore fieldCore = new FieldCore(fieldSize, cellSide, paneSide, cellColor, fieldPane, indent);
+        FieldCore fieldCore = new FieldCore(fieldSize, cellSide, paneSide, cellBorderColor, cellFillColor, fieldPane, indent);
+        fieldCore.draw();
+        fieldCore.createCells();
         //устанавливаем фокус на этом игровом поле
         //fieldCore.getOutput().requestFocus();
         Controller.chooseField(fieldCore);

@@ -7,8 +7,9 @@ public class CellCore {
     private final double x;
     private final double y;
     private final Color borderColor;
+    private final Color fillColor;
     private final double side;
-    private final CellOutput output;
+    private CellOutput output;
     private final FieldCore field;
     private final double width;
     private final double height;
@@ -18,7 +19,7 @@ public class CellCore {
     private final int indY;
 
     //конструктор
-    public CellCore (double x, double y, double side, double width, double height, Color borderColor, FieldCore field, int i, int j) {
+    public CellCore (double x, double y, double side, double width, double height, Color borderColor, Color fillColor, FieldCore field, int i, int j) {
         //задаем значения параметров
         this.x = x;
         this.y = y;
@@ -27,10 +28,9 @@ public class CellCore {
         this.width = width;
         this.height = height;
         this.borderColor = borderColor;
+        this.fillColor = fillColor;
         indX = j;
         indY = i;
-        //создаем графическую оболочку
-        output = new CellOutput(this);
     }
 
 
@@ -80,6 +80,11 @@ public class CellCore {
         this.buildingGhost = building;
     }
 
+    public void draw() {
+        //создаем графическую оболочку
+        output = new CellOutput(this);
+    }
+
     //getters
     public double getX() { return x; }
     public double getY() { return y; }
@@ -87,6 +92,7 @@ public class CellCore {
     public double getWidth() { return width; }
     public double getHeight() { return height; }
     public Color getBorderColor() { return borderColor;}
+    public Color getFillColor() { return fillColor;}
     public FieldCore getField() {
         return field;
     }
