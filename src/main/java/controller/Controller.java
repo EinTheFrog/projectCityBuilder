@@ -7,14 +7,12 @@ import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import render.EnemyMenu;
 import render.GameApplication;
 import render.Menu;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class Controller {
     private enum Mod {
@@ -96,9 +94,9 @@ public class Controller {
             public void run() {
                 Platform.runLater(() -> {
                     timeBeforeEnemy -= 500;
-                    if (timeBeforeEnemy < 0) timeBeforeEnemy = 5_000;
+                    if (timeBeforeEnemy < 0) timeBeforeEnemy = 20_000;
                     if (timeBeforeEnemy == 0) {
-                        timeBeforeEnemy = 5_000;
+                        timeBeforeEnemy = 20_000;
                         showEnemy();
                     }
                 });
@@ -152,9 +150,7 @@ public class Controller {
             case ESCAPE:
                 if (mod == Mod.CHOOSING_MOD) {
                     if (chosenBuilding != null) {
-                        GameApplication.hideBuildingInfo();
-                        chosenBuilding.highlight(false);
-                        chosenBuilding = null;
+                        setChosenBuilding(null);
                     } else {
                         openMenu();
                         moveMenu(GameApplication.getX(), GameApplication.getY());
@@ -235,15 +231,16 @@ public class Controller {
         if (mod != Mod.BUILDING_MOD || buildingGhost.getGoldCost() > chosenField.getGold() ||
                 chosenField.getPeople() + buildingGhost.getPeopleChange() < 0) return;
         //проверяем, что площадь для постройки свободна
-        int numOfNeighbours = enteredCell.getField().getCellsUnderBuilding(enteredCell, enteredCell.getBuildingGhost()).size();
-        if (enteredCell.neighboursFree(enteredCell.getBuildingGhost()) && numOfNeighbours == enteredCell.getBuildingGhost().getCellArea()) {
+        int numOfNeighbours = chosenField.getCellsUnderBuilding(enteredCell, buildingGhost).size();
+        if (enteredCell.neighboursFree(buildingGhost) && numOfNeighbours == buildingGhost.getCellArea()) {
             //перемещаем здание в выбранную клетку
             buildingGhost.move(enteredCell.getX(), enteredCell.getY());
             buildingGhost.setOpacity(1);
             AbstractBuilding newBuilding = buildingGhost.copy();
+            buildingGhost.delete();
             newBuilding.draw();
             newBuilding.setCellArea(chosenField.getCellsUnderBuilding(enteredCell, newBuilding));
-            buildingGhost.delete();
+            newBuilding.setCellsInAura(chosenField.getCellsInAura(enteredCell, newBuilding));
             newBuilding.setClickable(true);
             enteredCell.getField().addBuilding(newBuilding);
             //если здание занимает больше 1 клетки говорим соседним клеткам, что на них теперь тоже находится здание
@@ -258,18 +255,108 @@ public class Controller {
     //метод для создания призрака здания на клетке
     public static void showBuilding (CellCore cellCore) {
         if (mod == Mod.BUILDING_MOD && enteredCell != cellCore) {
-            if (enteredCell == null) buildingGhost.setOpacity(0.5);
-            else enteredCell.removeGhostForArea();
+            if (enteredCell == null) {
+                buildingGhost.setOpacity(0.5);
+                buildingGhost.setCellsInAura(chosenField.getCellsInAura(cellCore, buildingGhost));
+                for (CellCore cell: buildingGhost.getCellsInAura()) {
+                    cell.addAuraColor(buildingGhost.getOwnAura().getColor());
+                }
+            } else {
+                for (CellCore cell: buildingGhost.getCellsInAura()) {
+                    cell.removeAuraColor();
+                }
+                buildingGhost.setCellsInAura(chosenField.getCellsInAura(cellCore, buildingGhost));
+                for (CellCore cell: buildingGhost.getCellsInAura()) {
+                    cell.addAuraColor(buildingGhost.getOwnAura().getColor());
+                }
+            }
+            //оптимизированный алогоритм, который не работает
+               /* int newCellX = cellCore.getIndX();
+                int newCellY = cellCore.getIndY();
+                int oldCellX = enteredCell.getIndX();
+                int oldCellY = enteredCell.getIndY();
+                int dx = newCellX - oldCellX;
+                int dy = newCellY - oldCellY;*/
+                /*switch (dx) {
+                    case 1:
+                        for (int i = oldCellY + 1 - buildingGhost.getSize() * buildingGhost.getLength() - rad + dy; i <= oldCellY + rad + dy; i ++) {
+                            if (i < 0 || i >= chosenField.getSize()) continue;
+                            final int j1 = oldCellX - rad;
+                            if (j1 >= 0) {
+                                buildingGhost.getCellsInAura().remove(chosenField.getCellsArray()[j1][i]);
+                                chosenField.getCellsArray()[j1][i].removeAuraColor();
+                            }
+                            final int j2 = newCellX - 1 + buildingGhost.getSize() * buildingGhost.getWidth() + rad;
+                            if (j2 < chosenField.getSize()) {
+                                buildingGhost.getCellsInAura().add(chosenField.getCellsArray()[j2][i]);
+                                chosenField.getCellsArray()[j2][i].addAuraColor(col);
+                            }
+                        }
+                        break;
+                    case -1:
+                        for (int i = oldCellY + 1 - buildingGhost.getSize() * buildingGhost.getLength() - rad + dy; i <= oldCellY + rad + dy; i ++) {
+                            if (i < 0 || i >= chosenField.getSize()) continue;
+                            final int j1 = oldCellX - 1 + buildingGhost.getSize() * buildingGhost.getWidth() + rad;
+                            if (j1 < chosenField.getSize()) {
+                                buildingGhost.getCellsInAura().remove(chosenField.getCellsArray()[j1][i]);
+                                chosenField.getCellsArray()[j1][i].removeAuraColor();
+                            }
+                            final int j2 = newCellX - rad;
+                            if (j2 >= 0) {
+                                buildingGhost.getCellsInAura().add(chosenField.getCellsArray()[j2][i]);
+                                chosenField.getCellsArray()[j2][i].addAuraColor(col);
+                            }
+                        }
+                        break;
+                }
+                switch (dy) {
+                    case 1:
+                        for (int j = oldCellX - rad + dx; j <= oldCellX - 1 + buildingGhost.getSize() * buildingGhost.getWidth() + rad  + dx; j ++) {
+                            if (j < 0 || j >= chosenField.getSize()) continue;
+                            final int i1 = oldCellY + 1 - buildingGhost.getSize() * buildingGhost.getLength() - rad;
+                            if (i1 >= 0) {
+                                buildingGhost.getCellsInAura().remove(chosenField.getCellsArray()[j][i1]);
+                                chosenField.getCellsArray()[j][i1].removeAuraColor();
+                            }
+
+                            final int i2 = newCellY + rad;
+                            if (i2 < chosenField.getSize()) {
+                                buildingGhost.getCellsInAura().add(chosenField.getCellsArray()[j][i2]);
+                                chosenField.getCellsArray()[j][i2].addAuraColor(col);
+                            }
+                        }
+                        break;
+                    case -1:
+                        for (int j = oldCellX - rad + dx; j <= oldCellX - 1 + buildingGhost.getSize() * buildingGhost.getWidth() + rad + dx; j ++) {
+                            if (j < 0 || j >= chosenField.getSize()) continue;
+                            final int i1 = oldCellY + rad;
+                            if (i1 < chosenField.getSize()) {
+                                buildingGhost.getCellsInAura().remove(chosenField.getCellsArray()[j][i1]);
+                                chosenField.getCellsArray()[j][i1].removeAuraColor();
+                            }
+                            final int i2 = newCellY + 1 - buildingGhost.getSize() * buildingGhost.getLength() - rad;
+                            if (i2 >= 0) {
+                                buildingGhost.getCellsInAura().add(chosenField.getCellsArray()[j][i2]);
+                                chosenField.getCellsArray()[j][i2].addAuraColor(col);
+                            }
+                        }
+                        break;
+                }*/
+            }
             buildingGhost.move(cellCore.getX(), cellCore.getY());
             enteredCell = cellCore;
-            enteredCell.setBuildingGhostForArea(buildingGhost);
         }
-    }
 
     //метод для удаления призрака здания c клетки
     private static void cursorLeftField () {
         if (buildingGhost != null) {
             buildingGhost.setOpacity(0);
+            if (buildingGhost.getCellsInAura() != null) {
+                for (CellCore cell: buildingGhost.getCellsInAura()) {
+                    cell.removeAuraColor();
+                }
+                buildingGhost.getCellsInAura().clear();
+            }
             enteredCell = null;
         }
     }
@@ -281,6 +368,7 @@ public class Controller {
         GameApplication.showBuildingInfo(building.getName(), building.getGoldCost(), building.getPeopleChange());
         chosenBuilding = building;
         chosenBuilding.highlight(true);
+        chosenBuilding.highlightAura(true);
     }
 
     //для mainPane
@@ -323,9 +411,15 @@ public class Controller {
         chosenField.getOutput().requestFocus();
     }
 
-    public static void chooseNewBuilding(AbstractBuilding newBuilding) {
-        if (chosenBuilding != null) chosenBuilding.highlight(false);
-        if (buildingGhost != null) buildingGhost.delete();
+
+    private static void setChosenBuilding(AbstractBuilding newBuilding) {
+        if (chosenBuilding != null) {
+            chosenBuilding.highlight(false);
+            chosenBuilding.highlightAura(false);
+        }
+        if (buildingGhost != null) {
+            buildingGhost.delete();
+        }
         buildingGhost = newBuilding;
     }
 
@@ -347,7 +441,7 @@ public class Controller {
         GameApplication.showBuildingInfo (building.getName(), building.getGoldCost(), building.getPeopleChange());
         mod = Mod.BUILDING_MOD;
         enteredCell = null;
-        chooseNewBuilding(building);
+        setChosenBuilding(building);
         //возвращаем фокус на игровое поле
        focusOnField();
         for (AbstractBuilding b: chosenField.getBuildingsList()) {

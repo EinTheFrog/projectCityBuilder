@@ -14,8 +14,9 @@ public abstract class AbstractBuilding {
     protected int width;
     protected int length;
     protected double opacity;
-    protected boolean works= true;
     protected List<CellCore> cellArea;
+    protected List<CellCore> cellsInAura;
+    protected Aura ownAura;
 
     //конструктор
     public AbstractBuilding (double x, double y, int width, int length, int size, FieldCore field, double opacity) {
@@ -29,6 +30,7 @@ public abstract class AbstractBuilding {
         this.opacity = opacity;
         picWidth = getPicWidth();
         picHeight = getPicHeight();
+        ownAura = getOwnAura();
     }
 
     //перерисовываем здание (нужно чтобы перисовывать поверх новго здания старые, находящие по перспективе ближе к игроку)
@@ -40,7 +42,8 @@ public abstract class AbstractBuilding {
 
     //метод для удаления здания с поля
     public void delete() {
-        if (getOutput() != null) field.getOutput().getChildren().remove(getOutput());
+        field.getOutput().getChildren().remove(getOutput());
+        highlightAura(false);
     }
 
     //метод для задания прозрачности здания
@@ -56,6 +59,14 @@ public abstract class AbstractBuilding {
     public void setCellArea (List<CellCore> cells) {
         cellArea = cells;
     }
+    public void setCellsInAura (List<CellCore> cells) {
+        cellsInAura = cells;
+        for (CellCore cell: cellsInAura) {
+            cell.addAuraColor(ownAura.getColor());
+        }
+    }
+
+    public List<CellCore> getCellsInAura () { return  cellsInAura; }
 
     public void setClickable(boolean bool) {
         getOutput().setMouseTransparent(!bool);
@@ -65,10 +76,19 @@ public abstract class AbstractBuilding {
         if(bool) getOutput().setStyle("-fx-effect: dropshadow(gaussian,#F5B041 , 5, 0.5, 0, 0)");
         else  getOutput().setStyle("-fx-effect: dropshadow(gaussian, rgba(0, 0, 0 ,0) , 10, 1.0, 0, 0)");
     }
-
-    public void isWorking (boolean bool) {
-        works = bool;
+    public void highlightAura (boolean bool) {
+        if (cellsInAura == null) return;
+        if (bool) {
+            for (CellCore cell: cellsInAura) {
+                cell.addAuraColor(ownAura.getColor());
+            }
+        } else {
+            for (CellCore cell: cellsInAura) {
+                cell.removeAuraColor();
+            }
+        }
     }
+
 
     //метод обязательного создания графической оболчки
     abstract protected AbstractBuildingOutput getOutput();
@@ -83,6 +103,8 @@ public abstract class AbstractBuilding {
     public abstract int getForceProfit();
 
     public abstract int getPeopleChange();
+
+    public abstract Aura getOwnAura();
 
     public abstract String getName();
 

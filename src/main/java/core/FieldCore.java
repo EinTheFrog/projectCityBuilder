@@ -151,6 +151,21 @@ public class FieldCore {
         return neighbours;
     }
 
+    public List<CellCore> getCellsInAura(CellCore cell, AbstractBuilding building) {
+        List<CellCore> cells = new ArrayList<>();
+        int cellX = cell.getIndX();
+        int cellY = cell.getIndY();
+        int rad = building.getOwnAura().getRadius();
+        for (int i = cellY + 1 - building.getSize() * building.getLength() - rad; i <= cellY + rad; i ++) {
+            for(int j = cellX - rad; j <= cellX - 1 + building.getSize() * building.getWidth() + rad; j ++) {
+                if (i >= 0 && j >= 0 && i < size && j < size ) {
+                    cells.add(cellsArray[j][i]);
+                }
+            }
+        }
+        return cells;
+    }
+
     //метод для добавления нового здания
     //вспомогательный метод для определения какое здание на каком плане находится
     private int getVerticalShift(AbstractBuilding building) {
@@ -226,6 +241,8 @@ public class FieldCore {
 
     //getters
     public FieldOutput getOutput() { return output;}
+    public int getSize() {return size;}
+    public CellCore[][] getCellsArray() {return cellsArray;}
     public double getMoveRange() {return moveRange;}
     public double getX() {return fieldMoveX;}
     public double getY() {return  fieldMoveY;}

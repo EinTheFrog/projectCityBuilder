@@ -56,4 +56,9 @@ public class CastleCore extends AbstractBuilding {
     public String getName() {
         return "Castle";
     }
+
+    @Override
+    public Aura getOwnAura() {
+        return Aura.CASTLE;
+    }
 }

@@ -57,4 +57,9 @@ public class TavernCore extends AbstractBuilding {
     public String getName() {
         return "Tavern";
     }
+
+    @Override
+    public Aura getOwnAura() {
+        return Aura.TAVERN;
+    }
 }

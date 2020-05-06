@@ -3,6 +3,8 @@ package core;
 import javafx.scene.paint.Color;
 import output.CellOutput;
 
+import java.util.List;
+
 public class CellCore {
     private final double x;
     private final double y;
@@ -14,7 +16,7 @@ public class CellCore {
     private final double width;
     private final double height;
     private AbstractBuilding building;
-    private AbstractBuilding buildingGhost;
+    private static List<Aura> auras;
     private final int indX;
     private final int indY;
 
@@ -34,17 +36,19 @@ public class CellCore {
     }
 
 
-    //метод для удаления здания
-    public void removeGhostForArea() {
-        if (buildingGhost != null) {
-            for (CellCore neighbour: field.getCellsUnderBuilding(this, buildingGhost)) {
-                neighbour.setBuildingGhost(null);
-            }
-        }
-    }
-
     public void removeBuilding() {
         setBuilding(null);
+    }
+
+    public void addAura (Aura aura) {
+        auras.add(aura);
+    }
+
+    public void addAuraColor(Color color) {
+        output.setFill(color);
+    }
+    public void removeAuraColor() {
+        output.setFill(fillColor);
     }
 
     //метод для установки здания на все клетки
@@ -54,12 +58,6 @@ public class CellCore {
         }
     }
 
-    //метод для создания призрака здания (на некоторой площади из клеток)
-    public void setBuildingGhostForArea(AbstractBuilding buildingGhost) {
-        for (CellCore neighbour: field.getCellsUnderBuilding(this, buildingGhost)) {
-            neighbour.setBuildingGhost(buildingGhost);
-        }
-    }
 
     //проверка свободности соседей
     public boolean neighboursFree(AbstractBuilding building) {
@@ -75,10 +73,6 @@ public class CellCore {
         this.building = building;
     }
 
-    //метод для присвоения клетке уже существующего призрака здания
-    public void setBuildingGhost (AbstractBuilding building) {
-        this.buildingGhost = building;
-    }
 
     public void draw() {
         //создаем графическую оболочку
@@ -98,9 +92,6 @@ public class CellCore {
     }
     public AbstractBuilding getBuilding () {
         return building;
-    }
-    public AbstractBuilding getBuildingGhost () {
-        return buildingGhost;
     }
     public int getIndX() { return indX; }
     public int getIndY() { return indY; }

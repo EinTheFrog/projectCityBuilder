@@ -3,10 +3,13 @@ package core;
 import output.AbstractBuildingOutput;
 import output.HouseOutput;
 
+import java.util.List;
+
 public class HouseCore extends AbstractBuilding {
     private AbstractBuildingOutput output;
     private static final double PIC_WIDTH = 128.0;
     private static final double PIC_HEIGHT = 128.0;
+    private static List<Aura> auras;
 
     public HouseCore(double x, double y, int width, int length, int size, FieldCore field, double opacity) {
         super(x, y, width, length, size, field, opacity);
@@ -56,6 +59,11 @@ public class HouseCore extends AbstractBuilding {
     @Override
     public String getName() {
         return "House";
+    }
+
+    @Override
+    public Aura getOwnAura() {
+        return Aura.NONE;
     }
 
 }
