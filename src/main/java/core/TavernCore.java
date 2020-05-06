@@ -35,7 +35,7 @@ public class TavernCore extends AbstractBuilding {
 
     @Override
     public int getForceProfit() {
-        return -1;
+        return 0;
     }
 
     @Override

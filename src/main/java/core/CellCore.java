@@ -3,7 +3,9 @@ package core;
 import javafx.scene.paint.Color;
 import output.CellOutput;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class CellCore {
     private final double x;
@@ -16,7 +18,7 @@ public class CellCore {
     private final double width;
     private final double height;
     private AbstractBuilding building;
-    private static List<Aura> auras;
+    private List<Aura> auras;
     private final int indX;
     private final int indY;
 
@@ -33,6 +35,7 @@ public class CellCore {
         this.fillColor = fillColor;
         indX = j;
         indY = i;
+        auras = new ArrayList<>();
     }
 
 
@@ -42,6 +45,10 @@ public class CellCore {
 
     public void addAura (Aura aura) {
         auras.add(aura);
+    }
+
+    public void removeAura(Aura aura) {
+        auras.remove(aura);
     }
 
     public void addAuraColor(Color color) {
@@ -96,4 +103,5 @@ public class CellCore {
     public int getIndX() { return indX; }
     public int getIndY() { return indY; }
     public CellOutput getOutput() {return output;}
+    public List<Aura> getAuras() {return auras;}
 }

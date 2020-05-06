@@ -6,9 +6,8 @@ import javafx.scene.paint.Color;
 import output.FieldOutput;
 import render.DefeatMenu;
 import render.GameApplication;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+
+import java.util.*;
 
 
 public class FieldCore {
@@ -33,6 +32,8 @@ public class FieldCore {
     private int gold;
     private int force;
     private int people;
+    private int forceIncome = 0;
+    private int goldIncome = 0;
     private static final int START_GOLD = 300;
     private static final int START_FORCE = 0;
     private static final int START_PEOPLE = 0;
@@ -163,7 +164,19 @@ public class FieldCore {
                 }
             }
         }
+        cells.removeAll(getCellsUnderBuilding(cell, building));
         return cells;
+    }
+
+    public void setAuraForArea(AbstractBuilding buildingEmitter) {
+        Set<AbstractBuilding> set = new HashSet<>();
+        for (CellCore cell: buildingEmitter.getCellsInAura()) {
+            cell.addAura(buildingEmitter.getOwnAura());
+            if (cell.getBuilding() != null) set.add(cell.getBuilding());
+        }
+        for (AbstractBuilding building: set) {
+            building.addAura(buildingEmitter.getOwnAura());
+        }
     }
 
     //метод для добавления нового здания
@@ -181,21 +194,29 @@ public class FieldCore {
         for (int i = k; i < buildingList.size(); i++) {
             buildingList.get(i).draw();
         }
+        updateIncome();
     }
 
     //метод для удаления здания
     public void removeBuilding(AbstractBuilding building) {
         buildingList.remove(building);
+        updateIncome();
     }
 
     //метод для получения золота со зданий
     public void gainResources () {
-        int forceIncome = 0;
+        force = force + forceIncome > 0? force + forceIncome: 0;
+        gold = gold + goldIncome > 0? gold + goldIncome: 0;
+        GameApplication.updateResources(gold, force, people);
+    }
+    private void updateIncome() {
         int ppl = 0;
+        goldIncome = 0;
+        forceIncome = 0;
         for (AbstractBuilding building: buildingList) {
             if (building.getClass() == HouseCore.class) {
                 ppl += building.getPeopleChange();
-                gold += building.getGoldProfit();
+                goldIncome += building.getGoldProfit();
                 forceIncome += building.getForceProfit();
             }
         }
@@ -203,13 +224,12 @@ public class FieldCore {
             if (building.getClass() != HouseCore.class) {
                 ppl += building.getPeopleChange();
                 if (ppl >= 0) {
-                    gold += building.getGoldProfit();
+                    goldIncome += building.getGoldProfit();
                     forceIncome += building.getForceProfit();
                 }
             }
         }
-        force = force + forceIncome > 0? force + forceIncome: 0;
-        GameApplication.updateResources(gold, force, people);
+        GameApplication.updateIncome(goldIncome, forceIncome);
     }
 
     //метод для покупки здания

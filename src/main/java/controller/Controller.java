@@ -241,6 +241,8 @@ public class Controller {
             newBuilding.setCellArea(chosenField.getCellsUnderBuilding(enteredCell, newBuilding));
             newBuilding.setCellsInAura(buildingGhost.getCellsInAura());
             buildingGhost.delete();
+            newBuilding.checkForAuras();
+            chosenField.setAuraForArea(newBuilding);
             newBuilding.setClickable(true);
             //добавляем здание в лист зданий поля и перерисоваем все здания перед ним
             chosenField.addBuilding(newBuilding);
@@ -292,12 +294,27 @@ public class Controller {
 
     //методы для Building
     //метод для выбора здания
-    public static void clickOnBuilding (AbstractBuilding building) {
-        if (chosenBuilding != null) chosenBuilding.highlight(false);
-        GameApplication.showBuildingInfo(building.getName(), building.getGoldCost(), building.getPeopleChange());
-        chosenBuilding = building;
-        chosenBuilding.highlight(true);
-        chosenBuilding.highlightAura(true);
+    public static void setChosenBuilding (AbstractBuilding building) {
+        if (chosenBuilding != null) {
+            chosenBuilding.highlight(false);
+            chosenBuilding.highlightAura(false);
+        }
+        if (building != null) {
+            GameApplication.showBuildingInfo(building.getName(), building.getGoldCost(), building.getPeopleChange());
+            chosenBuilding = building;
+            chosenBuilding.highlight(true);
+            chosenBuilding.highlightAura(true);
+        }
+    }
+
+    private static void setChosenGhost(AbstractBuilding newBuilding) {
+        if (chosenBuilding != null) {
+            setChosenBuilding(null);
+        }
+        if (buildingGhost != null) {
+            buildingGhost.delete();
+        }
+        buildingGhost = newBuilding;
     }
 
     //для mainPane
@@ -341,16 +358,6 @@ public class Controller {
     }
 
 
-    private static void setChosenBuilding(AbstractBuilding newBuilding) {
-        if (chosenBuilding != null) {
-            chosenBuilding.highlight(false);
-            chosenBuilding.highlightAura(false);
-        }
-        if (buildingGhost != null) {
-            buildingGhost.delete();
-        }
-        buildingGhost = newBuilding;
-    }
 
     //методы для изменения режима взаимодействия с пользователем
     public static void setChoosingMod() {
@@ -370,7 +377,7 @@ public class Controller {
         GameApplication.showBuildingInfo (building.getName(), building.getGoldCost(), building.getPeopleChange());
         mod = Mod.BUILDING_MOD;
         enteredCell = null;
-        setChosenBuilding(building);
+        setChosenGhost(building);
         //возвращаем фокус на игровое поле
        focusOnField();
         for (AbstractBuilding b: chosenField.getBuildingsList()) {

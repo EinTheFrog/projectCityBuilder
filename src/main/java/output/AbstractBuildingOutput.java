@@ -26,7 +26,7 @@ public abstract class AbstractBuildingOutput extends ImageView {
         this.setImage(img);
         //добавляем обработчик щелчка для передачи события клетке
         this.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            Controller.clickOnBuilding(core);
+            Controller.setChosenBuilding(core);
         });
     }
 

@@ -9,7 +9,6 @@ public class CasernCore extends AbstractBuilding {
     private AbstractBuildingOutput output;
     private static final double PIC_WIDTH = 128.0;
     private static final double PIC_HEIGHT = 197.0;
-    private static List<Aura> auras;
     public CasernCore(double x, double y, int width, int length, int scale, FieldCore field, double opacity) {
         super(x, y, width, length, scale, field, opacity);
     }
@@ -36,7 +35,9 @@ public class CasernCore extends AbstractBuilding {
 
     @Override
     public int getForceProfit() {
-        return 5;
+        int profit = 5;
+        if (alienAuras.contains(Aura.TAVERN)) profit -= 2;
+        return profit;
     }
 
     @Override

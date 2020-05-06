@@ -4,6 +4,8 @@ import controller.Controller;
 import core.*;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -33,10 +35,12 @@ public class GameApplication {
     public static final Color cellFillColor = Color.rgb(10, 106, 84);
 
     //создаем игровые параметры
-    private static SimpleIntegerProperty gold = new SimpleIntegerProperty();
-    private static SimpleIntegerProperty force = new SimpleIntegerProperty();
-    private static SimpleIntegerProperty people = new SimpleIntegerProperty();
-    private static SimpleIntegerProperty time = new SimpleIntegerProperty();
+    private static SimpleIntegerProperty gold = new SimpleIntegerProperty(0);
+    private static SimpleIntegerProperty force = new SimpleIntegerProperty(0);
+    private static SimpleIntegerProperty goldIncome = new SimpleIntegerProperty(0);
+    private static SimpleIntegerProperty forceIncome = new SimpleIntegerProperty(0);
+    private static SimpleIntegerProperty people = new SimpleIntegerProperty(0);
+    private static SimpleIntegerProperty time = new SimpleIntegerProperty(0);
 
     //создаем объекты для игрвого окна и корневой панели
     static Stage gameWindow = new Stage();
@@ -48,8 +52,8 @@ public class GameApplication {
     private static ToolBar resourcesPane;
     private static ToolBar toolsPane;
 
-    private static SimpleIntegerProperty goldCost = new SimpleIntegerProperty();
-    private static SimpleIntegerProperty peopleCost = new SimpleIntegerProperty();
+    private static SimpleIntegerProperty goldCost = new SimpleIntegerProperty(0);
+    private static SimpleIntegerProperty peopleCost = new SimpleIntegerProperty(0);
     private static Label lblBuildingName;
 
     public static void run () {
@@ -102,27 +106,27 @@ public class GameApplication {
 
         //задаем параметры элементов панели ресурсов
         gold.set(fieldCore.getGold());
-        HBox resourceGold = createResource(new Label("Gold"),"/textures/gold.png", gold);
+        HBox hBoxGold = createResource(new Label("Gold"),"/textures/gold.png", gold, goldIncome);
         force.set(fieldCore.getForce());
-        HBox resourceForce = createResource(new Label("Force"),"/textures/force.png", force);
-        force.set(fieldCore.getPeople());
-        HBox resourcePeople = createResource(new Label("People"),"/textures/people.png", people);
+        HBox hBoxForce = createResource(new Label("Force"),"/textures/force.png", force, forceIncome);
+        people.set(fieldCore.getPeople());
+        HBox hBoxPeople = createResource(new Label("People"),"/textures/people.png", people);
         time.set(0);
         HBox hBoxTime = createResource(new Label("Time"),"/textures/time.png", time);
 
-        resourcesPane.getItems().addAll(resourceGold, resourceForce, resourcePeople, hBoxTime);
+        resourcesPane.getItems().addAll(hBoxGold, hBoxForce, hBoxPeople, hBoxTime);
 
         //задаем параметры для панели здания
         lblBuildingName = new Label("Building");
         HBox hBoxCost = createResource(new Label("Gold"), "/textures/gold.png", goldCost);
-        HBox hBoxPeople = createResource(new Label("People"), "/textures/people.png", peopleCost);
+        HBox hBoxPeopleChange = createResource(new Label("People"), "/textures/people.png", peopleCost);
         Button btnDestroy = new Button("destroy");
         btnDestroy.setMinWidth(btnDestroy.getPrefWidth());
         btnDestroy.setOnAction(event -> {
             Controller.destroyBuilding(Controller.getChosenBuilding());
             Controller.focusOnField();
         });
-        buildingPane.getChildren().addAll(lblBuildingName, hBoxCost, hBoxPeople, btnDestroy);
+        buildingPane.getChildren().addAll(lblBuildingName, hBoxCost, hBoxPeopleChange, btnDestroy);
         buildingPane.setFocusTraversable(false);
         buildingPane.setVisible(false);
 
@@ -189,6 +193,10 @@ public class GameApplication {
         force.set(newForce);
         people.set(newPeople);
     }
+    public static void updateIncome(int newGoldIncome, int newForceIncome) {
+        goldIncome.set(newGoldIncome);
+        forceIncome.set(newForceIncome);
+    }
     public static void updateTime (int newTime) {
         time.setValue(newTime);
     }
@@ -226,15 +234,38 @@ public class GameApplication {
     }
 
     private static HBox createResource(Label lblName, String respath, IntegerProperty resource) {
-        HBox resourceGold = new HBox();
-        resourceGold.setSpacing(10);
+        HBox hBox = new HBox();
+        hBox.setSpacing(10);
         InputStream in = GameApplication.class.getResourceAsStream(respath);
         ImageView imgGoldPic = new ImageView(new Image(in));
         imgGoldPic.setFitWidth(mainWindowHeight / 20 );
         imgGoldPic.setFitHeight(mainWindowHeight / 20 );
         Label lblCount = new Label();
         lblCount.textProperty().bind(resource.asString());
-        resourceGold.getChildren().addAll(lblName, lblCount, imgGoldPic);
-        return resourceGold;
+        hBox.getChildren().addAll(lblName, lblCount, imgGoldPic);
+        return hBox;
+    }
+
+    private static HBox createResource(Label lblName, String respath, IntegerProperty resource, IntegerProperty income) {
+        HBox hBox = new HBox();
+        hBox.setSpacing(10);
+        InputStream in = GameApplication.class.getResourceAsStream(respath);
+        ImageView imgGoldPic = new ImageView(new Image(in));
+        imgGoldPic.setFitWidth(mainWindowHeight / 20 );
+        imgGoldPic.setFitHeight(mainWindowHeight / 20 );
+        Label lblCount = new Label();
+        lblCount.textProperty().bind(resource.asString());
+        Label lblIncome = new Label("(0)");
+        income.addListener((obs, oldVal, newVal) -> {
+            if (newVal.intValue() < 0) {
+                lblIncome.setText("(" + newVal + ")");
+                lblIncome.setStyle("-fx-text-fill: darkblue");
+            } else {
+                lblIncome.setText("(+" + newVal + ")");
+                lblIncome.setStyle("-fx-text-fill: darkgreen");
+            }
+        });
+        hBox.getChildren().addAll(lblName, lblCount, lblIncome, imgGoldPic);
+        return hBox;
     }
 }

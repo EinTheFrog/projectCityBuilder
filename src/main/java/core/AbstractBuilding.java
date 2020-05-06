@@ -2,7 +2,10 @@ package core;
 
 import output.AbstractBuildingOutput;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public abstract class AbstractBuilding {
     protected double x;
@@ -16,6 +19,7 @@ public abstract class AbstractBuilding {
     protected double opacity;
     protected List<CellCore> cellArea;
     protected List<CellCore> cellsInAura;
+    protected Set<Aura> alienAuras;
     protected Aura ownAura;
 
     //конструктор
@@ -30,6 +34,7 @@ public abstract class AbstractBuilding {
         this.opacity = opacity;
         picWidth = getPicWidth();
         picHeight = getPicHeight();
+        alienAuras = new HashSet<>();
         ownAura = getOwnAura();
     }
 
@@ -76,6 +81,7 @@ public abstract class AbstractBuilding {
         if(bool) getOutput().setStyle("-fx-effect: dropshadow(gaussian,#F5B041 , 5, 0.5, 0, 0)");
         else  getOutput().setStyle("-fx-effect: dropshadow(gaussian, rgba(0, 0, 0 ,0) , 10, 1.0, 0, 0)");
     }
+
     public void highlightAura (boolean bool) {
         if (cellsInAura == null) return;
         if (bool) {
@@ -85,6 +91,18 @@ public abstract class AbstractBuilding {
         } else {
             for (CellCore cell: cellsInAura) {
                 cell.removeAuraColor();
+            }
+        }
+    }
+
+    public void addAura(Aura aura) {
+        alienAuras.add(aura);
+    }
+
+    public void checkForAuras() {
+        for (CellCore cell: cellArea) {
+            for (Aura aura: cell.getAuras()) {
+                if (aura != ownAura) alienAuras.add(aura);
             }
         }
     }
