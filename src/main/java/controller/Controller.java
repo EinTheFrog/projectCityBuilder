@@ -237,12 +237,13 @@ public class Controller {
             buildingGhost.move(enteredCell.getX(), enteredCell.getY());
             buildingGhost.setOpacity(1);
             AbstractBuilding newBuilding = buildingGhost.copy();
-            buildingGhost.delete();
             newBuilding.draw();
             newBuilding.setCellArea(chosenField.getCellsUnderBuilding(enteredCell, newBuilding));
-            newBuilding.setCellsInAura(chosenField.getCellsInAura(enteredCell, newBuilding));
+            newBuilding.setCellsInAura(buildingGhost.getCellsInAura());
+            buildingGhost.delete();
             newBuilding.setClickable(true);
-            enteredCell.getField().addBuilding(newBuilding);
+            //добавляем здание в лист зданий поля и перерисоваем все здания перед ним
+            chosenField.addBuilding(newBuilding);
             //если здание занимает больше 1 клетки говорим соседним клеткам, что на них теперь тоже находится здание
             enteredCell.setBuildingForArea(newBuilding);
 
@@ -258,94 +259,22 @@ public class Controller {
             if (enteredCell == null) {
                 buildingGhost.setOpacity(0.5);
                 buildingGhost.setCellsInAura(chosenField.getCellsInAura(cellCore, buildingGhost));
-                for (CellCore cell: buildingGhost.getCellsInAura()) {
+                for (CellCore cell : buildingGhost.getCellsInAura()) {
                     cell.addAuraColor(buildingGhost.getOwnAura().getColor());
                 }
             } else {
-                for (CellCore cell: buildingGhost.getCellsInAura()) {
+                for (CellCore cell : buildingGhost.getCellsInAura()) {
                     cell.removeAuraColor();
                 }
                 buildingGhost.setCellsInAura(chosenField.getCellsInAura(cellCore, buildingGhost));
-                for (CellCore cell: buildingGhost.getCellsInAura()) {
+                for (CellCore cell : buildingGhost.getCellsInAura()) {
                     cell.addAuraColor(buildingGhost.getOwnAura().getColor());
                 }
             }
-            //оптимизированный алогоритм, который не работает
-               /* int newCellX = cellCore.getIndX();
-                int newCellY = cellCore.getIndY();
-                int oldCellX = enteredCell.getIndX();
-                int oldCellY = enteredCell.getIndY();
-                int dx = newCellX - oldCellX;
-                int dy = newCellY - oldCellY;*/
-                /*switch (dx) {
-                    case 1:
-                        for (int i = oldCellY + 1 - buildingGhost.getSize() * buildingGhost.getLength() - rad + dy; i <= oldCellY + rad + dy; i ++) {
-                            if (i < 0 || i >= chosenField.getSize()) continue;
-                            final int j1 = oldCellX - rad;
-                            if (j1 >= 0) {
-                                buildingGhost.getCellsInAura().remove(chosenField.getCellsArray()[j1][i]);
-                                chosenField.getCellsArray()[j1][i].removeAuraColor();
-                            }
-                            final int j2 = newCellX - 1 + buildingGhost.getSize() * buildingGhost.getWidth() + rad;
-                            if (j2 < chosenField.getSize()) {
-                                buildingGhost.getCellsInAura().add(chosenField.getCellsArray()[j2][i]);
-                                chosenField.getCellsArray()[j2][i].addAuraColor(col);
-                            }
-                        }
-                        break;
-                    case -1:
-                        for (int i = oldCellY + 1 - buildingGhost.getSize() * buildingGhost.getLength() - rad + dy; i <= oldCellY + rad + dy; i ++) {
-                            if (i < 0 || i >= chosenField.getSize()) continue;
-                            final int j1 = oldCellX - 1 + buildingGhost.getSize() * buildingGhost.getWidth() + rad;
-                            if (j1 < chosenField.getSize()) {
-                                buildingGhost.getCellsInAura().remove(chosenField.getCellsArray()[j1][i]);
-                                chosenField.getCellsArray()[j1][i].removeAuraColor();
-                            }
-                            final int j2 = newCellX - rad;
-                            if (j2 >= 0) {
-                                buildingGhost.getCellsInAura().add(chosenField.getCellsArray()[j2][i]);
-                                chosenField.getCellsArray()[j2][i].addAuraColor(col);
-                            }
-                        }
-                        break;
-                }
-                switch (dy) {
-                    case 1:
-                        for (int j = oldCellX - rad + dx; j <= oldCellX - 1 + buildingGhost.getSize() * buildingGhost.getWidth() + rad  + dx; j ++) {
-                            if (j < 0 || j >= chosenField.getSize()) continue;
-                            final int i1 = oldCellY + 1 - buildingGhost.getSize() * buildingGhost.getLength() - rad;
-                            if (i1 >= 0) {
-                                buildingGhost.getCellsInAura().remove(chosenField.getCellsArray()[j][i1]);
-                                chosenField.getCellsArray()[j][i1].removeAuraColor();
-                            }
-
-                            final int i2 = newCellY + rad;
-                            if (i2 < chosenField.getSize()) {
-                                buildingGhost.getCellsInAura().add(chosenField.getCellsArray()[j][i2]);
-                                chosenField.getCellsArray()[j][i2].addAuraColor(col);
-                            }
-                        }
-                        break;
-                    case -1:
-                        for (int j = oldCellX - rad + dx; j <= oldCellX - 1 + buildingGhost.getSize() * buildingGhost.getWidth() + rad + dx; j ++) {
-                            if (j < 0 || j >= chosenField.getSize()) continue;
-                            final int i1 = oldCellY + rad;
-                            if (i1 < chosenField.getSize()) {
-                                buildingGhost.getCellsInAura().remove(chosenField.getCellsArray()[j][i1]);
-                                chosenField.getCellsArray()[j][i1].removeAuraColor();
-                            }
-                            final int i2 = newCellY + 1 - buildingGhost.getSize() * buildingGhost.getLength() - rad;
-                            if (i2 >= 0) {
-                                buildingGhost.getCellsInAura().add(chosenField.getCellsArray()[j][i2]);
-                                chosenField.getCellsArray()[j][i2].addAuraColor(col);
-                            }
-                        }
-                        break;
-                }*/
-            }
-            buildingGhost.move(cellCore.getX(), cellCore.getY());
-            enteredCell = cellCore;
         }
+        buildingGhost.move(cellCore.getX(), cellCore.getY());
+        enteredCell = cellCore;
+    }
 
     //метод для удаления призрака здания c клетки
     private static void cursorLeftField () {
