@@ -1,6 +1,8 @@
 package core;
 
 import controller.Controller;
+import core.buildings.AbstractBuilding;
+import core.buildings.HouseCore;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import output.FieldOutput;
@@ -135,8 +137,6 @@ public class FieldCore {
         else return null;
     }
 
-
-
     //метод для получения клеток того же здания
     public List<CellCore> getCellsUnderBuilding(CellCore cell, AbstractBuilding building) {
         List<CellCore> neighbours = new ArrayList<>();
@@ -150,6 +150,14 @@ public class FieldCore {
             }
         }
         return neighbours;
+    }
+
+    public boolean isAreaFree (CellCore cell, AbstractBuilding building) {
+        List<CellCore> neighbours = getCellsUnderBuilding(cell, building);
+        for (CellCore c: neighbours) {
+            if (c.getBuilding() != null) return false;
+        }
+        return true;
     }
 
     public List<CellCore> getCellsInAura(CellCore cell, AbstractBuilding building) {
@@ -179,6 +187,15 @@ public class FieldCore {
         }
     }
 
+
+    public void makeBuildingsClickable (boolean bool) {
+        for (AbstractBuilding b: buildingList) {
+            if (bool) b.setOpacity(1); else b.setOpacity(0.5);
+            b.setClickable(bool);
+        }
+    }
+
+
     //метод для добавления нового здания
     //вспомогательный метод для определения какое здание на каком плане находится
     private int getVerticalShift(AbstractBuilding building) {
@@ -205,8 +222,8 @@ public class FieldCore {
 
     //метод для получения золота со зданий
     public void gainResources () {
-        force = force + forceIncome > 0? force + forceIncome: 0;
-        gold = gold + goldIncome > 0? gold + goldIncome: 0;
+        force = Math.max(force + forceIncome, 0);
+        gold = Math.max(gold + goldIncome, 0);
         GameApplication.updateResources(gold, force, people);
     }
     private void updateIncome() {
@@ -262,7 +279,6 @@ public class FieldCore {
     //getters
     public FieldOutput getOutput() { return output;}
     public int getSize() {return size;}
-    public CellCore[][] getCellsArray() {return cellsArray;}
     public double getMoveRange() {return moveRange;}
     public double getX() {return fieldMoveX;}
     public double getY() {return  fieldMoveY;}
@@ -272,8 +288,6 @@ public class FieldCore {
     public double getScale() {return scaleValue;}
     public double getHeight() {return height;}
     public double getCellWidth() {return cellWidth;}
-    public double getCellHeight() {return cellHeight;}
-    public double getCellScale() {return cellsArray[0][0].getOutput().getScaleX();}
     public List<AbstractBuilding> getBuildingsList() { return buildingList;}
 
     public int getGold() {return gold;}

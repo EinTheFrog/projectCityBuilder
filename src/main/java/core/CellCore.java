@@ -1,11 +1,11 @@
 package core;
 
+import core.buildings.AbstractBuilding;
 import javafx.scene.paint.Color;
 import output.CellOutput;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class CellCore {
     private final double x;
@@ -38,7 +38,6 @@ public class CellCore {
         auras = new ArrayList<>();
     }
 
-
     public void removeBuilding() {
         setBuilding(null);
     }
@@ -54,29 +53,13 @@ public class CellCore {
     public void addAuraColor(Color color) {
         output.setFill(color);
     }
+
     public void removeAuraColor() {
         output.setFill(fillColor);
     }
 
-    //метод для установки здания на все клетки
-    public void setBuildingForArea(AbstractBuilding building) {
-        for (CellCore neighbour: field.getCellsUnderBuilding(this, building)) {
-            neighbour.setBuilding(building);
-        }
-    }
-
-
-    //проверка свободности соседей
-    public boolean neighboursFree(AbstractBuilding building) {
-        for (CellCore neighbour: field.getCellsUnderBuilding(this, building)) {
-            if (neighbour.getBuilding() != null) return false;
-        }
-        return true;
-    }
-
-
     //метод для присвоения клетке уже существующего здания (нужен, чтобы задать здание, занимающее более 1 клетки)
-    private void setBuilding (AbstractBuilding building) {
+    public void setBuilding (AbstractBuilding building) {
         this.building = building;
     }
 

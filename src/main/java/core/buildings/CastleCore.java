@@ -1,5 +1,7 @@
-package core;
+package core.buildings;
 
+import core.Aura;
+import core.FieldCore;
 import output.AbstractBuildingOutput;
 import output.CastleOutput;
 

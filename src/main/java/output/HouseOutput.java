@@ -1,6 +1,6 @@
 package output;
 
-import core.AbstractBuilding;
+import core.buildings.AbstractBuilding;
 
 public class HouseOutput extends AbstractBuildingOutput {
     public HouseOutput(AbstractBuilding core) { super(core); }

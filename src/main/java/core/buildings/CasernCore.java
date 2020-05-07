@@ -1,9 +1,9 @@
-package core;
+package core.buildings;
 
+import core.Aura;
+import core.FieldCore;
 import output.AbstractBuildingOutput;
 import output.CasernOutput;
-
-import java.util.List;
 
 public class CasernCore extends AbstractBuilding {
     private AbstractBuildingOutput output;

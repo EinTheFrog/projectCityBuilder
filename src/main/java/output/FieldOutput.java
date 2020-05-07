@@ -2,17 +2,14 @@ package output;
 
 import controller.Controller;
 import core.FieldCore;
-import core.HouseCore;
 import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Polygon;
 import javafx.scene.transform.Scale;
 
 public class FieldOutput extends Pane{

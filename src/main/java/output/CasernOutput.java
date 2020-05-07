@@ -1,7 +1,6 @@
 package output;
 
-import core.AbstractBuilding;
-import javafx.scene.paint.ImagePattern;
+import core.buildings.AbstractBuilding;
 
 public class CasernOutput extends AbstractBuildingOutput {
     public CasernOutput(AbstractBuilding core) {

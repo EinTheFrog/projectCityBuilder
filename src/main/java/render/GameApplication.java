@@ -2,10 +2,9 @@ package render;
 
 import controller.Controller;
 import core.*;
+import core.buildings.*;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -38,25 +37,21 @@ public class GameApplication {
     public static final Color cellFillColor = Color.rgb(10, 106, 84);
 
     //создаем игровые параметры
-    private static SimpleIntegerProperty gold = new SimpleIntegerProperty(0);
-    private static SimpleIntegerProperty force = new SimpleIntegerProperty(0);
-    private static SimpleIntegerProperty goldIncome = new SimpleIntegerProperty(0);
-    private static SimpleIntegerProperty forceIncome = new SimpleIntegerProperty(0);
-    private static SimpleIntegerProperty people = new SimpleIntegerProperty(0);
-    private static SimpleIntegerProperty time = new SimpleIntegerProperty(0);
+    private static final SimpleIntegerProperty gold = new SimpleIntegerProperty(0);
+    private static final SimpleIntegerProperty force = new SimpleIntegerProperty(0);
+    private static final SimpleIntegerProperty goldIncome = new SimpleIntegerProperty(0);
+    private static final SimpleIntegerProperty forceIncome = new SimpleIntegerProperty(0);
+    private static final SimpleIntegerProperty people = new SimpleIntegerProperty(0);
+    private static final SimpleIntegerProperty time = new SimpleIntegerProperty(0);
 
     //создаем объекты для игрвого окна и корневой панели
     static Stage gameWindow = new Stage();
     public static BorderPane mainPane;
-    private static Pane fieldPane;
     private static VBox buildingPane;
-    private static GridPane gridPane;
-    private static StackPane stackPane;
-    private static ToolBar resourcesPane;
-    private static ToolBar toolsPane;
 
-    private static SimpleIntegerProperty goldCost = new SimpleIntegerProperty(0);
-    private static SimpleIntegerProperty peopleCost = new SimpleIntegerProperty(0);
+    //параметры панели инфомации о здании
+    private static final SimpleIntegerProperty goldCost = new SimpleIntegerProperty(0);
+    private static final SimpleIntegerProperty peopleCost = new SimpleIntegerProperty(0);
     private static Label lblBuildingName;
 
     public static void run () {
@@ -64,22 +59,21 @@ public class GameApplication {
         Scene gameScene;
         mainPane = new BorderPane();
         gameScene = new Scene(mainPane);
-        mainPane.getStylesheets().add("RedLord.css");
+        gameScene.getStylesheets().add("RedLord.css");
 
         //создаем панели, на которых будут располагаться все элементы
-        gridPane = new GridPane();
+        GridPane gridPane = new GridPane();
         gridPane.setFocusTraversable(false);
-        stackPane = new StackPane();
+        StackPane stackPane = new StackPane();
         stackPane.setFocusTraversable(false);
         buildingPane = new VBox();
-        buildingPane.setStyle("-fx-background-color: #C0392B; -fx-border-color: #F5B041; -fx-alignment: CENTER");
 
-        fieldPane = new Pane(); //панель для игрвого поля
+        Pane fieldPane = new Pane(); //панель для игрвого поля
         fieldPane.setPrefSize(mainWindowWidth, mainWindowHeight);
-        toolsPane = new ToolBar(); //панель для интерфейса построек
-        resourcesPane = new ToolBar(); //панель для информации о ресурсах
+        ToolBar toolsPane = new ToolBar(); //панель для интерфейса построек
+        ToolBar resourcesPane = new ToolBar(); //панель для информации о ресурсах
         resourcesPane.setFocusTraversable(false);
-        //fieldOutput добавиться в fieldPane в своем конструкторе, поэтому просто инициализируем игровое поле
+        //создаем и отрисовываем поле
         FieldCore fieldCore = new FieldCore(fieldSize, cellSide, paneSide, cellBorderColor, cellFillColor, fieldPane, indent);
         fieldCore.draw();
         fieldCore.createCells();
@@ -142,19 +136,14 @@ public class GameApplication {
         gridPane.add(p1, 0,0);
         gridPane.add(buildingPane, 1,0);
         stackPane.getChildren().addAll(fieldPane, gridPane);
+
         mainPane.setCenter(stackPane);
         mainPane.setBottom(toolsPane);
         mainPane.setTop(resourcesPane);
 
-
-        //рендерим окно и запускаем таймер
-        Controller.startTimer();
-
-       // gameWindow
-        gameWindow.addEventFilter(MouseEvent.ANY, event -> {
-            //создаем обработку щелчка мыши при открытом окне меню для закрытия этог самого меню
-            Controller.closeMenuOnClick(event);
-        });
+       //gameWindow
+        //создаем обработку щелчка мыши при открытом окне меню для закрытия этог самого меню
+        gameWindow.addEventFilter(MouseEvent.ANY, Controller::closeMenuOnClick);
         gameWindow.xProperty().addListener(((observable, oldValue, newValue) -> {
             Menu.move(getX(), getY());
             EnemyMenu.move(getX(), getY());
@@ -163,10 +152,14 @@ public class GameApplication {
             Menu.move(getX(), getY());
             EnemyMenu.move(getX(), getY());
         }));
+
+        //запускаем таймер
+        Controller.startTimer();
+        //отрисовываем окно
         gameWindow.setScene(gameScene);
         gameWindow.setTitle("Game");
         gameWindow.sizeToScene();
-        gameWindow.setResizable(false);
+        //gameWindow.setResizable(false);
         gameWindow.show();
 
         //закрытие окна осуществляем через собственный метод
@@ -191,6 +184,7 @@ public class GameApplication {
         gameWindow.close();
     }
 
+    //метод для обновления значений ресурсов на панелях
     public static void updateResources(int newGold, int newForce, int newPeople) {
         gold.set(newGold);
         force.set(newForce);
@@ -203,9 +197,9 @@ public class GameApplication {
     public static void updateTime (int newTime) {
         time.setValue(newTime);
     }
-    public static double getX() { return gameWindow.getX(); }
-    public static double getY() { return gameWindow.getY(); }
 
+
+    //метод для показа и сокрывания панели информации о здании
     public static void showBuildingInfo (String name, int price, int peopleChange) {
         lblBuildingName.setText(name);
         goldCost.set(price);
@@ -215,6 +209,7 @@ public class GameApplication {
     public static void hideBuildingInfo () {
         buildingPane.setVisible(false);
     }
+
 
     //вспомогательные методы
     private static Button createBuildingButton (String respath, Supplier sup) {
@@ -230,12 +225,9 @@ public class GameApplication {
         Button btnBuilding = new Button("", imgBuildingBtn);
         btnBuilding.setId("control_button");
         btnBuilding.setFocusTraversable(false);
-        btnBuilding.setOnAction(event -> {
-            Controller.pressOnBuildingButton(Controller.getChosenField(),(AbstractBuilding) sup.get());
-        });
+        btnBuilding.setOnAction(event -> Controller.pressOnBuildingButton(Controller.getChosenField(),(AbstractBuilding) sup.get()));
         return btnBuilding;
     }
-
     private static HBox createResource(Label lblName, String respath, IntegerProperty resource) {
         HBox hBox = new HBox();
         hBox.setSpacing(10);
@@ -248,7 +240,6 @@ public class GameApplication {
         hBox.getChildren().addAll(lblName, lblCount, imgGoldPic);
         return hBox;
     }
-
     private static HBox createResource(Label lblName, String respath, IntegerProperty resource, IntegerProperty income) {
         HBox hBox = new HBox();
         hBox.setSpacing(10);
@@ -262,13 +253,15 @@ public class GameApplication {
         income.addListener((obs, oldVal, newVal) -> {
             if (newVal.intValue() < 0) {
                 lblIncome.setText("(" + newVal + ")");
-                lblIncome.setStyle("-fx-text-fill: darkblue");
             } else {
                 lblIncome.setText("(+" + newVal + ")");
-                lblIncome.setStyle("-fx-text-fill: darkgreen");
             }
         });
         hBox.getChildren().addAll(lblName, lblCount, lblIncome, imgGoldPic);
         return hBox;
     }
+
+    //getters
+    public static double getX() { return gameWindow.getX(); }
+    public static double getY() { return gameWindow.getY(); }
 }

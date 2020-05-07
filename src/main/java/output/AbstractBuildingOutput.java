@@ -1,17 +1,13 @@
 package output;
 
 import controller.Controller;
-import core.AbstractBuilding;
+import core.buildings.AbstractBuilding;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Polygon;
 import render.GameApplication;
 
-import java.io.File;
 import java.io.InputStream;
-import java.nio.file.Paths;
 
 
 public abstract class AbstractBuildingOutput extends ImageView {

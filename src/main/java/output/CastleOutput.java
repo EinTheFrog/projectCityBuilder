@@ -1,7 +1,6 @@
 package output;
 
-import core.AbstractBuilding;
-import javafx.scene.paint.Color;
+import core.buildings.AbstractBuilding;
 
 public class CastleOutput extends AbstractBuildingOutput {
     public CastleOutput(AbstractBuilding core) {

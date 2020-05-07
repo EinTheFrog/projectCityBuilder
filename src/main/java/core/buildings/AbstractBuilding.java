@@ -1,11 +1,13 @@
-package core;
+package core.buildings;
 
+import core.Aura;
+import core.CellCore;
+import core.FieldCore;
 import output.AbstractBuildingOutput;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 public abstract class AbstractBuilding {
     protected double x;
@@ -47,6 +49,17 @@ public abstract class AbstractBuilding {
 
     //метод для удаления здания с поля
     public void delete() {
+        field.removeBuilding(this);
+        if (cellArea != null) {
+            for (CellCore cell: cellArea) {
+                cell.removeAura(ownAura);
+            }
+        }
+        if (cellArea != null) {
+            for (CellCore cell: cellsInAura) {
+                cell.removeBuilding();
+            }
+        }
         field.getOutput().getChildren().remove(getOutput());
         highlightAura(false);
     }
@@ -63,6 +76,9 @@ public abstract class AbstractBuilding {
 
     public void setCellArea (List<CellCore> cells) {
         cellArea = cells;
+        for (CellCore cell: cellArea) {
+            cell.setBuilding(this);
+        }
     }
     public void setCellsInAura (List<CellCore> cells) {
         cellsInAura = cells;

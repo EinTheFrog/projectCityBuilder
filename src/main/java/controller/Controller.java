@@ -1,13 +1,12 @@
 package controller;
 
-import core.AbstractBuilding;
+import core.buildings.AbstractBuilding;
 import core.CellCore;
 import core.FieldCore;
 import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
 import render.EnemyMenu;
 import render.GameApplication;
 import render.Menu;
@@ -148,20 +147,13 @@ public class Controller {
                 playerMovesCam = true;
                 break;
             case ESCAPE:
-                if (mod == Mod.CHOOSING_MOD) {
-                    if (chosenBuilding != null) {
-                        setChosenBuilding(null);
-                    } else {
-                        openMenu();
-                        moveMenu(GameApplication.getX(), GameApplication.getY());
-                    }
-                } else {
-                    if (mod == Mod.MENU_MOD) {
-                        GameApplication.resume();
-                        Menu.close();
-                    } else {
-                        setChoosingMod();
-                    }
+                switch (mod) {
+                    case CHOOSING_MOD: if (chosenBuilding != null) setChosenBuilding(null);
+                    else openMenu(); break;
+                    case BUILDING_MOD: setChoosingMod(); break;
+                    case MENU_MOD: GameApplication.resume();
+                        Menu.close(); break;
+                    case ENEMY_MOD: break;
                 }
                 break;
         }
@@ -232,26 +224,31 @@ public class Controller {
                 chosenField.getPeople() + buildingGhost.getPeopleChange() < 0) return;
         //проверяем, что площадь для постройки свободна
         int numOfNeighbours = chosenField.getCellsUnderBuilding(enteredCell, buildingGhost).size();
-        if (enteredCell.neighboursFree(buildingGhost) && numOfNeighbours == buildingGhost.getCellArea()) {
+        if (chosenField.isAreaFree(enteredCell, buildingGhost) && numOfNeighbours == buildingGhost.getCellArea()) {
             //перемещаем здание в выбранную клетку
             buildingGhost.move(enteredCell.getX(), enteredCell.getY());
-            buildingGhost.setOpacity(1);
+            //копируем параметры призрака в реальное здание, изменяя прозрачность
             AbstractBuilding newBuilding = buildingGhost.copy();
+            newBuilding.setOpacity(1);
+            //отрисовываем здание на поле
             newBuilding.draw();
+            //передаем зданию клетки, находящиеся под ним и в его ауре
             newBuilding.setCellArea(chosenField.getCellsUnderBuilding(enteredCell, newBuilding));
-            newBuilding.setCellsInAura(buildingGhost.getCellsInAura());
+            newBuilding.setCellsInAura(chosenField.getCellsInAura(enteredCell, newBuilding));
+            //удаляем призрак (он нам больше не нужен)
             buildingGhost.delete();
+            //проверяем на наличие аур клеток, на котором стоит здание
             newBuilding.checkForAuras();
+            //задаем зданиям в радиусе ауры здания ауру здания
             chosenField.setAuraForArea(newBuilding);
+            //разрешаем кликать на здание
             newBuilding.setClickable(true);
             //добавляем здание в лист зданий поля и перерисоваем все здания перед ним
             chosenField.addBuilding(newBuilding);
-            //если здание занимает больше 1 клетки говорим соседним клеткам, что на них теперь тоже находится здание
-            enteredCell.setBuildingForArea(newBuilding);
-
+            //тратим gold на покупку здания
             chosenField.buyBuilding(newBuilding);
+            //возвращаем режим выбора
             setChoosingMod();
-            GameApplication.hideBuildingInfo();
         }
     }
 
@@ -298,6 +295,7 @@ public class Controller {
         if (chosenBuilding != null) {
             chosenBuilding.highlight(false);
             chosenBuilding.highlightAura(false);
+            GameApplication.hideBuildingInfo();
         }
         if (building != null) {
             GameApplication.showBuildingInfo(building.getName(), building.getGoldCost(), building.getPeopleChange());
@@ -305,8 +303,9 @@ public class Controller {
             chosenBuilding.highlight(true);
             chosenBuilding.highlightAura(true);
         }
+        chosenBuilding = building;
     }
-
+    //метод для выбора призрака здания
     private static void setChosenGhost(AbstractBuilding newBuilding) {
         if (chosenBuilding != null) {
             setChosenBuilding(null);
@@ -317,9 +316,11 @@ public class Controller {
         buildingGhost = newBuilding;
     }
 
-    //для mainPane
+    //для взаимодесйтвия с меню
+    //открытие меню
     public static void openMenu() {
         Menu.open();
+        Menu.move(GameApplication.getX(), GameApplication.getY());
     }
 
     //событие, закрывающее меню, когда игрок щелкает мимо него
@@ -334,78 +335,54 @@ public class Controller {
         if (mod == Mod.ENEMY_MOD) event.consume();
     }
 
-    public static void moveMenu (double x, double y) {
-        if (mod == Mod.MENU_MOD) {
-            Menu.move(x, y);
-        }
-    }
-
     //для toolsPane
     public static void pressOnBuildingButton(FieldCore fieldCore, AbstractBuilding building) {
         chooseField(fieldCore);
         setBuildingMod(building);
     }
 
-    public static void pressOnChooseButton(FieldCore fieldCore) {
-        chooseField(fieldCore);
-        setChoosingMod();
+    //для buildingPane
+    public static void destroyBuilding (AbstractBuilding building) {
+        building.delete();
+        setChosenBuilding(null);
     }
 
-    // ставим фокус на поле, на котором сейчас находится пользователь
+    //ставим фокус на поле, на котором сейчас находится пользователь
     public static void chooseField (FieldCore fieldCore) {
         chosenField = fieldCore;
-        chosenField.getOutput().requestFocus();
+        focusOnField();
     }
-
+    public static void focusOnField() { chosenField.getOutput().requestFocus();}
 
 
     //методы для изменения режима взаимодействия с пользователем
     public static void setChoosingMod() {
         mod = Mod.CHOOSING_MOD;
-        //возвращаем фокус на игровое поле
-        focusOnField();
-        for (AbstractBuilding b: chosenField.getBuildingsList()) {
-            b.setOpacity(1);
-            b.setClickable(true);
-        }
         if (buildingGhost != null) buildingGhost.delete();
         buildingGhost = null;
+        GameApplication.hideBuildingInfo();
+        //возвращаем фокус на игровое поле
+        focusOnField();
+        chosenField.makeBuildingsClickable(true);
     }
 
     private static void setBuildingMod(AbstractBuilding building) {
+        mod = Mod.BUILDING_MOD;
         building.draw();
         GameApplication.showBuildingInfo (building.getName(), building.getGoldCost(), building.getPeopleChange());
-        mod = Mod.BUILDING_MOD;
         enteredCell = null;
         setChosenGhost(building);
         //возвращаем фокус на игровое поле
-       focusOnField();
-        for (AbstractBuilding b: chosenField.getBuildingsList()) {
-            b.setOpacity(0.5);
-            b.setClickable(false);
-        }
+        focusOnField();
+        chosenField.makeBuildingsClickable(false);
     }
 
-    public static void setMenuMod() {
-        mod = Mod.MENU_MOD;
+    public static void setMenuMod() { mod = Mod.MENU_MOD; }
+
+    public static void setEnemyMod() { mod = Mod.ENEMY_MOD;
     }
 
-    public static void setEnemyMod() {
-        mod = Mod.ENEMY_MOD;
-    }
-
-    //для buildingPane
-    public static void destroyBuilding (AbstractBuilding building) {
-        chosenField.removeBuilding(building);
-        for (CellCore c:building.getCells()) {
-            c.removeBuilding();
-        }
-        building.delete();
-
-    }
-
-    public static void focusOnField() { chosenField.getOutput().requestFocus();}
-
+    //getters
     public static FieldCore getChosenField() { return chosenField; }
     public static AbstractBuilding getChosenBuilding() { return chosenBuilding; }
 }
