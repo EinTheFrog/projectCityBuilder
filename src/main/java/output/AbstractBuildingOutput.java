@@ -9,7 +9,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import render.GameApplication;
 
+import java.io.File;
 import java.io.InputStream;
+import java.nio.file.Paths;
 
 
 public abstract class AbstractBuildingOutput extends ImageView {

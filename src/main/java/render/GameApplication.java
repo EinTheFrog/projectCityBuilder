@@ -6,6 +6,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -15,6 +16,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.io.InputStream;
@@ -23,9 +25,10 @@ import java.util.function.Supplier;
 
 public class GameApplication {
     //задаем параметры создания игрвого поля
+    public static final Rectangle2D ScreenSize = Screen.getPrimary().getBounds();
     public static final double indent = 50;
     public static final int fieldSize = 20;
-    public static final double mainWindowWidth = 1200;
+    public static final double mainWindowWidth = ScreenSize.getWidth() / 2;
     public static final double paneWidth = mainWindowWidth - 2 * indent;
     public static final double paneSide = paneWidth / (2 * Math.cos(Math.PI / 6));
     public static final double paneHeight = 2 * paneSide * Math.sin(Math.PI / 6);
