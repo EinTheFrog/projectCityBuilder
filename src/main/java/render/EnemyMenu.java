@@ -36,14 +36,6 @@ public class EnemyMenu {
         hBox.setAlignment(Pos.CENTER);
         vBox.getStylesheets().add("Redlord.css");
         vBox.getChildren().addAll(lblText, imgNomads, hBox);
-        vBox.setStyle(" -fx-font-family: 'Times New Roman', Serif;\n" +
-                "    -fx-font-size: 30;\n" +
-                "    -fx-alignment: CENTER;\n" +
-                "    -fx-base: #922B21;\n" +
-                "    -fx-border-color: #F5B041 ;\n" +
-                "    -fx-background-color: #C0392B ;\n" +
-                "    -fx-spacing: 20;");
-
         btnPay.setOnAction(event -> {
             Controller.getChosenField().pay(cost);
             GameApplication.resume();
@@ -74,15 +66,12 @@ public class EnemyMenu {
         menuPopup.getContent().add(vBox);
         menuPopup.show(owner);
 
-
-
         menuPopup.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
             if (e.getCode() == KeyCode.ESCAPE) {
                 GameApplication.resume();
                 close();
             }
         });
-
 
     }
     public static void close () {

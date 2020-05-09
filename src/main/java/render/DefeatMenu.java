@@ -19,15 +19,6 @@ public class DefeatMenu {
         Button btnMenu = new Button("menu");
         VBox vBox = new VBox(lbl, btnMenu);
         vBox.getStylesheets().add("Redlord.css");
-        vBox.setStyle(" -fx-font-family: 'Times New Roman', Serif;\n" +
-                "    -fx-font-size: 30;\n" +
-                "    -fx-alignment: CENTER;\n" +
-                "    -fx-base: #922B21;\n" +
-                "    -fx-border-color: #F5B041 ;\n" +
-                "    -fx-background-color: #C0392B ;\n" +
-                "    -fx-spacing: 20;");
-
-
         Controller.setMenuMod();
         //рендерим окно
         menuPopup.getContent().add(vBox);
