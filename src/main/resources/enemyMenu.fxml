@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import java.net.URL?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<?import javafx.stage.Screen?>
+<VBox fx:id="enemyPane"
+      xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controller.EnemyMenuController"
+      styleClass="root"
+      prefHeight="${imgEnemy.fitHeight}"
+      prefWidth="${imgEnemy.fitWidth}">
+    <stylesheets>
+        <URL value="@RedLord.css" />
+    </stylesheets>
+
+    <Label text="Nomads came"/>
+
+
+    <ImageView fx:id="imgEnemy"
+               fitWidth="${screen.visualBounds.width / 3}"
+               fitHeight="${screen.visualBounds.height / 3}">
+        <fx:define>
+            <Screen fx:factory="getPrimary" fx:id="screen"/>
+        </fx:define>
+
+        <image> <Image url="/textures/nomads.jpg" backgroundLoading="true"/></image>
+    </ImageView>
+
+    <HBox  styleClass="hBox">
+        <Button fx:id="btnPay"
+                onAction="#pressOnBtnPay"
+                text="Pay">
+        </Button>
+
+        <Button fx:id="btnFight"
+                onAction="#pressOnBtnFight"
+                text="Fight">
+
+        </Button>
+    </HBox>
+</VBox>

@@ -1,13 +1,13 @@
 package core;
 
 import controller.Controller;
+import controller.GameApplicationController;
 import core.buildings.AbstractBuilding;
 import core.buildings.HouseCore;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import output.FieldOutput;
-import render.DefeatMenu;
-import render.GameApplication;
+import render.GameApp;
 
 import java.util.*;
 
@@ -68,8 +68,8 @@ public class FieldCore {
         this.width = 2 * fieldSide * Math.cos(Math.PI / 6);
         this.height = 2 * fieldSide * Math.sin(Math.PI / 6);
         //вычитываем координаты поля для его отрисовки
-        fieldX = (fieldMoveX + indent - GameApplication.mainWindowWidth / 2) * scaleValue + GameApplication.mainWindowWidth / 2;
-        fieldY = (fieldMoveY + indent - GameApplication.mainWindowHeight / 2) * scaleValue + GameApplication.mainWindowHeight / 2;
+        fieldX = (fieldMoveX + indent - GameApp.CENTRAL_PANE_WIDTH / 2) * scaleValue + GameApp.CENTRAL_PANE_WIDTH / 2;
+        fieldY = (fieldMoveY + indent - GameApp.CENTRAL_PANE_HEIGHT / 2) * scaleValue + GameApp.CENTRAL_PANE_HEIGHT / 2;
         //создаем список для хранения построенных зданий
         buildingList = new ArrayList<>();
         //создаем массив для хранения клеток
@@ -83,8 +83,8 @@ public class FieldCore {
             scaleValue += scrollValue / Controller.BASE_SCROLL;
         output.zoom(scaleValue);
         //вычисляем новую ширину и высоту
-        width = GameApplication.paneWidth * scaleValue;
-        height = GameApplication.paneHeight * scaleValue;
+        width = GameApp.PANE_WIDTH * scaleValue;
+        height = GameApp.PANE_HEIGHT * scaleValue;
         //перемещаем поле таким образом, чтобы поле не перемещалось относительно камеры при масштабировании
         move(0, 0);
         //изменяем скорость перемщения камеры, чтобы при сильном приближении камера не двигалась слишком быстро
@@ -96,8 +96,8 @@ public class FieldCore {
         fieldMoveX += dx;
         fieldMoveY += dy;
         //вычитываем координаты поля для его отрисовки
-        fieldX = (fieldMoveX + indent - GameApplication.mainWindowWidth / 2) * scaleValue + GameApplication.mainWindowWidth / 2;
-        fieldY = (fieldMoveY + indent - GameApplication.mainWindowHeight / 2) * scaleValue + GameApplication.mainWindowHeight / 2;
+        fieldX = (fieldMoveX + indent - GameApp.CENTRAL_PANE_WIDTH / 2) * scaleValue + GameApp.CENTRAL_PANE_WIDTH / 2;
+        fieldY = (fieldMoveY + indent - GameApp.CENTRAL_PANE_HEIGHT / 2) * scaleValue + GameApp.CENTRAL_PANE_HEIGHT / 2;
         output.move(fieldX, fieldY);
     }
 
@@ -123,8 +123,8 @@ public class FieldCore {
     //метод для нахождения клетки по координатам (используется в Controller.moveCursor)
     public CellCore findCell(double x, double y) {
         //изменяем координаты курсора так, чтобы его положение правильно вопронималось относительно клеток при масштабировании поля
-        double cursorX = (x - GameApplication.mainWindowWidth / 2) / scaleValue + GameApplication.mainWindowWidth / 2 - indent;
-        double cursorY = (y - GameApplication.mainWindowHeight / 2) / scaleValue + GameApplication.mainWindowHeight / 2 - indent;
+        double cursorX = (x - GameApp.CENTRAL_PANE_WIDTH / 2) / scaleValue + GameApp.CENTRAL_PANE_WIDTH / 2 - indent;
+        double cursorY = (y - GameApp.CENTRAL_PANE_HEIGHT / 2) / scaleValue + GameApp.CENTRAL_PANE_HEIGHT / 2 - indent;
         //ищем клетку
         int j = -1;
         cursorX -= cellWidth / 2;
@@ -224,7 +224,7 @@ public class FieldCore {
     public void gainResources () {
         force = Math.max(force + forceIncome, 0);
         gold = Math.max(gold + goldIncome, 0);
-        GameApplication.updateResources(gold, force, people);
+        GameApp.getController().updateResources(gold, force, people);
     }
     private void updateIncome() {
         int ppl = 0;
@@ -246,14 +246,14 @@ public class FieldCore {
                 }
             }
         }
-        GameApplication.updateIncome(goldIncome, forceIncome);
+        GameApp.getController().updateIncome(goldIncome, forceIncome);
     }
 
     //метод для покупки здания
     public void buyBuilding (AbstractBuilding building) {
         gold -= building.getGoldCost();
         people += building.getPeopleChange();
-        GameApplication.updateResources(gold, force, people);
+        GameApp.getController().updateResources(gold, force, people);
     }
 
     //метод для создания графической оболочки
@@ -265,15 +265,15 @@ public class FieldCore {
     //метод для EnemyMenu
     public void pay (int cost) {
         gold = Math.max(gold - cost, 0);
-        GameApplication.updateResources(gold, force, people);
+        //GameApplication.updateResources(gold, force, people);
         if (gold < 20 && buildingList.isEmpty()) {
-            DefeatMenu.open();
-            DefeatMenu.move(GameApplication.getX(), GameApplication.getY());
+           // DefeatMenu.open();
+           // DefeatMenu.move(GameApplication.getX(), GameApplication.getY());
         }
     }
     public void decreaseForce (int dec) {
         force = Math.max(force - dec, 0);
-        GameApplication.updateResources(gold, force, people);
+        GameApp.getController().updateResources(gold, force, people);
     }
 
     //getters

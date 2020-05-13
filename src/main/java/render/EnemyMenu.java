@@ -1,89 +1,63 @@
 package render;
 
 import controller.Controller;
-import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import controller.EnemyMenuController;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 
-import java.io.InputStream;
-import java.util.Random;
+import java.net.URL;
 
 public class EnemyMenu {
-    private static int force = 20;
-    private static int cost = 100;
-/*    private static int FORCE_UP;
-    private static int COST_UP;*/
-    private static Stage owner = GameApplication.gameWindow;
+    private static Stage owner = GameApp.gameStage;
     private static Popup menuPopup = new Popup();
+    private static EnemyMenuController myController;
+    public static boolean  isOpen = false;
+
     public static void open () {
-        GameApplication.pause();
-        //задаем начальные элементы и параметры для них
-        VBox vBox = new VBox();
-        Label lblText = new Label("Nomads came");
-        InputStream in = GameApplication.class.getResourceAsStream("/textures/nomads.jpg");
-        ImageView imgNomads = new ImageView(new Image(in));
-        Button btnPay = new Button("Pay " + cost);
-        Button btnFight = new Button("Fight " + force);
-        HBox hBox = new HBox(btnPay, btnFight);
-        hBox.setAlignment(Pos.CENTER);
-        vBox.getStylesheets().add("Redlord.css");
-        vBox.getChildren().addAll(lblText, imgNomads, hBox);
-        btnPay.setOnAction(event -> {
-            Controller.getChosenField().pay(cost);
-            GameApplication.resume();
-            close();
-            cost *= 2;
-            force -= 10;
-        });
-
-        btnFight.setOnAction(event -> {
-            Random rnd = new Random();
-            int result = rnd.nextInt(100);
-            if (result > Controller.getChosenField().getForce() / (Controller.getChosenField().getForce() + force)) {
-                if (Controller.getChosenField().getBuildingsList().size() > 0) {
-                    result = rnd.nextInt(Controller.getChosenField().getBuildingsList().size());
-                    Controller.destroyBuilding(Controller.getChosenField().getBuildingsList().get(result));
-                }
-                Controller.getChosenField().pay(force * 5);
-                Controller.getChosenField().decreaseForce(force);
-            }
-            GameApplication.resume();
-            force *= 2;
-            cost -= 10;
-            close();
-        });
-
+        isOpen = true;
         Controller.setEnemyMod();
-        //рендерим окно
-        menuPopup.getContent().add(vBox);
+
+        FXMLLoader loader = new FXMLLoader();
+        URL xmlUrl = GameApp.class.getResource("/enemyMenu.fxml");
+        loader.setLocation(xmlUrl);
+        try {
+            Parent root = loader.load();
+            menuPopup.getContent().add(root);
+            myController = loader.getController();
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
         menuPopup.show(owner);
-
-        menuPopup.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
-            if (e.getCode() == KeyCode.ESCAPE) {
-                GameApplication.resume();
-                close();
-            }
-        });
-
+        myController.move(GameApp.getX() + GameApp.getWidth() / 2, GameApp.getY() + GameApp.getHeight() / 2);
     }
     public static void close () {
         if (menuPopup != null) {
+            isOpen = false;
             Controller.setChoosingMod();
             menuPopup.hide();
         }
     }
 
-    public static void move (double x, double y) {
-        if (menuPopup == null) return;
-        menuPopup.setX(x + (GameApplication.mainWindowWidth  - menuPopup.getWidth()) / 2);
-        menuPopup.setY(y + (GameApplication.mainWindowHeight  - menuPopup.getHeight()) / 2);
+    public static void setX(double x) {
+        menuPopup.setX(x);
     }
+
+    public static void setY(double y) {
+        menuPopup.setY(y);
+    }
+
+    public static double getWidth() {
+        return menuPopup.getWidth();
+    }
+
+    public static double getHeight() {
+        return menuPopup.getHeight();
+    }
+
+    public static EnemyMenuController getController() {
+        return myController;
+    }
+
 }

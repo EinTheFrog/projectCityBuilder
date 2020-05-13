@@ -65,7 +65,10 @@ public abstract class AbstractBuilding {
     }
 
     //метод для задания прозрачности здания
-    public void setOpacity(double opacity) { getOutput().setOpacity(opacity); }
+    public void setOpacity(double opacity) {
+        this.opacity = opacity;
+        getOutput().setOpacity(opacity);
+    }
 
     //метод для перемещения здания
     public void move(double x, double y) {

@@ -1,66 +1,69 @@
 package render;
 
 import controller.Controller;
-import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.VBox;
+import controller.MenuController;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.stage.Popup;
+import javafx.stage.PopupWindow;
 import javafx.stage.Stage;
+
+import java.io.IOException;
+import java.net.URL;
 
 
 public class Menu {
-    private static Stage owner = GameApplication.gameWindow;
-    private static Popup menuPopup = new Popup();
+    //private static Stage owner = GameApplication.gameWindow;
+    private static Popup menuPopup;
+    private static Stage owner = GameApp.gameStage;
+    private static MenuController controller;
+    public static boolean isOpen = false;
+
     public static void open () {
-        GameApplication.pause();
+        isOpen = true;
+        if (menuPopup != null) {
+            menuPopup.show(owner);
+            return;
+        }
+        menuPopup = new Popup();
         //задаем начальные элементы и параметры для них
-        VBox vBox = new VBox();
-        Button btnMenu = new Button("menu");
-        Button btnResume = new Button("resume");
-        vBox.getStylesheets().add("Redlord.css");
-        vBox.getChildren().addAll(btnResume, btnMenu);
-
-        Controller.setMenuMod();
-        //рендерим окно
-        menuPopup.getContent().add(vBox);
-        menuPopup.show(owner);
-
-        //создаем событие для открытия окна игры
-        btnMenu.setOnAction(e -> {
-            MainMenu.open();
-            GameApplication.stop();
-        });
-
-        //создаем события для закрытия окна
-        btnResume.setOnAction(e -> {
-            GameApplication.resume();
-            close();
-        });
-
-        menuPopup.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
-            if (e.getCode() == KeyCode.ESCAPE) {
-                GameApplication.resume();
-                close();
-            }
-        });
-
-        vBox.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            if (event.getCode() == KeyCode.ESCAPE) menuPopup.hide();
-        });
-
+        FXMLLoader loader = new FXMLLoader();
+        URL xmlUrl = GameApp.class.getResource("/menu.fxml");
+        loader.setLocation(xmlUrl);
+        try {
+            Parent vBox = loader.load();
+            menuPopup.getContent().add(vBox);
+            controller = loader.getController();
+            menuPopup.show(owner);
+            controller.move(GameApp.getX() + GameApp.getWidth() / 2, GameApp.getY() + GameApp.getHeight() / 2);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
     public static void close () {
         if (menuPopup != null) {
+            isOpen = false;
             Controller.setChoosingMod();
             menuPopup.hide();
         }
     }
 
-    public static void move (double x, double y) {
-        if (menuPopup == null) return;
-        menuPopup.setX(x + (GameApplication.mainWindowWidth  - menuPopup.getWidth()) / 2);
-        menuPopup.setY(y + (GameApplication.mainWindowHeight  - menuPopup.getHeight()) / 2);
+    public static MenuController getController() {
+        return controller;
+    }
+
+    public static void setX(double x) {
+        menuPopup.setX(x);
+    }
+    public static void setY(double y) {
+        menuPopup.setY(y);
+    }
+
+    public static double getWidth() {
+        return menuPopup.getWidth();
+    }
+    public static double getHeight() {
+        return menuPopup.getHeight();
     }
 }

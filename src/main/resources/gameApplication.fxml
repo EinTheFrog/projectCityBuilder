@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.stage.Screen?>
+
+<?import java.net.URL?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controller.GameApplicationController">
+
+    <stylesheets>
+        <URL value="@RedLord.css" />
+    </stylesheets>
+
+    <center>
+        <StackPane>
+            <Pane xmlns:fx="http://javafx.com/fxml/1"
+                  fx:id="fieldPane"
+                  prefWidth="${screen.visualBounds.width / 1.5}"
+                  prefHeight = "${screen.visualBounds.height / 1.5}">
+                <fx:define>
+                    <Screen fx:factory="getPrimary" fx:id="screen"/>
+                </fx:define>
+            </Pane>
+            <GridPane focusTraversable="false"
+                      mouseTransparent="true">
+                <Pane />
+                <Pane />
+            </GridPane>
+        </StackPane>
+    </center>
+
+    <top>
+        <ToolBar fx:id="resourcePane"
+                 focusTraversable="false">
+            <HBox>
+                <Label text="Gold"> </Label>
+                <ImageView
+                        fitWidth = "${fieldPane.height / 20}"
+                        fitHeight = "${fieldPane.height / 20}">
+                    <image> <Image url="/textures/gold.png" backgroundLoading="true"/></image>
+                </ImageView>
+                <Label fx:id="lblGold" text="0"/>
+                <Label fx:id="lblGoldIncome" text="+0"/>
+            </HBox>
+
+            <HBox>
+                <Label text="Force"> </Label>
+                <ImageView
+                        fitWidth = "${fieldPane.height / 20}"
+                        fitHeight = "${fieldPane.height / 20}">
+                    <image> <Image url="/textures/force.png" backgroundLoading="true"/></image>
+                </ImageView>
+                <Label fx:id="lblForce" text="0"/>
+                <Label fx:id="lblForceIncome" text="+0"/>
+            </HBox>
+
+            <HBox>
+                <Label text="People"> </Label>
+                <ImageView
+                        fitWidth = "${fieldPane.height / 20}"
+                        fitHeight = "${fieldPane.height / 20}">
+                    <image> <Image url="/textures/people.png" backgroundLoading="true"/></image>
+                </ImageView>
+                <Label fx:id="lblPeople" text="0"/>
+            </HBox>
+
+            <HBox>
+                <Label text="Gold"> </Label>
+                <ImageView
+                        fitWidth = "${fieldPane.height / 20}"
+                        fitHeight = "${fieldPane.height / 20}">
+                    <image> <Image url="/textures/time.png" backgroundLoading="true"/></image>
+                </ImageView>
+                <Label fx:id="lblTime" text="0"/>
+            </HBox>
+        </ToolBar>
+    </top>
+
+    <bottom>
+        <ToolBar fx:id="toolsPane"
+                 focusTraversable="false">
+            <Button  focusTraversable="false" fx:id="btnHouse"
+                     onAction="#pressOnHouseButton">
+                <graphic>
+                    <ImageView
+                                fitWidth = "${fieldPane.height / 10}"
+                                fitHeight = "${fieldPane.height / 10}">
+                        <image> <Image url="/textures/btnHouse.png" backgroundLoading="true"/></image>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button focusTraversable = "false" fx:id = "btnCasern"
+                    onAction="#pressOnCasernButton">
+                <graphic>
+                    <ImageView
+                                fitWidth = "${fieldPane.height / 10}"
+                                fitHeight = "${fieldPane.height / 10}">
+                        <image> <Image url="/textures/btnCasern.png" backgroundLoading="true"/></image>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button focusTraversable = "false" fx:id="btnTavern"
+                    onAction="#pressOnTavernButton">
+                <graphic>
+                    <ImageView
+                                fitWidth = "${fieldPane.height / 10}"
+                                fitHeight = "${fieldPane.height / 10}">
+                        <image> <Image url="/textures/btnTavern.png" backgroundLoading="true"/></image>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button focusTraversable = "false" fx:id="btnCastle"
+                    onAction="#pressOnCastleButton">
+                <graphic>
+                    <ImageView
+                                fitWidth = "${fieldPane.height / 10}"
+                                fitHeight = "${fieldPane.height / 10}">
+                        <image> <Image url = "/textures/btnCastle.png" backgroundLoading="true"/></image>
+                    </ImageView>
+                </graphic>
+            </Button>
+        </ToolBar>
+    </bottom>
+</BorderPane>

@@ -1,40 +1,39 @@
 package render;
 
+import controller.MainMenuController;
+import javafx.event.Event;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+import java.net.URL;
+
 
 public class MainMenu {
+    private static Stage menuStage;
 
     /**
      * класс для главного меню игры
      */
-    public static void open () {
+
+    public static void open () throws IOException {
         //создаем окно, сцену, панель и узлы
-        Stage menuWindow = new Stage();
-        Scene menuScene;
-        VBox vbox = new VBox();
-        Button btnStart = new Button("start");
-        //добавляем узел на панель
-        vbox.getChildren().add(btnStart);
-        //задаем параметы панели
-        vbox.setPrefSize(300, 400);
-        //инициализируем сцену и задаем ее параметры
-        menuScene = new Scene(vbox);
-        menuScene.getStylesheets().add("RedLord.css");
+        menuStage = new Stage();
+        FXMLLoader loader = new FXMLLoader();
+        URL xmlUrl = MainMenu.class.getResource("/MainMenu.fxml");
+        loader.setLocation(xmlUrl);
+        Parent root = loader.load();
+        menuStage.setScene(new Scene(root));
+        menuStage.show();
+    }
 
-        //рендерим окно
-        menuWindow.setScene(menuScene);
-        menuWindow.setTitle("Menu");
-        menuWindow.show();
-
-        //создаем событие для открытия окна игры
-        btnStart.setOnAction(e -> {
-            GameApplication.run();
-            menuWindow.close();
-        });
+    public static void close () {
+        menuStage.close();
     }
 
 }

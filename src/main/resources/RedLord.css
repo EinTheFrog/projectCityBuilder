@@ -24,12 +24,18 @@
     -fx-base: #922B21;
     -fx-border-color: #F5B041 ;
     -fx-background-color: #C0392B ;
+    -fx-fill: #C0392B;
     -fx-spacing: 20;
 }
 
 .tool-bar {
     -fx-border-color: #F5B041 ;
     -fx-background-color: #C0392B ;
+}
+
+.hBox {
+    -fx-alignment: CENTER;
+    -fx-spacing: 50;
 }
 
 
