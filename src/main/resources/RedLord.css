@@ -35,7 +35,18 @@
 
 .hBox {
     -fx-alignment: CENTER;
+    -fx-fill: #C0392B;
+}
+
+.enemyHBox {
+    -fx-alignment: CENTER;
     -fx-spacing: 50;
+}
+
+.vBox {
+    -fx-alignment: CENTER;
+    -fx-spacing: 20;
+    -fx-fill: #C0392B;
 }
 
 

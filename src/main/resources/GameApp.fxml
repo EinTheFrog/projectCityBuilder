@@ -7,6 +7,7 @@
 <?import java.net.URL?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
+
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="controller.GameApplicationController">
 
@@ -24,11 +25,53 @@
                     <Screen fx:factory="getPrimary" fx:id="screen"/>
                 </fx:define>
             </Pane>
-            <GridPane focusTraversable="false"
-                      mouseTransparent="true">
-                <Pane />
-                <Pane />
-            </GridPane>
+            <HBox focusTraversable="false"
+                  pickOnBounds="false"
+                  fx:id="invisibleHBox">
+                <Pane fx:id="p1" visible="false"/>
+                <VBox>
+                    <VBox fx:id="vBoxInfo"
+                          visible="false"
+                          styleClass="root">
+                        <Label fx:id="lblInfo"> </Label>
+                        <ImageView
+                                fx:id="imgInfo"
+                                fitWidth = "${fieldPane.height / 6}"
+                                fitHeight = "${fieldPane.height / 6}">
+                            <image> <Image url="/textures/btnHouse.png" backgroundLoading="true"/></image>
+                        </ImageView>
+
+                        <HBox styleClass="hBox">
+                            <HBox styleClass="hBox">
+                                <ImageView
+                                        fitWidth = "${fieldPane.height / 20}"
+                                        fitHeight = "${fieldPane.height / 20}">
+                                    <image> <Image url="/textures/gold.png" backgroundLoading="true"/></image>
+                                </ImageView>
+                                <Label fx:id="lblGoldCost"/>
+                            </HBox>
+                            <HBox styleClass="hBox">
+                                <ImageView
+                                        fitWidth = "${fieldPane.height / 20}"
+                                        fitHeight = "${fieldPane.height / 20}">
+                                    <image> <Image url="/textures/people.png" backgroundLoading="true"/></image>
+                                </ImageView>
+                                <Label fx:id="lblPeopleCost"/>
+                            </HBox>
+                            <HBox styleClass="hBox">
+                                <ImageView
+                                        fitWidth = "${fieldPane.height / 20}"
+                                        fitHeight = "${fieldPane.height / 20}">
+                                    <image> <Image url="/textures/force.png" backgroundLoading="true"/></image>
+                                </ImageView>
+                                <Label fx:id="lblForceCost"/>
+                            </HBox>
+                        </HBox>
+                        <Button onAction="#pressOnBtnDestroy" text="Destroy" />
+                    </VBox>
+                    <Pane fx:id= "p2" />
+                </VBox>
+            </HBox>
         </StackPane>
     </center>
 
@@ -86,8 +129,8 @@
                      onAction="#pressOnHouseButton">
                 <graphic>
                     <ImageView
-                                fitWidth = "${fieldPane.height / 10}"
-                                fitHeight = "${fieldPane.height / 10}">
+                            fitWidth = "${fieldPane.height / 10}"
+                            fitHeight = "${fieldPane.height / 10}">
                         <image> <Image url="/textures/btnHouse.png" backgroundLoading="true"/></image>
                     </ImageView>
                 </graphic>
@@ -96,8 +139,8 @@
                     onAction="#pressOnCasernButton">
                 <graphic>
                     <ImageView
-                                fitWidth = "${fieldPane.height / 10}"
-                                fitHeight = "${fieldPane.height / 10}">
+                            fitWidth = "${fieldPane.height / 10}"
+                            fitHeight = "${fieldPane.height / 10}">
                         <image> <Image url="/textures/btnCasern.png" backgroundLoading="true"/></image>
                     </ImageView>
                 </graphic>
@@ -106,8 +149,8 @@
                     onAction="#pressOnTavernButton">
                 <graphic>
                     <ImageView
-                                fitWidth = "${fieldPane.height / 10}"
-                                fitHeight = "${fieldPane.height / 10}">
+                            fitWidth = "${fieldPane.height / 10}"
+                            fitHeight = "${fieldPane.height / 10}">
                         <image> <Image url="/textures/btnTavern.png" backgroundLoading="true"/></image>
                     </ImageView>
                 </graphic>
@@ -116,8 +159,8 @@
                     onAction="#pressOnCastleButton">
                 <graphic>
                     <ImageView
-                                fitWidth = "${fieldPane.height / 10}"
-                                fitHeight = "${fieldPane.height / 10}">
+                            fitWidth = "${fieldPane.height / 10}"
+                            fitHeight = "${fieldPane.height / 10}">
                         <image> <Image url = "/textures/btnCastle.png" backgroundLoading="true"/></image>
                     </ImageView>
                 </graphic>
@@ -125,3 +168,4 @@
         </ToolBar>
     </bottom>
 </BorderPane>
+

@@ -61,6 +61,11 @@ public class CasernCore extends AbstractBuilding {
     }
 
     @Override
+    public String getPicPath() {
+        return "/textures/casern.png";
+    }
+
+    @Override
     public double getPicWidth() {
         return field.getCellWidth() * size;
     }

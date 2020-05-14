@@ -12,7 +12,6 @@ import render.GameApp;
 import render.Menu;
 
 import java.util.*;
-import java.util.function.Supplier;
 
 public class Controller {
     private enum Mod {
@@ -43,7 +42,7 @@ public class Controller {
     private static int timeBeforeGain = 0;
     private static int timeBeforeEnemy = 0;
     private static int GAIN_TIME = 2_000;
-    private static int ENEMY_TIME = 20_000;
+    private static int ENEMY_TIME = 5_000;
     private static double time = 0;
 
     public static Mod mod = Mod.CHOOSING_MOD;
@@ -121,6 +120,7 @@ public class Controller {
     //появление кочевников
     private static void showEnemy () {
         stopTimer();
+        setChosenBuilding(null);
         EnemyMenu.open();
         mod = Mod.ENEMY_MOD;
     }
@@ -151,12 +151,9 @@ public class Controller {
                 break;
             case ESCAPE:
                 switch (mod) {
-                    case CHOOSING_MOD: if (chosenBuilding != null) setChosenBuilding(null);
-                    else openMenu(); break;
+                    case CHOOSING_MOD: if (chosenBuilding != null) setChosenBuilding(null); else openMenu(); break;
                     case BUILDING_MOD: setChoosingMod(); break;
-                    case MENU_MOD: //GameApplication.resume();
-                    Menu.close(); break;
-                    case ENEMY_MOD: break;
+                    case MENU_MOD: Menu.close(); break;
                 }
                 break;
         }
@@ -294,13 +291,15 @@ public class Controller {
     //методы для Building
     //метод для выбора здания
     public static void setChosenBuilding (AbstractBuilding building) {
+        setChoosingMod();
         if (chosenBuilding != null) {
             chosenBuilding.highlight(false);
             chosenBuilding.highlightAura(false);
-            //GameApplication.hideBuildingInfo();
+            GameApp.getController().hideInfo();
         }
         if (building != null) {
-           // GameApplication.showBuildingInfo(building.getName(), building.getGoldCost(), building.getPeopleChange());
+            GameApp.getController().setInfo(building.getGoldCost(), building.getGoldProfit(),
+                    building.getForceProfit(), building.getPeopleChange(), building.getPicPath());
             chosenBuilding = building;
             chosenBuilding.highlight(true);
             chosenBuilding.highlightAura(true);
@@ -360,6 +359,7 @@ public class Controller {
 
     //методы для изменения режима взаимодействия с пользователем
     public static void setChoosingMod() {
+        GameApp.getController().hideInfo();
         mod = Mod.CHOOSING_MOD;
         if (buildingGhost != null) buildingGhost.delete();
         buildingGhost = null;
@@ -373,7 +373,6 @@ public class Controller {
         mod = Mod.BUILDING_MOD;
         setChosenGhost(building);
         buildingGhost.draw();
-        //plication.showBuildingInfo (building.getName(), building.getGoldCost(), building.getPeopleChange());
         enteredCell = null;
         setChosenGhost(building);
         //возвращаем фокус на игровое поле

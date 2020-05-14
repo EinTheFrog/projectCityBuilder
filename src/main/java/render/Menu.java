@@ -28,7 +28,7 @@ public class Menu {
         menuPopup = new Popup();
         //задаем начальные элементы и параметры для них
         FXMLLoader loader = new FXMLLoader();
-        URL xmlUrl = GameApp.class.getResource("/menu.fxml");
+        URL xmlUrl = Menu.class.getResource("/Menu.fxml");
         loader.setLocation(xmlUrl);
         try {
             Parent vBox = loader.load();

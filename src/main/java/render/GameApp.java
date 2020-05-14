@@ -34,16 +34,17 @@ public class GameApp {
         //создаем окно, сцену, панель и узлы
         gameStage = new Stage();
         FXMLLoader loader = new FXMLLoader();
-        URL xmlUrl = GameApp.class.getResource("/gameApplication.fxml");
+        URL xmlUrl = GameApp.class.getResource("/GameApp.fxml");
         loader.setLocation(xmlUrl);
         try {
             Parent root = loader.load();
             gameStage.setScene(new Scene(root));
+            controller = loader.getController();
+            gameStage.show();
         } catch (Throwable e) {
             e.printStackTrace();
             throw e;
         }
-        gameStage.show();
 
         gameStage.xProperty().addListener(((observable, oldValue, newValue) -> {
             if (Menu.isOpen) Menu.getController().move(getX() + getWidth() / 2, getY() + getHeight() / 2);
@@ -54,8 +55,6 @@ public class GameApp {
             if (Menu.isOpen) Menu.getController().move(getX() + getWidth() / 2, getY() + getHeight() / 2);
             if (EnemyMenu.isOpen)EnemyMenu.getController().move(getX() + getWidth() / 2, getY() + getHeight() / 2);
         }));
-
-        controller = loader.getController();
     }
 
     public static void close () {

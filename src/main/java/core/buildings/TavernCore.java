@@ -56,6 +56,11 @@ public class TavernCore extends AbstractBuilding {
     }
 
     @Override
+    public String getPicPath() {
+        return "/textures/tavern.png";
+    }
+
+    @Override
     public String getName() {
         return "Tavern";
     }

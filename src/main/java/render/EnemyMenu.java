@@ -20,17 +20,18 @@ public class EnemyMenu {
         Controller.setEnemyMod();
 
         FXMLLoader loader = new FXMLLoader();
-        URL xmlUrl = GameApp.class.getResource("/enemyMenu.fxml");
+        URL xmlUrl = GameApp.class.getResource("/EnemyMenu.fxml");
         loader.setLocation(xmlUrl);
         try {
             Parent root = loader.load();
             menuPopup.getContent().add(root);
+            menuPopup.hideOnEscapeProperty().setValue(false);
+            menuPopup.show(owner);
             myController = loader.getController();
+            myController.move(GameApp.getX() + GameApp.getWidth() / 2, GameApp.getY() + GameApp.getHeight() / 2);
         } catch (Throwable e) {
             e.printStackTrace();
         }
-        menuPopup.show(owner);
-        myController.move(GameApp.getX() + GameApp.getWidth() / 2, GameApp.getY() + GameApp.getHeight() / 2);
     }
     public static void close () {
         if (menuPopup != null) {

@@ -52,6 +52,11 @@ public class HouseCore extends AbstractBuilding {
     }
 
     @Override
+    public String getPicPath() {
+        return "/textures/house.png";
+    }
+
+    @Override
     public double getPicWidth() {
         return field.getCellWidth() * size;
     }

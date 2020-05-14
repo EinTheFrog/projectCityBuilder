@@ -1,11 +1,8 @@
 package core;
 
 import controller.Controller;
-import controller.GameApplicationController;
 import core.buildings.AbstractBuilding;
 import core.buildings.HouseCore;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import output.FieldOutput;
 import render.GameApp;
 
@@ -21,13 +18,10 @@ public class FieldCore {
     private final int size; //кол-во клеток на одной стороне игрвого поля
     private final double cellSide;
     private FieldOutput output;
-    private final Color cellBorderColor;
-    private final Color cellFillColor;
     private final double cellHeight;
     private final double cellWidth;
     private final double fieldSide;
     private final double indent;
-    private final Pane parentPane;
     private double width;
     private double height;
     private final List<AbstractBuilding> buildingList;
@@ -44,7 +38,7 @@ public class FieldCore {
     private double moveRange;
     private double scaleValue = 1.0;
 
-    public FieldCore (int size, double cellSide, double fieldSide, Color cellColor, Color cellFillColor, Pane parentPane, double indent) {
+    public FieldCore (int size, double cellSide, double fieldSide, double indent) {
         //задаем параметры для перемещения поля
         fieldMoveX = 0;
         fieldMoveY = 0;
@@ -53,14 +47,11 @@ public class FieldCore {
         this.size = size;
         this.fieldSide = fieldSide;
         this.cellSide = cellSide;
-        this.cellBorderColor = cellColor;
-        this.cellFillColor = cellFillColor;
         //задаем игроввые параметры
         gold = START_GOLD;
         force = START_FORCE;
         people = START_PEOPLE;
         //задаем панель, нак которой находимся и тип клетки
-        this.parentPane = parentPane;
         //раситываем параметры
         cellHeight = 2 * cellSide * Math.sin(Math.PI / 6);
         cellWidth = 2 * cellSide * Math.cos(Math.PI / 6);
@@ -74,6 +65,7 @@ public class FieldCore {
         buildingList = new ArrayList<>();
         //создаем массив для хранения клеток
         cellsArray = new CellCore[size][size];
+        output = new FieldOutput(this);
     }
 
     //метод для приближения камеры
@@ -111,7 +103,7 @@ public class FieldCore {
                 double x = j * cellWidth / 2 + cellIndentX;
                 double y = cellIndentY - j * cellHeight / 2;
                 //создаем клетку
-                CellCore cell = new CellCore(x, y, cellSide, cellWidth, cellHeight, cellBorderColor, cellFillColor, this, i, j);
+                CellCore cell = new CellCore(x, y, cellSide, cellWidth, cellHeight, this, i, j);
                 cell.draw();
                 cellsArray[j][i] = cell; //добавляем ее в массив
             }
@@ -246,6 +238,8 @@ public class FieldCore {
                 }
             }
         }
+        people = ppl;
+        GameApp.getController().updateResources(gold, force, people);
         GameApp.getController().updateIncome(goldIncome, forceIncome);
     }
 
@@ -256,11 +250,6 @@ public class FieldCore {
         GameApp.getController().updateResources(gold, force, people);
     }
 
-    //метод для создания графической оболочки
-    public void draw () {
-        output = new FieldOutput(this);
-        move(0, 0);
-    }
 
     //метод для EnemyMenu
     public void pay (int cost) {
@@ -282,7 +271,6 @@ public class FieldCore {
     public double getMoveRange() {return moveRange;}
     public double getX() {return fieldMoveX;}
     public double getY() {return  fieldMoveY;}
-    public Pane getParentPane() {return  parentPane;}
     public double getIndent() {return indent;}
     public double getWidth() {return width;}
     public double getScale() {return scaleValue;}

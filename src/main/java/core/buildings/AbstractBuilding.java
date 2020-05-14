@@ -52,13 +52,15 @@ public abstract class AbstractBuilding {
         field.removeBuilding(this);
         if (cellArea != null) {
             for (CellCore cell: cellArea) {
-                cell.removeAura(ownAura);
-            }
-        }
-        if (cellArea != null) {
-            for (CellCore cell: cellsInAura) {
                 cell.removeBuilding();
             }
+            cellArea.clear();
+        }
+        if (cellsInAura != null) {
+            for (CellCore cell: cellsInAura) {
+                cell.getOutput().clearAuraColor();
+            }
+            cellsInAura.clear();
         }
         field.getOutput().getChildren().remove(getOutput());
         highlightAura(false);
@@ -156,4 +158,5 @@ public abstract class AbstractBuilding {
     //абстрактные методы, гарантирующие наличие переменных picWidth и picHeight в классах наследниках
     abstract public double getPicWidth();
     abstract public double getPicHeight();
+    abstract public String getPicPath();
 }
