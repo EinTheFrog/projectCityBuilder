@@ -24,7 +24,7 @@ public class MenuController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Controller.setMenuMod();
+        //Controller.setMenuMod();
 
         menuRoot.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ESCAPE) Menu.close();
@@ -32,7 +32,7 @@ public class MenuController implements Initializable {
     }
 
     public void pressOnBtnResume() {
-        Controller.startTimer();
+        //Controller.startTimer();
         Menu.close();
     }
 
@@ -47,7 +47,7 @@ public class MenuController implements Initializable {
 
     public void pressESC(KeyEvent e) {
         if (e.getCode() == KeyCode.ESCAPE) {
-            Controller.startTimer();
+            //Controller.startTimer();
             Menu.close();
         }
     }

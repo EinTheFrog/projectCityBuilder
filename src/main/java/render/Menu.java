@@ -44,7 +44,7 @@ public class Menu {
     public static void close () {
         if (menuPopup != null) {
             isOpen = false;
-            Controller.setChoosingMod();
+            //Controller.setChoosingMod();
             menuPopup.hide();
         }
     }

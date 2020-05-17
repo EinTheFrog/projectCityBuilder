@@ -1,72 +1,61 @@
 package core.buildings;
 
 import core.Aura;
-import core.FieldCore;
-import output.AbstractBuildingOutput;
-import output.TavernOutput;
+import view.buildings.AbstractBuildingView;
+
 
 public class TavernCore extends AbstractBuilding {
-    private AbstractBuildingOutput output;
-    private static final double PIC_WIDTH = 128.0;
-    private static final double PIC_HEIGHT = 158.0;
+    private AbstractBuildingView output;
+    private int GOLD_PROFIT = 10;
+    private int GOLD_COST = 100;
+    private int FORCE_PROFIT = 0;
+    private int PEOPLE_CHANGE = -5;
+    private String NAME = "Tavern";
 
-    public TavernCore(double x, double y, int width, int length, int size, FieldCore field, double opacity) {
-        super(x, y, width, length, size, field, opacity);
-    }
-
-    @Override
-    protected AbstractBuildingOutput getOutput() {
-        if (output == null) output = new TavernOutput(this);
-        return output;
+    public TavernCore(int x, int y, int width, int length, int size) {
+        super(x, y, width, length, size);
     }
 
     @Override
     public AbstractBuilding copy() {
-        return new TavernCore(x, y, width, length, size, field, opacity);
+        TavernCore copy =  new TavernCore(x, y, width, length, size);
+        return copy;
     }
+
 
     @Override
     public int getGoldProfit() {
-        return 10;
+        int profit = GOLD_PROFIT;
+        if (alienAuras.contains(Aura.TAVERN)) profit += 5;
+        return profit;
     }
 
     @Override
-    public int getGoldCost() {
-        return 100;
-    }
+    public int getGoldCost() { return GOLD_COST; }
 
     @Override
     public int getForceProfit() {
-        return 0;
+        return FORCE_PROFIT;
     }
 
     @Override
     public int getPeopleChange() {
-        return -5;
-    }
-
-    @Override
-    public double getPicWidth() {
-        return field.getCellWidth() * size;
-    }
-
-    @Override
-    public double getPicHeight() {
-        return PIC_HEIGHT * field.getCellWidth() / PIC_WIDTH * size;
-    }
-
-    @Override
-    public String getPicPath() {
-        return "/textures/tavern.png";
+        return PEOPLE_CHANGE;
     }
 
     @Override
     public String getName() {
-        return "Tavern";
+        return NAME;
+    }
+
+    @Override
+    public void addView(AbstractBuildingView buildingView) {
+        this.buildingView = buildingView;
     }
 
     @Override
     public Aura getOwnAura() {
         return Aura.TAVERN;
     }
+
 }

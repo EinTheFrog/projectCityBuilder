@@ -17,7 +17,7 @@ public class EnemyMenu {
 
     public static void open () {
         isOpen = true;
-        Controller.setEnemyMod();
+        //Controller.setEnemyMod();
 
         FXMLLoader loader = new FXMLLoader();
         URL xmlUrl = GameApp.class.getResource("/EnemyMenu.fxml");
@@ -36,7 +36,7 @@ public class EnemyMenu {
     public static void close () {
         if (menuPopup != null) {
             isOpen = false;
-            Controller.setChoosingMod();
+            //Controller.setChoosingMod();
             menuPopup.hide();
         }
     }

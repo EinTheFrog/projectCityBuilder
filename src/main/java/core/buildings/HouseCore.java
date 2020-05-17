@@ -1,69 +1,56 @@
 package core.buildings;
 
 import core.Aura;
-import core.FieldCore;
-import output.AbstractBuildingOutput;
-import output.HouseOutput;
+import view.buildings.AbstractBuildingView;
 
 
 public class HouseCore extends AbstractBuilding {
-    private AbstractBuildingOutput output;
-    private static final double PIC_WIDTH = 128.0;
-    private static final double PIC_HEIGHT = 128.0;
+    private AbstractBuildingView output;
+    private int GOLD_PROFIT = 5;
+    private int GOLD_COST = 25;
+    private int FORCE_PROFIT = 0;
+    private int PEOPLE_CHANGE = 5;
+    private String NAME = "House";
 
-    public HouseCore(double x, double y, int width, int length, int size, FieldCore field, double opacity) {
-        super(x, y, width, length, size, field, opacity);
-    }
-
-    @Override
-    protected AbstractBuildingOutput getOutput() {
-        if (output == null) output = new HouseOutput(this);
-        return output;
+    public HouseCore(int x, int y, int width, int length, int size) {
+        super(x, y, width, length, size);
     }
 
     @Override
     public AbstractBuilding copy() {
-        return new HouseCore(x, y, width, length, size, field, opacity);
+       HouseCore copy =  new HouseCore(x, y, width, length, size);
+       return copy;
     }
+
 
     @Override
     public int getGoldProfit() {
-        int profit = 5;
+        int profit = GOLD_PROFIT;
         if (alienAuras.contains(Aura.TAVERN)) profit += 5;
         return profit;
     }
 
     @Override
-    public int getGoldCost() { return 20; }
+    public int getGoldCost() { return GOLD_COST; }
 
     @Override
     public int getForceProfit() {
-        return 0;
+        return FORCE_PROFIT;
     }
 
     @Override
     public int getPeopleChange() {
-        return 5;
-    }
-
-    @Override
-    public double getPicHeight() {
-        return PIC_HEIGHT * field.getCellWidth()/ PIC_WIDTH * size;
-    }
-
-    @Override
-    public String getPicPath() {
-        return "/textures/house.png";
-    }
-
-    @Override
-    public double getPicWidth() {
-        return field.getCellWidth() * size;
+        return PEOPLE_CHANGE;
     }
 
     @Override
     public String getName() {
-        return "House";
+        return NAME;
+    }
+
+    @Override
+    public void addView(AbstractBuildingView buildingView) {
+        this.buildingView = buildingView;
     }
 
     @Override

@@ -1,48 +1,56 @@
 package core.buildings;
 
 import core.Aura;
-import core.FieldCore;
-import output.AbstractBuildingOutput;
-import output.CasernOutput;
+import view.buildings.AbstractBuildingView;
+
 
 public class CasernCore extends AbstractBuilding {
-    private AbstractBuildingOutput output;
-    private static final double PIC_WIDTH = 128.0;
-    private static final double PIC_HEIGHT = 197.0;
-    public CasernCore(double x, double y, int width, int length, int scale, FieldCore field, double opacity) {
-        super(x, y, width, length, scale, field, opacity);
+    private AbstractBuildingView output;
+    private int GOLD_PROFIT = 0;
+    private int GOLD_COST = 50;
+    private int FORCE_PROFIT = 5;
+    private int PEOPLE_CHANGE = -10;
+    private String NAME = "Casern";
+
+    public CasernCore(int x, int y, int width, int length, int size) {
+        super(x, y, width, length, size);
     }
 
     @Override
-    protected AbstractBuildingOutput getOutput() {
-        if (output == null) output = new CasernOutput(this);
-        return output;
-    }
-    @Override
     public AbstractBuilding copy() {
-        return new CasernCore(x, y, width, length, size, field, opacity);
+        CasernCore copy =  new CasernCore(x, y, width, length, size);
+        return copy;
     }
+
 
     @Override
     public int getGoldProfit() {
-        return 0;
-    }
-
-    @Override
-    public int getGoldCost() {
-        return 50;
-    }
-
-    @Override
-    public int getForceProfit() {
-        int profit = 5;
-        if (alienAuras.contains(Aura.TAVERN)) profit -= 2;
+        int profit = GOLD_PROFIT;
+        if (alienAuras.contains(Aura.TAVERN)) profit += 5;
         return profit;
     }
 
     @Override
+    public int getGoldCost() { return GOLD_COST; }
+
+    @Override
+    public int getForceProfit() {
+        return FORCE_PROFIT;
+    }
+
+    @Override
     public int getPeopleChange() {
-        return -10;
+        return PEOPLE_CHANGE;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    public void addView(AbstractBuildingView buildingView) {
+        this.buildingView = buildingView;
     }
 
     @Override
@@ -50,23 +58,4 @@ public class CasernCore extends AbstractBuilding {
         return Aura.NONE;
     }
 
-    @Override
-    public String getName() {
-        return "Casern";
-    }
-
-    @Override
-    public double getPicHeight() {
-        return PIC_HEIGHT * field.getCellWidth()/ PIC_WIDTH * size;
-    }
-
-    @Override
-    public String getPicPath() {
-        return "/textures/casern.png";
-    }
-
-    @Override
-    public double getPicWidth() {
-        return field.getCellWidth() * size;
-    }
 }

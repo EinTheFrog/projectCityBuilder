@@ -1,37 +1,31 @@
 package core;
 
 import core.buildings.AbstractBuilding;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.paint.Color;
-import output.CellOutput;
+import view.CellView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CellCore {
-    private final double x;
-    private final double y;
-    private final double side;
-    private CellOutput output;
-    private final FieldCore field;
-    private final double width;
-    private final double height;
+    private CellView view;
     private AbstractBuilding building;
     private List<Aura> auras;
     private final int indX;
     private final int indY;
+    public BooleanProperty isChosen = new SimpleBooleanProperty();
+    public BooleanProperty isClicked = new SimpleBooleanProperty();
 
     //конструктор
-    public CellCore (double x, double y, double side, double width, double height, FieldCore field, int i, int j) {
+    public CellCore (int i, int j) {
         //задаем значения параметров
-        this.x = x;
-        this.y = y;
-        this.side = side;
-        this.field = field;
-        this.width = width;
-        this.height = height;
         indX = j;
         indY = i;
         auras = new ArrayList<>();
+        isChosen.setValue(false);
+        isClicked.setValue(false);
     }
 
     public void removeBuilding() {
@@ -42,16 +36,20 @@ public class CellCore {
         auras.add(aura);
     }
 
+    public void addView (CellView view) {
+        this.view = view;
+    }
+
     public void removeAura(Aura aura) {
         auras.remove(aura);
     }
 
     public void addAuraColor(Color color) {
-        output.setFill(color);
+        view.setFill(color);
     }
 
     public void removeAuraColor() {
-        output.clearAuraColor();
+        view.clearAuraColor();
     }
 
     //метод для присвоения клетке уже существующего здания (нужен, чтобы задать здание, занимающее более 1 клетки)
@@ -59,25 +57,12 @@ public class CellCore {
         this.building = building;
     }
 
-    public void draw() {
-        //создаем графическую оболочку
-        output = new CellOutput(this);
-    }
-
     //getters
-    public double getX() { return x; }
-    public double getY() { return y; }
-    public double getSide() { return side; }
-    public double getWidth() { return width; }
-    public double getHeight() { return height; }
-    public FieldCore getField() {
-        return field;
-    }
     public AbstractBuilding getBuilding () {
         return building;
     }
     public int getIndX() { return indX; }
     public int getIndY() { return indY; }
-    public CellOutput getOutput() {return output;}
+    public CellView getView() {return view;}
     public List<Aura> getAuras() {return auras;}
 }
