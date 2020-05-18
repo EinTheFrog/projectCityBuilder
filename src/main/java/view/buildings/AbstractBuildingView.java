@@ -41,7 +41,16 @@ public abstract class AbstractBuildingView extends ImageView {
         relocate(newX - getWidth() / 2, newY - getHeight());
     }
 
-    protected abstract String getImgPath();
+        public void setClickable(boolean bool) {
+        setMouseTransparent(!bool);
+    }
+
+    public void highlight (boolean bool) {
+        if (bool) setStyle("-fx-effect: dropshadow(gaussian,#F5B041 , 5, 0.5, 0, 0)");
+        else setStyle("-fx-effect: dropshadow(gaussian, rgba(0, 0, 0 ,0) , 10, 1.0, 0, 0)");
+    }
+
+    public abstract String getImgPath();
     public abstract AbstractBuildingView copy();
     protected abstract double getWidth();
     protected abstract double getHeight();

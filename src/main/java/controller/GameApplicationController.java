@@ -3,6 +3,7 @@ package controller;
 import core.Economy;
 import core.FieldCore;
 import core.buildings.*;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -13,6 +14,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import render.EnemyMenu;
 import render.GameApp;
 import render.Menu;
 import view.CellView;
@@ -38,61 +40,40 @@ public class GameApplicationController implements Initializable {
     private static EnumSet <KeyboardButtons> newBtnPressed = EnumSet.noneOf(KeyboardButtons.class);
     public static Mod mod = Mod.CHOOSING_MOD;
     public static final Color SPACE_COLOR = Color.rgb(0, 0, 90, 1);
-    private FieldCore chosenFieldCore;
+    private static FieldCore chosenFieldCore;
+    private static TimerTask timerTask;
+    private static TimerTask timerMoveTask;
+    private final static Timer timer = Creator.createTimer();
 
     public void pressOnHouseButton() {
         hideInfo();
         HouseCore houseCore = new HouseCore(0,0, 1, 1, 2);
-        //Controller.pressOnBuildingButton(Controller.getChosenField(), house);
         lblInfo.setText(houseCore.getName());
-
-        String respath = "/textures/house.png";
-        InputStream in = GameApp.class.getResourceAsStream(respath);
-        Image img = new Image(in);
-        imgInfo.setImage(img);
-        setInfo(houseCore, respath);
+        setInfo(houseCore);
         showInfo();
         chosenFieldCore.addGhost(houseCore);
     }
     public void pressOnCasernButton() {
         hideInfo();
         CasernCore casernCore = new CasernCore(0,0, 1, 1, 2);
-        //Controller.pressOnBuildingButton(Controller.getChosenField(), house);
         lblInfo.setText(casernCore.getName());
-
-        String respath = "/textures/casern.png";
-        InputStream in = GameApp.class.getResourceAsStream(respath);
-        Image img = new Image(in);
-        imgInfo.setImage(img);
-        setInfo(casernCore, respath);
+        setInfo(casernCore);
         showInfo();
         chosenFieldCore.addGhost(casernCore);
     }
     public void pressOnTavernButton() {
         hideInfo();
         TavernCore tavernCore = new TavernCore(0,0, 1, 1, 2);
-        //Controller.pressOnBuildingButton(Controller.getChosenField(), house);
         lblInfo.setText(tavernCore.getName());
-
-        String respath = "/textures/tavern.png";
-        InputStream in = GameApp.class.getResourceAsStream(respath);
-        Image img = new Image(in);
-        imgInfo.setImage(img);
-        setInfo(tavernCore, respath);
+        setInfo(tavernCore);
         showInfo();
         chosenFieldCore.addGhost(tavernCore);
     }
     public void pressOnCastleButton() {
         hideInfo();
         CastleCore castleCore = new CastleCore(0,0, 1, 1, 6);
-        //Controller.pressOnBuildingButton(Controller.getChosenField(), house);
         lblInfo.setText(castleCore.getName());
-
-        String respath = "/textures/castle.png";
-        InputStream in = GameApp.class.getResourceAsStream(respath);
-        Image img = new Image(in);
-        imgInfo.setImage(img);
-        setInfo(castleCore, respath);
+        setInfo(castleCore);
         showInfo();
         chosenFieldCore.addGhost(castleCore);
     }
@@ -103,22 +84,21 @@ public class GameApplicationController implements Initializable {
         VBox.setVgrow(p2,Priority.ALWAYS);
         updateResources(Economy.getGold(), Economy.getForce(), Economy.getPeople());
         updateIncome(0,0);
+        GameApplicationController.startTimer();
 
-        FieldCore fieldCore = Creator.createField();
-        CellView.widthProperty.bind(fieldCore.getView().width.divide(GameApp.FIELD_SIZE));
-        CellView.heightProperty.bind(fieldCore.getView().height.divide(GameApp.FIELD_SIZE));
-        Creator.createCellsForField(fieldCore);
-        chosenFieldCore = fieldCore;
+        chosenFieldCore = Creator.createField();
+        CellView.widthProperty.bind(chosenFieldCore.getView().width.divide(GameApp.FIELD_SIZE));
+        CellView.heightProperty.bind(chosenFieldCore.getView().height.divide(GameApp.FIELD_SIZE));
+        Creator.createCellsForField(chosenFieldCore);
+        chosenFieldCore = chosenFieldCore;
         fieldPane.setBackground( new Background(new BackgroundFill(SPACE_COLOR, null, null)));
-        fieldPane.getChildren().add(fieldCore.getView());
-
-        Timer timer = Creator.createTimer();
-        Creator.startTimer(fieldCore, timer, curBtnPressed, newBtnPressed);
+        fieldPane.getChildren().add(chosenFieldCore.getView());
 
         fieldPane.addEventHandler(ScrollEvent.SCROLL, event -> {
-            fieldCore.getView().zoom(event.getDeltaY());
+            chosenFieldCore.getView().zoom(event.getDeltaY());
         });
     }
+
 
     public static void keyPressed(KeyCode code) {
         boolean playerMovesCam = false;
@@ -154,7 +134,7 @@ public class GameApplicationController implements Initializable {
         if (playerMovesCam) startCameraMovement();
     }
 
-    public static void keyReleased(KeyCode code, FieldCore fieldCore) {
+    public static void keyReleased(KeyCode code) {
         switch (code) {
             case W:
                 //обнуляем расстояние, нак оторое камера должна пермещаться по оси OY
@@ -173,6 +153,71 @@ public class GameApplicationController implements Initializable {
         }
         stopCameraMovement();
     }
+
+    public static void startTimer() {
+        timerMoveTask = new TimerTask() {
+            @Override
+            public void run() {
+                double dy = 0;
+                double dx = 0;
+                for (KeyboardButtons key: curBtnPressed) {
+                    dx += key.dx;
+                    dy += key.dy;
+                }
+                chosenFieldCore.getView().move(dx, dy);
+            }
+        };
+
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    Economy.changeTime(500);
+                });
+            }
+
+
+        };
+        timer.schedule(timerMoveTask, 0, 20);
+        timer.schedule(timerTask, 500, 500);
+    }
+
+    public static void closeMenuOnClick(MouseEvent event) {
+        if (mod == Mod.MENU_MOD) {
+            if (event.getEventType() == MouseEvent.MOUSE_CLICKED || event.getEventType() == MouseEvent.MOUSE_DRAGGED) {
+                startTimer();
+                Menu.close();
+            }
+            event.consume();
+        }
+        if (mod == Mod.ENEMY_MOD) event.consume();
+    }
+
+    public static void setChoosingMod() {
+        GameApp.getController().hideInfo();
+        mod = Mod.CHOOSING_MOD;
+        chosenFieldCore.setBuildingMod(false);
+    }
+
+    public static void setBuildingMod() {
+        mod = Mod.BUILDING_MOD;
+        chosenFieldCore.setBuildingMod(true);
+    }
+
+    private static void showEnemy() {
+        Economy.stopTimer();
+        chosenFieldCore.setChosenBuilding(null);
+        EnemyMenu.open();
+        mod = Mod.ENEMY_MOD;
+    }
+
+    public static void chooseBuilding(AbstractBuilding buildingCore) {
+        chosenFieldCore.setChosenBuilding(buildingCore);
+    }
+
+    public static void setMenuMod() { mod = Mod.MENU_MOD; }
+
+    public static void setEnemyMod() { mod = Mod.ENEMY_MOD;}
 
     private static void startCameraMovement() {
         curBtnPressed.addAll(newBtnPressed);
@@ -207,12 +252,13 @@ public class GameApplicationController implements Initializable {
         vBoxInfo.setVisible(false);
     }
 
-    public void setInfo(AbstractBuilding building, String respath) {
+    public void setInfo(AbstractBuilding building) {
         hideInfo();
-        InputStream in = GameApp.class.getResourceAsStream(respath);
+        InputStream in = GameApp.class.getResourceAsStream(building.getView().getImgPath());
         Image img = new Image(in);
         imgInfo.setImage(img);
-        String goldProfitTxt = building.getGoldProfit() > 0? "+" + building.getGoldProfit(): String.valueOf(building.getGoldProfit());
+        String goldProfitTxt = building.getGoldProfit() > 0? "+" + building.getGoldProfit():
+                String.valueOf(building.getGoldProfit());
         lblGoldCost.setText(building.getGoldCost() + "(" + goldProfitTxt + ")");
         lblForceCost.setText(String.valueOf(building.getForceProfit()));
         lblPeopleCost.setText(String.valueOf(building.getPeopleChange()));
@@ -220,6 +266,6 @@ public class GameApplicationController implements Initializable {
     }
 
     public void pressOnBtnDestroy() {
-        //Controller.destroyBuilding(Controller.getChosenBuilding());
+        chosenFieldCore.removeBuilding(chosenFieldCore.getChosenBuilding());
     }
 }

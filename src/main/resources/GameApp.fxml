@@ -111,7 +111,7 @@
             </HBox>
 
             <HBox>
-                <Label text="Gold"> </Label>
+                <Label text="Time"> </Label>
                 <ImageView
                         fitWidth = "${fieldPane.height / 20}"
                         fitHeight = "${fieldPane.height / 20}">

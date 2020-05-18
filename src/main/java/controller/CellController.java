@@ -1,12 +1,9 @@
 package controller;
 
 import core.CellCore;
-import core.FieldCore;
-import javafx.scene.input.KeyEvent;
 
 import javafx.scene.input.MouseEvent;
 import view.CellView;
-import view.FieldView;
 
 public class CellController {
     CellCore cellCore;

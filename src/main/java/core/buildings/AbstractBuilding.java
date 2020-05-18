@@ -29,19 +29,6 @@ public abstract class AbstractBuilding {
         ownAura = getOwnAura();
     }
 
-
-
-
-/*    public void setClickable(boolean bool) {
-        getOutput().setMouseTransparent(!bool);
-    }*/
-
-/*    public void highlight (boolean bool) {
-        if(bool) getOutput().setStyle("-fx-effect: dropshadow(gaussian,#F5B041 , 5, 0.5, 0, 0)");
-        else  getOutput().setStyle("-fx-effect: dropshadow(gaussian, rgba(0, 0, 0 ,0) , 10, 1.0, 0, 0)");
-    }*/
-
-
     public void addAura(Aura aura) {
         alienAuras.add(aura);
     }
@@ -68,7 +55,9 @@ public abstract class AbstractBuilding {
     public abstract void addView(AbstractBuildingView buildingView);
 
     //getters
-    public AbstractBuildingView getView() {return buildingView;}
+    public AbstractBuildingView getView() {
+        return buildingView;
+    }
     public int getX() {
         return x;
     }
@@ -79,6 +68,7 @@ public abstract class AbstractBuilding {
         this.x = x;
         this.y = y;
     }
+
     public int getWidth() {
         return width;
     }

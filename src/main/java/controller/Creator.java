@@ -15,8 +15,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public abstract class Creator {
-    private static TimerTask timerTask;
-    private static TimerTask timerMoveTask;
 
     public static FieldCore createField() {
         FieldCore fieldCore = new FieldCore();
@@ -56,39 +54,6 @@ public abstract class Creator {
         return new Timer(true);
     }
 
-    public static void startTimer(FieldCore fieldCore, Timer timer, Set<KeyboardButtons> curBtnPressed, Set<KeyboardButtons> newBtnPressed) {
-        timerMoveTask = new TimerTask() {
-            @Override
-            public void run() {
-                double dy = 0;
-                double dx = 0;
-                for (KeyboardButtons key: curBtnPressed) {
-                    dx += key.dx;
-                    dy += key.dy;
-                }
-                fieldCore.getView().move(dx, dy);
-            }
-        };
-
-        timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                Platform.runLater(() -> {
-                    Economy.changeTime(500);
-                });
-            }
-
-
-        };
-        timer.schedule(timerMoveTask, 0, 20);
-        timer.schedule(timerTask, 500, 500);
-    }
-
-    public static void stopTimer() {
-        timerMoveTask.cancel();
-        timerTask.cancel();
-    }
-
     public static void buildBuilding (AbstractBuilding buildingGhost, FieldCore fieldCore)  {
         AbstractBuilding building = buildingGhost.copy();
         AbstractBuildingView buildingView = buildingGhost.getView().copy();
@@ -98,6 +63,7 @@ public abstract class Creator {
         fieldCore.removeBuildingGhost();
         fieldCore.addBuilding(building);
         fieldCore.setBuildingForArea(building);
+        fieldCore.setAuraForArea(building);
     }
 
 

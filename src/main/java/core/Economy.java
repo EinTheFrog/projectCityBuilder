@@ -1,10 +1,12 @@
 package core;
 
+import controller.Creator;
+import controller.KeyboardButtons;
 import core.buildings.AbstractBuilding;
+import javafx.application.Platform;
 import render.GameApp;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public abstract class Economy {
     private static int gold;
@@ -18,8 +20,8 @@ public abstract class Economy {
 
     private static int timeBeforeGain = 0;
     private static int timeBeforeEnemy = 0;
-    private static int GAIN_TIME = 2_000;
-    private static int ENEMY_TIME = 50_000;
+    private static final int GAIN_TIME = 2_000;
+    private static final int ENEMY_TIME = 50_000;
     private static double time = 0;
 
     private static List<FieldCore> fieldCores = new ArrayList<>();
@@ -29,6 +31,7 @@ public abstract class Economy {
         gold -= building.getGoldCost();
         people += building.getPeopleChange();
         GameApp.getController().updateResources(gold, force, people);
+        GameApp.getController().updateIncome(goldIncome, forceIncome);
     }
 
     //метод для EnemyMenu
@@ -79,18 +82,37 @@ public abstract class Economy {
         timeBeforeEnemy -= timeChaneInMills;
 
         GameApp.getController().updateTime((int) time);
+
         if (timeBeforeGain < 0) timeBeforeGain = GAIN_TIME;
         if (timeBeforeGain == 0) {
             timeBeforeGain = GAIN_TIME;
             for (FieldCore fieldCore: fieldCores) {
-                //fieldCore.gainResources();
+                gainResources();
             }
         }
-
-/*        if (timeBeforeEnemy < 0) timeBeforeEnemy = ENEMY_TIME;
+        if (timeBeforeEnemy < 0) timeBeforeEnemy = ENEMY_TIME;
         if (timeBeforeEnemy == 0) {
             timeBeforeEnemy = ENEMY_TIME;
             showEnemy();
-        }*/
+        }
+    }
+
+    public static void stopTimer() {
+        timerMoveTask.cancel();
+        timerTask.cancel();
+    }
+
+    public static void gainResources () {
+        force = Math.max(force + forceIncome, 0);
+        gold = Math.max(gold + goldIncome, 0);
+        GameApp.getController().updateResources(gold, force, people);
+    }
+
+    public static void changeForceIncome(int change) {
+       forceIncome += change;
+    }
+
+    public static void changeGoldIncome(int change) {
+        goldIncome += change;
     }
 }

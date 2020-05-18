@@ -19,7 +19,7 @@ public class FieldController {
             GameApplicationController.keyPressed(event.getCode());
         });
         fieldView.addEventHandler(KeyEvent.KEY_RELEASED, event -> {
-            GameApplicationController.keyReleased(event.getCode(), fieldCore);
+            GameApplicationController.keyReleased(event.getCode());
         });
     }
 
