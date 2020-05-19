@@ -9,7 +9,7 @@
 <?import javafx.scene.image.Image?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="controller.GameApplicationController">
+            fx:controller="controller.GameAppController">
 
     <stylesheets>
         <URL value="@RedLord.css" />
@@ -25,7 +25,7 @@
                     <Screen fx:factory="getPrimary" fx:id="screen"/>
                 </fx:define>
             </Pane>
-            <HBox focusTraversable="false"
+            <HBox
                   pickOnBounds="false"
                   fx:id="invisibleHBox">
                 <Pane fx:id="p1" visible="false"/>
@@ -77,7 +77,7 @@
 
     <top>
         <ToolBar fx:id="resourcePane"
-                 focusTraversable="false">
+                >
             <HBox>
                 <Label text="Gold"> </Label>
                 <ImageView
@@ -124,8 +124,8 @@
 
     <bottom>
         <ToolBar fx:id="toolsPane"
-                 focusTraversable="false">
-            <Button  focusTraversable="false" fx:id="btnHouse"
+                >
+            <Button  fx:id="btnHouse"
                      onAction="#pressOnHouseButton">
                 <graphic>
                     <ImageView

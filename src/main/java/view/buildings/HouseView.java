@@ -12,7 +12,7 @@ public class HouseView extends AbstractBuildingView {
     }
 
     @Override
-    protected String getImgPath() {
+    public String getImgPath() {
         return "/textures/house.png";
     }
 

@@ -9,7 +9,7 @@ import render.GameApp;
 
 
 public class CellView extends Polygon{
-    Color auraColor;
+
     private final Color TAVERN_AURA_COLOR = Color.rgb(173,255,47, 0.5);
     private final Color CASTLE_AURA_COLOR = Color.rgb(30,144,255, 0.5);
     Color borderColor = Color.rgb(220, 220, 220);
@@ -29,6 +29,7 @@ public class CellView extends Polygon{
         //отрисовывем клетку
         setStroke(borderColor);
         setFill(new Color(0,0,0,0));
+        //setFocusTraversable(false);
     }
 
     public void setAuraColor(Aura aura) {

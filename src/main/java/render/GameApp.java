@@ -1,20 +1,21 @@
 package render;
 
-import controller.Controller;
-import controller.GameApplicationController;
-import controller.MainMenuController;
-import core.FieldCore;
+import controller.Creator;
+import controller.GameAppController;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import view.FieldView;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Timer;
 
 public class GameApp {
     public static final Rectangle2D ScreenSize = Screen.getPrimary().getBounds();
@@ -27,8 +28,11 @@ public class GameApp {
     public static final double PANE_HEIGHT = PANE_SIDE * Math.sin(Math.PI / 6) * 2;
     public static final double CELL_SIDE = PANE_SIDE / FIELD_SIZE;
 
+
+    public final static Timer timer = Creator.createTimer();
+
     public static Stage gameStage;
-    private static GameApplicationController controller;
+    private static GameAppController controller;
 
     public static void open () throws IOException {
         //создаем окно, сцену, панель и узлы
@@ -38,7 +42,8 @@ public class GameApp {
         loader.setLocation(xmlUrl);
         try {
             Parent root = loader.load();
-            gameStage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            gameStage.setScene(scene);
             controller = loader.getController();
             gameStage.show();
         } catch (Throwable e) {
@@ -61,7 +66,7 @@ public class GameApp {
         gameStage.close();
     }
 
-    public static GameApplicationController getController() {
+    public static GameAppController getController() {
         return controller;
     }
 

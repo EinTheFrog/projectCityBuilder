@@ -57,28 +57,15 @@ public abstract class Creator {
     public static void buildBuilding (AbstractBuilding buildingGhost, FieldCore fieldCore)  {
         AbstractBuilding building = buildingGhost.copy();
         AbstractBuildingView buildingView = buildingGhost.getView().copy();
+        Economy.buyBuilding(building.getGoldCost(), building.getPeopleChange());
         building.addView(buildingView);
+        BuildingController controller = new BuildingController(building, buildingView);
+        controller.addEventHandlers();
         building.setVisibility(Visibility.VISIBLE);
 
         fieldCore.removeBuildingGhost();
         fieldCore.addBuilding(building);
         fieldCore.setBuildingForArea(building);
         fieldCore.setAuraForArea(building);
-    }
-
-
-   /* private static void setBuildingMod(AbstractBuilding building) {
-        mod = Mod.BUILDING_MOD;
-        setChosenGhost(building);
-        buildingGhost.draw();
-        enteredCell = null;
-        setChosenGhost(building);
-        //возвращаем фокус на игровое поле
-        focusOnField();
-        chosenField.makeBuildingsClickable(false);
-    }*/
-
-    public static void removeBuilding() {
-
     }
 }

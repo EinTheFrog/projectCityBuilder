@@ -10,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.*;
@@ -25,7 +26,7 @@ import java.net.URL;
 import java.util.*;
 
 
-public class GameApplicationController implements Initializable {
+public class GameAppController implements Initializable {
     @FXML
     Label lblGold, lblGoldIncome, lblForce, lblForceIncome, lblPeople, lblTime, lblInfo, lblGoldCost, lblPeopleCost, lblForceCost;
     @FXML
@@ -43,39 +44,33 @@ public class GameApplicationController implements Initializable {
     private static FieldCore chosenFieldCore;
     private static TimerTask timerTask;
     private static TimerTask timerMoveTask;
-    private final static Timer timer = Creator.createTimer();
 
     public void pressOnHouseButton() {
-        hideInfo();
+        setBuildingMod();
         HouseCore houseCore = new HouseCore(0,0, 1, 1, 2);
-        lblInfo.setText(houseCore.getName());
-        setInfo(houseCore);
-        showInfo();
-        chosenFieldCore.addGhost(houseCore);
+        createGhost(houseCore);
     }
     public void pressOnCasernButton() {
-        hideInfo();
+        setBuildingMod();
         CasernCore casernCore = new CasernCore(0,0, 1, 1, 2);
-        lblInfo.setText(casernCore.getName());
-        setInfo(casernCore);
-        showInfo();
-        chosenFieldCore.addGhost(casernCore);
+        createGhost(casernCore);
     }
     public void pressOnTavernButton() {
-        hideInfo();
+        setBuildingMod();
         TavernCore tavernCore = new TavernCore(0,0, 1, 1, 2);
-        lblInfo.setText(tavernCore.getName());
-        setInfo(tavernCore);
-        showInfo();
-        chosenFieldCore.addGhost(tavernCore);
+        createGhost(tavernCore);
     }
     public void pressOnCastleButton() {
-        hideInfo();
+        setBuildingMod();
         CastleCore castleCore = new CastleCore(0,0, 1, 1, 6);
-        lblInfo.setText(castleCore.getName());
-        setInfo(castleCore);
+        createGhost(castleCore);
+    }
+
+    private void createGhost(AbstractBuilding buildingCore) {
+        lblInfo.setText(buildingCore.getName());
+        chosenFieldCore.addGhost(buildingCore);
+        setInfo(buildingCore);
         showInfo();
-        chosenFieldCore.addGhost(castleCore);
     }
 
     @Override
@@ -84,13 +79,14 @@ public class GameApplicationController implements Initializable {
         VBox.setVgrow(p2,Priority.ALWAYS);
         updateResources(Economy.getGold(), Economy.getForce(), Economy.getPeople());
         updateIncome(0,0);
-        GameApplicationController.startTimer();
 
         chosenFieldCore = Creator.createField();
         CellView.widthProperty.bind(chosenFieldCore.getView().width.divide(GameApp.FIELD_SIZE));
         CellView.heightProperty.bind(chosenFieldCore.getView().height.divide(GameApp.FIELD_SIZE));
         Creator.createCellsForField(chosenFieldCore);
-        chosenFieldCore = chosenFieldCore;
+        Economy.chooseField(chosenFieldCore);
+        startTimer();
+
         fieldPane.setBackground( new Background(new BackgroundFill(SPACE_COLOR, null, null)));
         fieldPane.getChildren().add(chosenFieldCore.getView());
 
@@ -99,13 +95,10 @@ public class GameApplicationController implements Initializable {
         });
     }
 
-
     public static void keyPressed(KeyCode code) {
         boolean playerMovesCam = false;
         switch (code) {
             case W:
-                //добавляем в мапу значение true для W, теперь мы знаем, что клавиша W уже нажата (1 будет споильзована
-                // в дальнейшем для вычисления изменения положения камеры)
                 newBtnPressed.add(KeyboardButtons.W);
                 //говорим, что игрок двигает камеру
                 playerMovesCam = true;
@@ -178,8 +171,13 @@ public class GameApplicationController implements Initializable {
 
 
         };
-        timer.schedule(timerMoveTask, 0, 20);
-        timer.schedule(timerTask, 500, 500);
+        GameApp.timer.schedule(timerMoveTask, 0, 20);
+        GameApp.timer.schedule(timerTask, 500, 500);
+    }
+
+    public static void stopTimer() {
+        timerMoveTask.cancel();
+        timerTask.cancel();
     }
 
     public static void closeMenuOnClick(MouseEvent event) {
@@ -197,22 +195,26 @@ public class GameApplicationController implements Initializable {
         GameApp.getController().hideInfo();
         mod = Mod.CHOOSING_MOD;
         chosenFieldCore.setBuildingMod(false);
+        chosenFieldCore.setChosenBuilding(null);
     }
 
-    public static void setBuildingMod() {
+    public void chooseBuilding(AbstractBuilding buildingCore) {
+        hideInfo();
+        chosenFieldCore.setChosenBuilding(buildingCore);
+        showInfo();
+    }
+
+    public void setBuildingMod() {
+        hideInfo();
         mod = Mod.BUILDING_MOD;
         chosenFieldCore.setBuildingMod(true);
     }
 
     private static void showEnemy() {
-        Economy.stopTimer();
+        stopTimer();
         chosenFieldCore.setChosenBuilding(null);
         EnemyMenu.open();
         mod = Mod.ENEMY_MOD;
-    }
-
-    public static void chooseBuilding(AbstractBuilding buildingCore) {
-        chosenFieldCore.setChosenBuilding(buildingCore);
     }
 
     public static void setMenuMod() { mod = Mod.MENU_MOD; }
@@ -254,6 +256,7 @@ public class GameApplicationController implements Initializable {
 
     public void setInfo(AbstractBuilding building) {
         hideInfo();
+        hideInfo();
         InputStream in = GameApp.class.getResourceAsStream(building.getView().getImgPath());
         Image img = new Image(in);
         imgInfo.setImage(img);
@@ -267,5 +270,9 @@ public class GameApplicationController implements Initializable {
 
     public void pressOnBtnDestroy() {
         chosenFieldCore.removeBuilding(chosenFieldCore.getChosenBuilding());
+    }
+
+    public static Mod getMod() {
+        return mod;
     }
 }

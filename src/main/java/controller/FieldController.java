@@ -16,10 +16,10 @@ public class FieldController {
 
     public void addEventHandlers() {
         fieldView.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
-            GameApplicationController.keyPressed(event.getCode());
+            GameAppController.keyPressed(event.getCode());
         });
         fieldView.addEventHandler(KeyEvent.KEY_RELEASED, event -> {
-            GameApplicationController.keyReleased(event.getCode());
+            GameAppController.keyReleased(event.getCode());
         });
     }
 

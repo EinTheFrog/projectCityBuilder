@@ -9,27 +9,26 @@ import render.GameApp;
 import java.util.*;
 
 public abstract class Economy {
-    private static int gold;
-    private static int force;
-    private static int people;
-    private static int forceIncome = 0;
-    private static int goldIncome = 0;
     private static final int START_GOLD = 300;
     private static final int START_FORCE = 0;
     private static final int START_PEOPLE = 0;
 
+    private static int gold = START_GOLD;
+    private static int force = START_FORCE;
+    private static int people = START_PEOPLE;
+    private static int forceIncome = 0;
+    private static int goldIncome = 0;
+
     private static int timeBeforeGain = 0;
     private static int timeBeforeEnemy = 0;
-    private static final int GAIN_TIME = 2_000;
+    private static final int GAIN_TIME = 1_000;
     private static final int ENEMY_TIME = 50_000;
     private static double time = 0;
 
-    private static List<FieldCore> fieldCores = new ArrayList<>();
-
     //метод для покупки здания
-    public static void buyBuilding (AbstractBuilding building) {
-        gold -= building.getGoldCost();
-        people += building.getPeopleChange();
+    public static void buyBuilding (int goldCost, int peopleChange) {
+        gold -= goldCost;
+        people += peopleChange;
         GameApp.getController().updateResources(gold, force, people);
         GameApp.getController().updateIncome(goldIncome, forceIncome);
     }
@@ -72,34 +71,27 @@ public abstract class Economy {
         return people;
     }
 
-    public static void addFieldCore(FieldCore fieldCore) {
-        fieldCores.add(fieldCore);
+    public static void chooseField(FieldCore fieldCore) {
+        people = fieldCore.getPeople();
     }
 
-    public static void changeTime(int timeChaneInMills) {
-        time -= timeChaneInMills / 100;
-        timeBeforeGain -= timeChaneInMills;
-        timeBeforeEnemy -= timeChaneInMills;
+    public static void changeTime(int timeChangeInMills) {
+        time += timeChangeInMills / 1000.0;
+        timeBeforeGain -= timeChangeInMills;
+        timeBeforeEnemy -= timeChangeInMills;
 
         GameApp.getController().updateTime((int) time);
 
         if (timeBeforeGain < 0) timeBeforeGain = GAIN_TIME;
         if (timeBeforeGain == 0) {
             timeBeforeGain = GAIN_TIME;
-            for (FieldCore fieldCore: fieldCores) {
-                gainResources();
-            }
+            gainResources();
         }
         if (timeBeforeEnemy < 0) timeBeforeEnemy = ENEMY_TIME;
         if (timeBeforeEnemy == 0) {
             timeBeforeEnemy = ENEMY_TIME;
-            showEnemy();
+            //showEnemy();
         }
-    }
-
-    public static void stopTimer() {
-        timerMoveTask.cancel();
-        timerTask.cancel();
     }
 
     public static void gainResources () {
@@ -108,11 +100,10 @@ public abstract class Economy {
         GameApp.getController().updateResources(gold, force, people);
     }
 
-    public static void changeForceIncome(int change) {
-       forceIncome += change;
+    public static void updateIncome(int goldChange, int forceChange) {
+        goldIncome += goldChange;
+        forceIncome += forceChange;
+        GameApp.getController().updateIncome(goldIncome, forceIncome);
     }
 
-    public static void changeGoldIncome(int change) {
-        goldIncome += change;
-    }
 }

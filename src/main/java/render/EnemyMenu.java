@@ -1,6 +1,5 @@
 package render;
 
-import controller.Controller;
 import controller.EnemyMenuController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

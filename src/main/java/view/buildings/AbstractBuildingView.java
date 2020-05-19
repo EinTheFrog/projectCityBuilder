@@ -15,6 +15,7 @@ public abstract class AbstractBuildingView extends ImageView {
     public AbstractBuildingView (int size, Visibility visibility) {
         this.setMouseTransparent(true);
         this.setPickOnBounds(false);
+        this.setFocusTraversable(false);
 
         this.size = size;
 
@@ -41,7 +42,7 @@ public abstract class AbstractBuildingView extends ImageView {
         relocate(newX - getWidth() / 2, newY - getHeight());
     }
 
-        public void setClickable(boolean bool) {
+    public void setClickable(boolean bool) {
         setMouseTransparent(!bool);
     }
 

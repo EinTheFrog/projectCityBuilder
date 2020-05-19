@@ -12,7 +12,7 @@ public class CasernView extends AbstractBuildingView {
     }
 
     @Override
-    protected String getImgPath() {
+    public String getImgPath() {
         return "/textures/casern.png";
     }
 

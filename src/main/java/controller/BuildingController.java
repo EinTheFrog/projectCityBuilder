@@ -1,10 +1,7 @@
 package controller;
 
-import core.CellCore;
-
 import core.buildings.AbstractBuilding;
 import javafx.scene.input.MouseEvent;
-import view.CellView;
 import view.buildings.AbstractBuildingView;
 
 public class BuildingController {
@@ -17,7 +14,7 @@ public class BuildingController {
     }
     public void addEventHandlers() {
         buildingView.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-
+            buildingCore.isChosen.setValue(true);
         });
     }
 

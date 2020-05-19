@@ -1,6 +1,8 @@
 package core.buildings;
 
 import core.Aura;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import view.Visibility;
 import view.buildings.AbstractBuildingView;
 
@@ -16,6 +18,7 @@ public abstract class AbstractBuilding {
     protected Set<Aura> alienAuras;
     protected Aura ownAura;
     protected AbstractBuildingView buildingView;
+    public BooleanProperty isChosen;
 
     //конструктор
     public AbstractBuilding (int x, int y, int width, int length, int size) {
@@ -25,6 +28,7 @@ public abstract class AbstractBuilding {
         this.width = width;
         this.length = length;
         this.size = size;
+        isChosen = new SimpleBooleanProperty(false);
         alienAuras = new HashSet<>();
         ownAura = getOwnAura();
     }
@@ -74,9 +78,6 @@ public abstract class AbstractBuilding {
     }
     public int getLength() {
         return length;
-    }
-    public int getCellArea() {
-        return width * length * size * size;
     }
     public int getSize() {
         return size;

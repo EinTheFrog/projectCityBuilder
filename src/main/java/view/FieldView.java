@@ -1,14 +1,8 @@
 package view;
 
-import controller.Controller;
-import controller.FieldController;
 import core.CellCore;
-import core.FieldCore;
-import core.buildings.AbstractBuilding;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
@@ -27,13 +21,17 @@ public class FieldView extends Pane {
     private double scaleValue = 1.0;
     private Scale scale = new Scale();
     public static final Color COLOR = Color.rgb(10, 106, 84);
+    private static double MOVE_SPEED_DENOM = 8;
+    private static double BASE_SCROLL = 100;
     //для каждого поля у нас своё положение камеры, а значит у каждого поля должны быть свои параметры scale
     // и скорости перемщения камеры
-    private double moveRange = GameApp.CELL_SIDE / Controller.moveSpeedDenom;
+    private double moveRange = GameApp.CELL_SIDE / MOVE_SPEED_DENOM;
 
     public FieldView () {
         //позволяем фокусироваться на игровом поле
-        this.setFocusTraversable(true);
+        setFocusTraversable(true);
+        requestFocus();
+        setFocusTraversable(false);
         width = new SimpleDoubleProperty(2 * GameApp.PANE_SIDE * Math.cos(Math.PI / 6));
         height = new SimpleDoubleProperty( 2 * GameApp.PANE_SIDE * Math.sin(Math.PI / 6));
         this.setPrefSize(width.getValue(), height.getValue());
@@ -52,25 +50,23 @@ public class FieldView extends Pane {
         move(0,0);
         this.getTransforms().add(scale);
         //окрашиваем панель (для наглядности на время разработки)
-        this.setBackground(
-                new Background(new BackgroundFill(COLOR, null, null)));
+        this.setBackground(new Background(new BackgroundFill(COLOR, null, null)));
 
     }
 
     //метод для приближения камеры
     public void zoom (double scrollValue) {
         //увеличивая значение scale создаем эфект приближения камеры
-        if (scaleValue + scrollValue / Controller.BASE_SCROLL > 0 && scaleValue + scrollValue / Controller.BASE_SCROLL < 20)
-            scaleValue += scrollValue / Controller.BASE_SCROLL;
+        if (scaleValue + scrollValue / BASE_SCROLL > 0 && scaleValue + scrollValue / BASE_SCROLL < 20)
+            scaleValue += scrollValue / BASE_SCROLL;
         setScale(scaleValue);
         //вычисляем новую ширину и высоту
         width.setValue(GameApp.PANE_WIDTH * scaleValue);
         height.setValue(GameApp.PANE_HEIGHT * scaleValue);
-        this.setPrefSize(width.getValue(), height.getValue());
         //перемещаем поле таким образом, чтобы поле не перемещалось относительно камеры при масштабировании
         move(0, 0);
         //изменяем скорость перемщения камеры, чтобы при сильном приближении камера не двигалась слишком быстро
-        moveRange = GameApp.CELL_SIDE * scaleValue / Controller.moveSpeedDenom;
+        moveRange = GameApp.CELL_SIDE * scaleValue / MOVE_SPEED_DENOM;
     }
 
     //метод для симуляции приближения камеры к игрвому полю
@@ -89,29 +85,6 @@ public class FieldView extends Pane {
         this.relocate(fieldX, fieldY);
     }
 
-    //метод для нахождения клетки по координатам (используется в Controller.moveCursor)
-/*    public CellCore findCell(double x, double y) {
-        //изменяем координаты курсора так, чтобы его положение правильно вопронималось относительно клеток при масштабировании поля
-        double cursorX = (x - GameApp.CENTRAL_PANE_WIDTH / 2) / scaleValue + GameApp.CENTRAL_PANE_WIDTH / 2 ;
-        double cursorY = (y - GameApp.CENTRAL_PANE_HEIGHT / 2) / scaleValue + GameApp.CENTRAL_PANE_HEIGHT / 2;
-        //ищем клетку
-        int j = -1;;
-        cursorY -= GameApp.PANE_SIDE * Math.sin(Math.PI / 6);
-        while (cursorY <= Math.tan(Math.PI / 6) * cursorX - j * cellHeight) { j++; }
-        j--;
-        int i = -1;
-        while (cursorY >= - Math.tan(Math.PI / 6) * cursorX + i * cellHeight) { i++; }
-        if (i >= 0 && j >= 0 && i < core.getSize() && j < core.getSize()) {
-            return core.getCellsArray()[j][i];
-        }
-        else return null;
-    }*/
-
-    //метод для графического добавление узла на игровое поле
-/*    public void add (Node node) {
-        this.getChildren().remove(node);
-        this.getChildren().add(node);
-    }*/
 
     public void addCell(int indX, int indY, CellView cellView) {
         //тут какие-то беды с логикой и координаты cellView считаются так, будто бы это прямоуголник

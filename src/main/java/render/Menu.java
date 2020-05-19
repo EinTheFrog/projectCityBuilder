@@ -1,11 +1,9 @@
 package render;
 
-import controller.Controller;
 import controller.MenuController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.stage.Popup;
-import javafx.stage.PopupWindow;
 import javafx.stage.Stage;
 
 import java.io.IOException;

@@ -2,11 +2,11 @@ package core;
 
 import controller.Creator;
 import controller.FieldController;
-import controller.GameApplicationController;
+import controller.GameAppController;
+import controller.Mod;
 import core.buildings.AbstractBuilding;
 import core.buildings.HouseCore;
 import render.GameApp;
-import view.CellView;
 import view.FieldView;
 import view.Visibility;
 
@@ -17,17 +17,14 @@ public class FieldCore {
     private CellCore[][] cellsArray;
     private CellCore chosenCell;
     public final int SIZE; //кол-во клеток на одной стороне игрвого поля
-    public FieldView view;
+    private FieldView view;
     public FieldController controller;
     private final List<AbstractBuilding> buildingsList;
     private AbstractBuilding buildingGhost;
     private AbstractBuilding chosenBuilding;
-    private int localForceIncome() {
-
-    }
-    private int localForceIncome() {
-
-    }
+    private int goldIncome;
+    private int forceIncome;
+    private int people;
 
     public FieldCore () {
         //задаем параметры размера и клеток
@@ -42,6 +39,11 @@ public class FieldCore {
     public void addGhost(AbstractBuilding buildingGhost) {
         buildingGhost = Creator.createBuildingGhost(view, buildingGhost);
         this.buildingGhost = buildingGhost;
+        boolean a = view.isFocused();
+        view.requestFocus();
+        int b = 0;
+        a = view.isFocused();
+        b = 1;
     }
     public void addCell(CellCore cellCore) {
         cellsArray[cellCore.getIndX()][cellCore.getIndY()] = cellCore;
@@ -63,10 +65,14 @@ public class FieldCore {
         });
         cellCore.isClicked.addListener((obs, oldVal, newVal) -> {
             if (newVal) {
-                if (isAreaFree(chosenCell.getIndX(), chosenCell.getIndY(),
+                if (GameAppController.getMod() == Mod.BUILDING_MOD && isAreaFree(chosenCell.getIndX(), chosenCell.getIndY(),
                         buildingGhost.getLength() * buildingGhost.getSize(),
-                        buildingGhost.getWidth() * buildingGhost.getSize())) Creator.buildBuilding(buildingGhost, this);
+                        buildingGhost.getWidth() * buildingGhost.getSize()) &&
+                        Economy.getGold() >= buildingGhost.getGoldCost()) {
+                    Creator.buildBuilding(buildingGhost, this);
+                }
                 cellCore.isClicked.setValue(false);
+                GameAppController.setChoosingMod();
             }
         });
     }
@@ -90,8 +96,9 @@ public class FieldCore {
     }
 
     public boolean isAreaFree (int x, int y, int bldRealLength, int bldRealWidth) {
-        List<CellCore> neighbours = getCellsUnderBuilding(x, y, bldRealLength, bldRealWidth);
-        for (CellCore c: neighbours) {
+        List<CellCore> cellsArea = getCellsUnderBuilding(x, y, bldRealLength, bldRealWidth);
+        if (cellsArea.size() < bldRealLength * bldRealWidth) return false;
+        for (CellCore c: cellsArea) {
             if (c.getBuilding() != null) return false;
         }
         return true;
@@ -127,17 +134,16 @@ public class FieldCore {
     }
 
     public void setChosenBuilding (AbstractBuilding building) {
-        GameApplicationController.setChoosingMod();
         if (chosenBuilding != null) {
             chosenBuilding.getView().highlight(false);
-            highlightAura(building);
             GameApp.getController().hideInfo();
+            highlightAura(chosenBuilding, false);
         }
         if (building != null) {
             GameApp.getController().setInfo(building);
             chosenBuilding = building;
             chosenBuilding.getView().highlight(true);
-            highlightAura(chosenBuilding);
+            highlightAura(chosenBuilding, true);
         }
         chosenBuilding = building;
     }
@@ -162,19 +168,22 @@ public class FieldCore {
         }
     }
 
-    public void highlightAura(AbstractBuilding building) {
-        List<CellCore> cells = getCellsUnderBuilding(chosenCell.getIndX(), chosenCell.getIndY(),
+    public void highlightAura(AbstractBuilding building, boolean bool) {
+        List<CellCore> cells = getCellsUnderBuilding(building.getX(), building.getY(),
                 building.getLength() * building.getSize(),
                 building.getWidth() * building.getSize());
         for(CellCore cell: cells) {
-            cell.getView().setAuraColor(building.getOwnAura());
+            if (bool) cell.getView().setAuraColor(building.getOwnAura());
+            else  cell.getView().clearAuraColor();
         }
     }
 
 
     public void makeBuildingsClickable (boolean bool) {
         for (AbstractBuilding building: buildingsList) {
-            if (bool) building.setVisibility(Visibility.VISIBLE);
+            if (bool) {
+                building.setVisibility(Visibility.VISIBLE);
+            }
             else building.setVisibility(Visibility.GHOST);
             building.getView().setClickable(bool);
         }
@@ -190,6 +199,13 @@ public class FieldCore {
     }
 
     public void addBuilding(AbstractBuilding newBuilding) {
+        newBuilding.isChosen.addListener((obs, oldVal, newVal) -> {
+            if (newVal) {
+                GameApp.getController().chooseBuilding(newBuilding);
+                setChosenBuilding(newBuilding);
+                newBuilding.isChosen.setValue(false);
+            }
+        });
         buildingsList.add(newBuilding);
         view.addBuilding(newBuilding.getView());
         buildingsList.sort(Comparator.comparingInt(this::getVerticalShift));
@@ -212,38 +228,61 @@ public class FieldCore {
     }
 
     //метод для получения золота со зданий
-    public void updateIncome () {
-        Economy.changeForceIncome(f);
+/*    public void updateIncome () {
+
+        updateIncome();
+        change +
+        Economy.changeForceIncome(localForceIncome);
         gold = Math.max(gold + goldIncome, 0);
         GameApp.getController().updateResources(gold, force, people);
-    }
+    }*/
 
     private void updateIncome() {
         int ppl = 0;
-        int goldIncome = 0;
-        int forceIncome = 0;
+        int newGoldIncome = 0;
+        int newForceIncome = 0;
+
         for (AbstractBuilding building: buildingsList) {
             if (building.getClass() == HouseCore.class) {
                 ppl += building.getPeopleChange();
-                goldIncome += building.getGoldProfit();
-                forceIncome += building.getForceProfit();
+                newGoldIncome += building.getGoldProfit();
+                newForceIncome += building.getForceProfit();
             }
         }
         for (AbstractBuilding building: buildingsList) {
             if (building.getClass() != HouseCore.class) {
                 ppl += building.getPeopleChange();
                 if (ppl >= 0) {
-                    goldIncome += building.getGoldProfit();
-                    forceIncome += building.getForceProfit();
+                    newGoldIncome += building.getGoldProfit();
+                    newForceIncome += building.getForceProfit();
                 }
             }
         }
-        Economy.setPeople(ppl);
+
+        int goldChange = newGoldIncome - goldIncome;
+        goldIncome = newGoldIncome;
+        int forceChange = newForceIncome - forceIncome;
+        forceIncome = newForceIncome;
+        people = ppl;
+
+        Economy.setPeople(people);
+        Economy.updateIncome(goldChange, forceChange);
     }
 
     //getters
-    public FieldView getView() { return view;}
-    public AbstractBuilding getChosenBuilding() { return chosenBuilding;}
-    public CellCore[][] getCellsArray() {return cellsArray;}
-    public List<AbstractBuilding> getBuildingsList() { return buildingsList;}
+    public FieldView getView() {
+        return view;
+    }
+    public int getPeople() {
+        return people;
+    }
+    public AbstractBuilding getChosenBuilding() {
+        return chosenBuilding;
+    }
+    public CellCore[][] getCellsArray() {
+        return cellsArray;
+    }
+    public List<AbstractBuilding> getBuildingsList() {
+        return buildingsList;
+    }
 }

@@ -12,7 +12,7 @@ public class TavernView extends AbstractBuildingView {
     }
 
     @Override
-    protected String getImgPath() {
+    public String getImgPath() {
         return "/textures/tavern.png";
     }
 

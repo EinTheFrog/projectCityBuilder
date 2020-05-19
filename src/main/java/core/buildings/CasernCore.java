@@ -31,7 +31,9 @@ public class CasernCore extends AbstractBuilding {
     }
 
     @Override
-    public int getGoldCost() { return GOLD_COST; }
+    public int getGoldCost() {
+        return GOLD_COST;
+    }
 
     @Override
     public int getForceProfit() {
