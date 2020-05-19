@@ -31,7 +31,6 @@ public class FieldView extends Pane {
         //позволяем фокусироваться на игровом поле
         setFocusTraversable(true);
         requestFocus();
-        setFocusTraversable(false);
         width = new SimpleDoubleProperty(2 * GameApp.PANE_SIDE * Math.cos(Math.PI / 6));
         height = new SimpleDoubleProperty( 2 * GameApp.PANE_SIDE * Math.sin(Math.PI / 6));
         this.setPrefSize(width.getValue(), height.getValue());
@@ -66,7 +65,7 @@ public class FieldView extends Pane {
         //перемещаем поле таким образом, чтобы поле не перемещалось относительно камеры при масштабировании
         move(0, 0);
         //изменяем скорость перемщения камеры, чтобы при сильном приближении камера не двигалась слишком быстро
-        moveRange = GameApp.CELL_SIDE * scaleValue / MOVE_SPEED_DENOM;
+        moveRange = GameApp.CELL_SIDE / scaleValue / MOVE_SPEED_DENOM;
     }
 
     //метод для симуляции приближения камеры к игрвому полю
@@ -77,8 +76,8 @@ public class FieldView extends Pane {
 
     //метод для перемщения камеры (самого поля относительно камеры)
     public void move(double dx, double dy) {
-        fieldMoveX += dx;
-        fieldMoveY += dy;
+        fieldMoveX += dx * moveRange;
+        fieldMoveY += dy * moveRange;
         //вычитываем координаты поля для его отрисовки
         fieldX = (fieldMoveX + GameApp.INDENT - GameApp.CENTRAL_PANE_WIDTH / 2) * scaleValue + GameApp.CENTRAL_PANE_WIDTH / 2;
         fieldY = (fieldMoveY + GameApp.INDENT - GameApp.CENTRAL_PANE_HEIGHT / 2) * scaleValue + GameApp.CENTRAL_PANE_HEIGHT / 2;

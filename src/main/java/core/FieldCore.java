@@ -12,7 +12,6 @@ import view.Visibility;
 
 import java.util.*;
 
-
 public class FieldCore {
     private CellCore[][] cellsArray;
     private CellCore chosenCell;
@@ -39,11 +38,6 @@ public class FieldCore {
     public void addGhost(AbstractBuilding buildingGhost) {
         buildingGhost = Creator.createBuildingGhost(view, buildingGhost);
         this.buildingGhost = buildingGhost;
-        boolean a = view.isFocused();
-        view.requestFocus();
-        int b = 0;
-        a = view.isFocused();
-        b = 1;
     }
     public void addCell(CellCore cellCore) {
         cellsArray[cellCore.getIndX()][cellCore.getIndY()] = cellCore;
@@ -78,8 +72,7 @@ public class FieldCore {
     }
 
     public void addView(FieldView view) {
-        this.view = new FieldView();
-        controller = new FieldController(view, this);
+        this.view = view;
     }
 
     //метод для получения клеток того же здания

@@ -20,7 +20,7 @@ public abstract class Creator {
         FieldCore fieldCore = new FieldCore();
         FieldView fieldView = new FieldView();
         fieldCore.addView(fieldView);
-        FieldController fieldController = new FieldController(fieldView, fieldCore);
+        FieldController fieldController = new FieldController(fieldCore, fieldView);
         fieldController.addEventHandlers();
         return fieldCore;
     }

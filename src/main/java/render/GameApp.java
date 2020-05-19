@@ -30,6 +30,7 @@ public class GameApp {
 
 
     public final static Timer timer = Creator.createTimer();
+    public static Scene scene;
 
     public static Stage gameStage;
     private static GameAppController controller;
@@ -42,7 +43,7 @@ public class GameApp {
         loader.setLocation(xmlUrl);
         try {
             Parent root = loader.load();
-            Scene scene = new Scene(root);
+            scene = new Scene(root);
             gameStage.setScene(scene);
             controller = loader.getController();
             gameStage.show();

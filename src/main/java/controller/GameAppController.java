@@ -10,7 +10,6 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.*;
@@ -19,7 +18,6 @@ import render.EnemyMenu;
 import render.GameApp;
 import render.Menu;
 import view.CellView;
-import view.FieldView;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -148,6 +146,7 @@ public class GameAppController implements Initializable {
     }
 
     public static void startTimer() {
+
         timerMoveTask = new TimerTask() {
             @Override
             public void run() {
@@ -165,6 +164,7 @@ public class GameAppController implements Initializable {
             @Override
             public void run() {
                 Platform.runLater(() -> {
+                    boolean a = chosenFieldCore.getView().isFocused();
                     Economy.changeTime(500);
                 });
             }

@@ -67,7 +67,7 @@
                                 <Label fx:id="lblForceCost"/>
                             </HBox>
                         </HBox>
-                        <Button onAction="#pressOnBtnDestroy" text="Destroy" />
+                        <Button focusTraversable = "false" onAction="#pressOnBtnDestroy" text="Destroy" />
                     </VBox>
                     <Pane fx:id= "p2" />
                 </VBox>
@@ -126,7 +126,8 @@
         <ToolBar fx:id="toolsPane"
                 >
             <Button  fx:id="btnHouse"
-                     onAction="#pressOnHouseButton">
+                     onAction="#pressOnHouseButton"
+                     focusTraversable = "false">
                 <graphic>
                     <ImageView
                             fitWidth = "${fieldPane.height / 10}"
