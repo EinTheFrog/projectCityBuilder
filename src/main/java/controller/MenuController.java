@@ -15,24 +15,18 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class MenuController implements Initializable {
-
-    @FXML
-    Button btnResume, btnMenu;
     @FXML
     VBox menuRoot;
 
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        //Controller.setMenuMod();
-
         menuRoot.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ESCAPE) Menu.close();
         });
     }
 
     public void pressOnBtnResume() {
-        //Controller.startTimer();
+        GameAppController.resume();
         Menu.close();
     }
 
@@ -47,7 +41,7 @@ public class MenuController implements Initializable {
 
     public void pressESC(KeyEvent e) {
         if (e.getCode() == KeyCode.ESCAPE) {
-            //Controller.startTimer();
+            GameAppController.resume();
             Menu.close();
         }
     }

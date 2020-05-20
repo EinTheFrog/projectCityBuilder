@@ -30,8 +30,7 @@ public class GameApp {
 
 
     public final static Timer timer = Creator.createTimer();
-    public static Scene scene;
-
+    private static Scene scene;
     public static Stage gameStage;
     private static GameAppController controller;
 

@@ -5,14 +5,11 @@ import core.Economy;
 import core.FieldCore;
 import view.Visibility;
 import core.buildings.AbstractBuilding;
-import javafx.application.Platform;
 import view.CellView;
 import view.FieldView;
 import view.buildings.*;
 
-import java.util.Set;
 import java.util.Timer;
-import java.util.TimerTask;
 
 public abstract class Creator {
 

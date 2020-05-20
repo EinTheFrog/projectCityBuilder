@@ -40,8 +40,8 @@ public abstract class AbstractBuildingView extends ImageView {
 
     public void moveTo(double newX, double newY) {
         relocate(newX - fitWidthProperty().getValue() / 2, newY - fitHeightProperty().getValue());
-        System.out.println("new " + newX + " " + newY);
-        System.out.println("this " + scaleXProperty().getValue());
+/*        System.out.println("new " + newX + " " + newY);
+        System.out.println("this " + scaleXProperty().getValue());*/
     }
 
     public void setClickable(boolean bool) {

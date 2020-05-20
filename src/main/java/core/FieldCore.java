@@ -251,15 +251,13 @@ public class FieldCore {
         buildingGhost = null;
     }
 
-    //метод для получения золота со зданий
-/*    public void updateIncome () {
+    public void removeRandomBuilding() {
+        Random rnd = new Random();
+        int k = rnd.nextInt(buildingsList.size());
+        removeBuilding(buildingsList.get(k));
+    }
 
-        updateIncome();
-        change +
-        Economy.changeForceIncome(localForceIncome);
-        gold = Math.max(gold + goldIncome, 0);
-        GameApp.getController().updateResources(gold, force, people);
-    }*/
+
 
     private void updateIncome() {
         int ppl = 0;

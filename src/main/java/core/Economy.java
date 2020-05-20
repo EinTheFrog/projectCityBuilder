@@ -1,17 +1,14 @@
 package core;
 
-import controller.Creator;
-import controller.KeyboardButtons;
-import core.buildings.AbstractBuilding;
-import javafx.application.Platform;
+import controller.DefeatMenuController;
+import controller.GameAppController;
+import render.DefeatMenu;
 import render.GameApp;
 
-import java.util.*;
-
 public abstract class Economy {
-    private static final int START_GOLD = 300;
-    private static final int START_FORCE = 0;
-    private static final int START_PEOPLE = 0;
+    public static final int START_GOLD = 10;
+    public static final int START_FORCE = 0;
+    public static final int START_PEOPLE = 0;
 
     private static int gold = START_GOLD;
     private static int force = START_FORCE;
@@ -21,9 +18,20 @@ public abstract class Economy {
 
     private static int timeBeforeGain = 0;
     private static int timeBeforeEnemy = 0;
-    private static final int GAIN_TIME = 1_000;
-    private static final int ENEMY_TIME = 50_000;
+    public static final int GAIN_TIME = 1_000;
+    public static final int ENEMY_TIME = 5_000;
     private static double time = 0;
+
+    public static void setStartParams() {
+        timeBeforeGain = 0;
+        timeBeforeEnemy = 0;
+        gold = START_GOLD;
+        force = START_FORCE;
+        people = START_PEOPLE;
+        forceIncome = 0;
+        goldIncome = 0;
+        time = 0;
+    }
 
     //метод для покупки здания
     public static void buyBuilding (int goldCost, int peopleChange) {
@@ -36,11 +44,11 @@ public abstract class Economy {
     //метод для EnemyMenu
     public static void pay (int cost) {
         gold = Math.max(gold - cost, 0);
-        //GameApplication.updateResources(gold, force, people);
-        /*if (gold < 20 && buildingList.isEmpty()) {
-            // DefeatMenu.open();
-            // DefeatMenu.move(GameApplication.getX(), GameApplication.getY());
-        }*/
+        GameApp.getController().updateResources(gold, force, people);
+        if (gold < 20 && GameApp.getController().getChosenFieldCore().getBuildingsList().isEmpty()) {
+            DefeatMenu.open();
+            DefeatMenuController.move(GameApp.getX(), GameApp.getY());
+        }
     }
     public static void decreaseForce (int dec) {
         force = Math.max(force - dec, 0);
@@ -90,7 +98,7 @@ public abstract class Economy {
         if (timeBeforeEnemy < 0) timeBeforeEnemy = ENEMY_TIME;
         if (timeBeforeEnemy == 0) {
             timeBeforeEnemy = ENEMY_TIME;
-            //showEnemy();
+            GameAppController.showEnemy();
         }
     }
 

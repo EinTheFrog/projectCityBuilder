@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.stage.Screen?>
+
+<VBox fx:id="enemyPane"
+      xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controller.DefeatMenuController"
+      styleClass="root"
+      prefHeight="${imgEnemy.fitHeight}"
+      prefWidth="${imgEnemy.fitWidth}">
+    <stylesheets>
+        <URL value="@RedLord.css" />
+    </stylesheets>
+
+    <Label text="You lose"/>
+
+
+    <ImageView fx:id="imgEnemy"
+               fitWidth="${screen.visualBounds.width / 3}"
+               fitHeight="${screen.visualBounds.height / 3}">
+        <fx:define>
+            <Screen fx:factory="getPrimary" fx:id="screen"/>
+        </fx:define>
+
+        <image> <Image url="/textures/defeat.jpg" backgroundLoading="true"/></image>
+    </ImageView>
+
+    <HBox  styleClass="enemyHBox">
+        <Button fx:id="btnMenu"
+                onAction="#pressOnBtnMenu"
+                text="Menu">
+        </Button>
+    </HBox>
+</VBox>

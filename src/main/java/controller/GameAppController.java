@@ -82,7 +82,11 @@ public class GameAppController implements Initializable {
         CellView.widthProperty.bind(chosenFieldCore.getView().width.divide(GameApp.FIELD_SIZE));
         CellView.heightProperty.bind(chosenFieldCore.getView().height.divide(GameApp.FIELD_SIZE));
         Creator.createCellsForField(chosenFieldCore);
+        Economy.setStartParams();
         Economy.chooseField(chosenFieldCore);
+        updateResources(Economy.START_GOLD, Economy.START_FORCE, Economy.START_PEOPLE);
+        updateIncome(0, 0);
+        updateTime(0);
         startTimer();
 
         fieldPane.setBackground( new Background(new BackgroundFill(SPACE_COLOR, null, null)));
@@ -115,8 +119,8 @@ public class GameAppController implements Initializable {
                 break;
             case ESCAPE:
                 switch (mod) {
-                    case CHOOSING_MOD: ; break;
-                    case BUILDING_MOD: ; break;
+                    case CHOOSING_MOD: Menu.open(); break;
+                    case BUILDING_MOD: setChoosingMod(); break;
                     case MENU_MOD: Menu.close(); break;
                 }
                 break;
@@ -145,8 +149,7 @@ public class GameAppController implements Initializable {
         stopCameraMovement();
     }
 
-    public static void startTimer() {
-
+    private static void startTimer() {
         timerMoveTask = new TimerTask() {
             @Override
             public void run() {
@@ -164,7 +167,6 @@ public class GameAppController implements Initializable {
             @Override
             public void run() {
                 Platform.runLater(() -> {
-                    boolean a = chosenFieldCore.getView().isFocused();
                     Economy.changeTime(500);
                 });
             }
@@ -175,15 +177,23 @@ public class GameAppController implements Initializable {
         GameApp.timer.schedule(timerTask, 500, 500);
     }
 
-    public static void stopTimer() {
+    private static void stopTimer() {
         timerMoveTask.cancel();
         timerTask.cancel();
+    }
+
+    public static void resume() {
+        startTimer();
+    }
+
+    public static void pause() {
+        stopTimer();
     }
 
     public static void closeMenuOnClick(MouseEvent event) {
         if (mod == Mod.MENU_MOD) {
             if (event.getEventType() == MouseEvent.MOUSE_CLICKED || event.getEventType() == MouseEvent.MOUSE_DRAGGED) {
-                startTimer();
+                resume();
                 Menu.close();
             }
             event.consume();
@@ -210,16 +220,21 @@ public class GameAppController implements Initializable {
         chosenFieldCore.setBuildingMod(true);
     }
 
-    private static void showEnemy() {
-        stopTimer();
+    public static void showEnemy() {
+         pause();
         chosenFieldCore.setChosenBuilding(null);
         EnemyMenu.open();
         mod = Mod.ENEMY_MOD;
     }
 
-    public static void setMenuMod() { mod = Mod.MENU_MOD; }
+    public static void setMenuMod() {
+        pause();
+        mod = Mod.MENU_MOD;
+    }
 
-    public static void setEnemyMod() { mod = Mod.ENEMY_MOD;}
+    public static void setEnemyMod() {
+        mod = Mod.ENEMY_MOD;
+    }
 
     private static void startCameraMovement() {
         curBtnPressed.addAll(newBtnPressed);
@@ -274,5 +289,9 @@ public class GameAppController implements Initializable {
 
     public static Mod getMod() {
         return mod;
+    }
+
+    public FieldCore getChosenFieldCore() {
+        return chosenFieldCore;
     }
 }
