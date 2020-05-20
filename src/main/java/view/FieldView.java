@@ -27,7 +27,7 @@ public class FieldView extends Pane {
     private Scale scale = new Scale();
     public static final Color COLOR = Color.rgb(10, 106, 84);
     private static double MOVE_SPEED_DENOM = 8;
-    private static double BASE_SCROLL = 100;
+    private static double BASE_SCROLL = 200;
     //для каждого поля у нас своё положение камеры, а значит у каждого поля должны быть свои параметры scale
     // и скорости перемщения камеры
     private double moveRange = GameApp.CELL_SIDE / MOVE_SPEED_DENOM;
@@ -55,7 +55,6 @@ public class FieldView extends Pane {
         this.getTransforms().add(scale);
         //окрашиваем панель (для наглядности на время разработки)
         this.setBackground(new Background(new BackgroundFill(COLOR, null, null)));
-
     }
 
     //метод для приближения камеры
@@ -64,7 +63,7 @@ public class FieldView extends Pane {
         if (scaleValue + scrollValue / BASE_SCROLL > 0 && scaleValue + scrollValue / BASE_SCROLL < 20)
             scaleValue += scrollValue / BASE_SCROLL;
         setScale(scaleValue);
-        System.out.println(scaleValue);
+        //System.out.println(scaleValue);
         //вычисляем новую ширину и высоту
         width.setValue(GameApp.PANE_WIDTH * scaleValue);
         height.setValue(GameApp.PANE_HEIGHT * scaleValue);
@@ -102,27 +101,16 @@ public class FieldView extends Pane {
         double x = indX * cellWidth / 2 + FIRST_CELL_X;
         double y = FIRST_CELL_Y - indX * cellHeight / 2;
         cellView.relocate(x, y);
-/*        cellView.scaleXProperty().addListener((obs, o, n) -> {
-            System.out.println("n " + n);
-        });*/
         this.getChildren().add(cellView);
     }
 
     public void addBuilding(AbstractBuildingView buildingView) {
-        IntegerProperty one = new SimpleIntegerProperty(1);
-        buildingView.scaleXProperty().bind(one.divide(scale.xProperty()));
-        buildingView.scaleYProperty().bind(one.divide(scale.yProperty()));
-
         this.getChildren().add(buildingView);
     }
 
     public void moveBuilding(CellCore cellCore, AbstractBuildingView buildingView) {
         double x = cellCore.getView().getLayoutX();
         double y = cellCore.getView().getLayoutY();
-/*        double w = width.getValue();
-        double h = height.getValue();
-        double realX = (x - w / 2) * scaleValue + w / 2;
-        double realY = (y - h / 2) * scaleValue + h / 2;*/
         buildingView.moveTo(x, y);
     }
 

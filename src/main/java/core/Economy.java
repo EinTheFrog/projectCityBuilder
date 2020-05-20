@@ -6,7 +6,7 @@ import render.DefeatMenu;
 import render.GameApp;
 
 public abstract class Economy {
-    public static final int START_GOLD = 10;
+    public static final int START_GOLD = 300;
     public static final int START_FORCE = 0;
     public static final int START_PEOPLE = 0;
 
@@ -19,7 +19,7 @@ public abstract class Economy {
     private static int timeBeforeGain = 0;
     private static int timeBeforeEnemy = 0;
     public static final int GAIN_TIME = 1_000;
-    public static final int ENEMY_TIME = 1_000;
+    public static final int ENEMY_TIME = 50_000;
     private static double time = 0;
 
     public static void setStartParams() {

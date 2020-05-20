@@ -2,16 +2,12 @@ package render;
 
 import controller.Creator;
 import controller.GameAppController;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import view.FieldView;
 
 import java.io.IOException;
 import java.net.URL;

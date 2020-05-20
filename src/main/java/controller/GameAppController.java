@@ -79,8 +79,6 @@ public class GameAppController implements Initializable {
         updateIncome(0,0);
 
         chosenFieldCore = Creator.createField();
-        CellView.widthProperty.bind(chosenFieldCore.getView().width.divide(GameApp.FIELD_SIZE));
-        CellView.heightProperty.bind(chosenFieldCore.getView().height.divide(GameApp.FIELD_SIZE));
         Creator.createCellsForField(chosenFieldCore);
         Economy.setStartParams();
         Economy.chooseField(chosenFieldCore);
@@ -119,7 +117,9 @@ public class GameAppController implements Initializable {
                 break;
             case ESCAPE:
                 switch (mod) {
-                    case CHOOSING_MOD: Menu.open(); break;
+                    case CHOOSING_MOD:
+                        if (chosenFieldCore.getChosenBuilding() == null) Menu.open();
+                        else chosenFieldCore.setChosenBuilding(null); break;
                     case BUILDING_MOD: setChoosingMod(); break;
                     case MENU_MOD: Menu.close(); break;
                 }
