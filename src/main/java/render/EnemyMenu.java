@@ -33,7 +33,7 @@ public class EnemyMenu {
             enemyPopup.hideOnEscapeProperty().setValue(false);
             enemyPopup.show(owner);
             myController = loader.getController();
-            myController.move(GameApp.getX() + enemyPopup.getWidth() / 2, GameApp.getY() + enemyPopup.getHeight() / 2);
+            myController.move(GameApp.getX() + GameApp.getWidth() / 2, GameApp.getY() + GameApp.getHeight() / 2);
         } catch (Throwable e) {
             e.printStackTrace();
         }

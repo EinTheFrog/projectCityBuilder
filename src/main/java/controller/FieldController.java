@@ -15,7 +15,6 @@ public class FieldController {
 
     public void addEventHandlers() {
         fieldView.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
-            //System.out.println("lol");
             GameAppController.keyPressed(event.getCode());
         });
         fieldView.addEventHandler(KeyEvent.KEY_RELEASED, event -> {

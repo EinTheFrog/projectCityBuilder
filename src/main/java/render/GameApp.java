@@ -54,6 +54,7 @@ public class GameApp {
         gameStage.xProperty().addListener(((observable, oldValue, newValue) -> {
             if (Menu.isOpen) Menu.getController().move(getX() + getWidth() / 2, getY() + getHeight() / 2);
             if (EnemyMenu.isOpen) EnemyMenu.getController().move(getX() + getWidth() / 2, getY() + getHeight() / 2);
+            if (DefeatMenu.isOpen) DefeatMenu.getController().move(getX() + getWidth() / 2, getY() + getHeight() / 2);
         }));
 
         gameStage.yProperty().addListener(((observable, oldValue, newValue) -> {

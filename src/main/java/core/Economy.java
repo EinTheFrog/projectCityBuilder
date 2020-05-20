@@ -19,7 +19,7 @@ public abstract class Economy {
     private static int timeBeforeGain = 0;
     private static int timeBeforeEnemy = 0;
     public static final int GAIN_TIME = 1_000;
-    public static final int ENEMY_TIME = 5_000;
+    public static final int ENEMY_TIME = 1_000;
     private static double time = 0;
 
     public static void setStartParams() {
@@ -47,7 +47,6 @@ public abstract class Economy {
         GameApp.getController().updateResources(gold, force, people);
         if (gold < 20 && GameApp.getController().getChosenFieldCore().getBuildingsList().isEmpty()) {
             DefeatMenu.open();
-            DefeatMenuController.move(GameApp.getX(), GameApp.getY());
         }
     }
     public static void decreaseForce (int dec) {
@@ -98,6 +97,7 @@ public abstract class Economy {
         if (timeBeforeEnemy < 0) timeBeforeEnemy = ENEMY_TIME;
         if (timeBeforeEnemy == 0) {
             timeBeforeEnemy = ENEMY_TIME;
+            GameAppController.setEnemyMod();
             GameAppController.showEnemy();
         }
     }

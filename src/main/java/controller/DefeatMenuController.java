@@ -1,9 +1,9 @@
 package controller;
 
 import render.DefeatMenu;
+import render.EnemyMenu;
 import render.GameApp;
 import render.MainMenu;
-import render.Menu;
 
 import java.io.IOException;
 
