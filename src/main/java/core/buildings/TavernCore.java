@@ -26,7 +26,6 @@ public class TavernCore extends AbstractBuilding {
     @Override
     public int getGoldProfit() {
         int profit = GOLD_PROFIT;
-        if (alienAuras.contains(Aura.TAVERN)) profit += 5;
         return profit;
     }
 

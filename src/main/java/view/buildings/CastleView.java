@@ -24,12 +24,7 @@ public class CastleView extends AbstractBuildingView {
     }
 
     @Override
-    protected double getWidth() {
-        return CellView.widthProperty.getValue() * size;
-    }
-
-    @Override
-    protected double getHeight() {
-        return PIC_HEIGHT * getWidth() / PIC_WIDTH;
+    protected double getDimensionRatio() {
+        return PIC_HEIGHT / PIC_WIDTH;
     }
 }

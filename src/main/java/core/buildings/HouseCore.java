@@ -10,6 +10,7 @@ public class HouseCore extends AbstractBuilding {
     private int GOLD_COST = 25;
     private int FORCE_PROFIT = 0;
     private int PEOPLE_CHANGE = 5;
+    private final int TAVERN_GOLD_BOOST = 5;
     private String NAME = "House";
 
     public HouseCore(int x, int y, int width, int length, int size) {
@@ -26,12 +27,14 @@ public class HouseCore extends AbstractBuilding {
     @Override
     public int getGoldProfit() {
         int profit = GOLD_PROFIT;
-        if (alienAuras.contains(Aura.TAVERN)) profit += 5;
+        if (alienAuras.contains(Aura.TAVERN)) profit += TAVERN_GOLD_BOOST;;
         return profit;
     }
 
     @Override
-    public int getGoldCost() { return GOLD_COST; }
+    public int getGoldCost() {
+        return GOLD_COST;
+    }
 
     @Override
     public int getForceProfit() {

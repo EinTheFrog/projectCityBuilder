@@ -2,7 +2,6 @@ package view.buildings;
 
 import view.CellView;
 import view.Visibility;
-import core.buildings.AbstractBuilding;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import render.GameApp;
@@ -22,9 +21,10 @@ public abstract class AbstractBuildingView extends ImageView {
         String respath = getImgPath();
         InputStream in = GameApp.class.getResourceAsStream(respath);
         Image img = new Image(in);
-        this.setImage(img);
-        this.setFitWidth(getWidth());
-        this.setFitHeight(getHeight());
+        setImage(img);
+        fitWidthProperty().bind(CellView.widthProperty.multiply(size));
+        fitHeightProperty().bind(fitWidthProperty().multiply(getDimensionRatio()));
+
         setVisibility(visibility);
     }
 
@@ -39,7 +39,9 @@ public abstract class AbstractBuildingView extends ImageView {
     }
 
     public void moveTo(double newX, double newY) {
-        relocate(newX - getWidth() / 2, newY - getHeight());
+        relocate(newX - fitWidthProperty().getValue() / 2, newY - fitHeightProperty().getValue());
+        System.out.println("new " + newX + " " + newY);
+        System.out.println("this " + scaleXProperty().getValue());
     }
 
     public void setClickable(boolean bool) {
@@ -53,6 +55,5 @@ public abstract class AbstractBuildingView extends ImageView {
 
     public abstract String getImgPath();
     public abstract AbstractBuildingView copy();
-    protected abstract double getWidth();
-    protected abstract double getHeight();
+    protected abstract double getDimensionRatio();
 }

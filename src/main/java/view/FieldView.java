@@ -1,8 +1,11 @@
 package view;
 
+import core.Aura;
 import core.CellCore;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
@@ -10,6 +13,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.transform.Scale;
 import render.GameApp;
 import view.buildings.AbstractBuildingView;
+
+import java.util.List;
 
 public class FieldView extends Pane {
     private double fieldX;
@@ -59,6 +64,7 @@ public class FieldView extends Pane {
         if (scaleValue + scrollValue / BASE_SCROLL > 0 && scaleValue + scrollValue / BASE_SCROLL < 20)
             scaleValue += scrollValue / BASE_SCROLL;
         setScale(scaleValue);
+        System.out.println(scaleValue);
         //вычисляем новую ширину и высоту
         width.setValue(GameApp.PANE_WIDTH * scaleValue);
         height.setValue(GameApp.PANE_HEIGHT * scaleValue);
@@ -71,6 +77,7 @@ public class FieldView extends Pane {
     //метод для симуляции приближения камеры к игрвому полю
     private void setScale (double scaleValue) {
         scale.setX(scaleValue);
+        scale.setY(scaleValue);
         scale.setY(scaleValue);
     }
 
@@ -95,16 +102,27 @@ public class FieldView extends Pane {
         double x = indX * cellWidth / 2 + FIRST_CELL_X;
         double y = FIRST_CELL_Y - indX * cellHeight / 2;
         cellView.relocate(x, y);
+/*        cellView.scaleXProperty().addListener((obs, o, n) -> {
+            System.out.println("n " + n);
+        });*/
         this.getChildren().add(cellView);
     }
 
     public void addBuilding(AbstractBuildingView buildingView) {
+        IntegerProperty one = new SimpleIntegerProperty(1);
+        buildingView.scaleXProperty().bind(one.divide(scale.xProperty()));
+        buildingView.scaleYProperty().bind(one.divide(scale.yProperty()));
+
         this.getChildren().add(buildingView);
     }
 
     public void moveBuilding(CellCore cellCore, AbstractBuildingView buildingView) {
         double x = cellCore.getView().getLayoutX();
         double y = cellCore.getView().getLayoutY();
+/*        double w = width.getValue();
+        double h = height.getValue();
+        double realX = (x - w / 2) * scaleValue + w / 2;
+        double realY = (y - h / 2) * scaleValue + h / 2;*/
         buildingView.moveTo(x, y);
     }
 
@@ -115,6 +133,13 @@ public class FieldView extends Pane {
 
     public void removeBuilding(AbstractBuildingView buildingView) {
         this.getChildren().remove(buildingView);
+    }
+
+    public void highlightAura(List<CellView> cellViewList, boolean bool, Aura aura) {
+        for(CellView cellView: cellViewList) {
+            if (bool) cellView.setAuraColor(aura);
+            else  cellView.clearAuraColor();
+        }
     }
 
 

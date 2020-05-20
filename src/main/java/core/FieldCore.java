@@ -6,11 +6,14 @@ import controller.GameAppController;
 import controller.Mod;
 import core.buildings.AbstractBuilding;
 import core.buildings.HouseCore;
+import javafx.scene.layout.Pane;
 import render.GameApp;
+import view.CellView;
 import view.FieldView;
 import view.Visibility;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class FieldCore {
     private CellCore[][] cellsArray;
@@ -39,19 +42,28 @@ public class FieldCore {
         buildingGhost = Creator.createBuildingGhost(view, buildingGhost);
         this.buildingGhost = buildingGhost;
     }
+
     public void addCell(CellCore cellCore) {
         cellsArray[cellCore.getIndX()][cellCore.getIndY()] = cellCore;
         view.addCell(cellCore.getIndX(), cellCore.getIndY(), cellCore.getView());
 
         cellCore.isChosen.addListener((obs, oldVal, newVal) -> {
             if (buildingGhost != null) {
-                    if (newVal) chosenCell = cellCore;
+                    if (newVal) {
+                        if (chosenCell == null) {
+                            buildingGhost.setVisibility(Visibility.GHOST);
+                            highlightAura(buildingGhost, true);
+                        }
+                        chosenCell = cellCore;
+                    }
                     if (oldVal) chosenCell = null;
                     if (chosenCell != null) {
+                        highlightAura(buildingGhost, false);
                         buildingGhost.moveTo(chosenCell.getIndX(), chosenCell.getIndY());
+                        highlightAura(buildingGhost, true);
                         view.moveBuilding(chosenCell, buildingGhost.getView());
-                        buildingGhost.setVisibility(Visibility.GHOST);
                     } else {
+                        highlightAura(buildingGhost, false);
                         buildingGhost.setVisibility(Visibility.INVISIBLE);
                     }
             }
@@ -59,14 +71,13 @@ public class FieldCore {
         });
         cellCore.isClicked.addListener((obs, oldVal, newVal) -> {
             if (newVal) {
-                if (GameAppController.getMod() == Mod.BUILDING_MOD && isAreaFree(chosenCell.getIndX(), chosenCell.getIndY(),
-                        buildingGhost.getLength() * buildingGhost.getSize(),
-                        buildingGhost.getWidth() * buildingGhost.getSize()) &&
+                if (GameAppController.getMod() == Mod.BUILDING_MOD && isAreaFree(buildingGhost) &&
                         Economy.getGold() >= buildingGhost.getGoldCost()) {
                     Creator.buildBuilding(buildingGhost, this);
+                    GameAppController.setChoosingMod();
                 }
+                if (GameAppController.getMod() == Mod.CHOOSING_MOD) setChosenBuilding(null);
                 cellCore.isClicked.setValue(false);
-                GameAppController.setChoosingMod();
             }
         });
     }
@@ -76,7 +87,11 @@ public class FieldCore {
     }
 
     //метод для получения клеток того же здания
-    public List<CellCore> getCellsUnderBuilding(int x,int y, int bldRealLength, int bldRealWidth) {
+    public List<CellCore> getCellsUnderBuilding(AbstractBuilding building) {
+        int x = building.getX();
+        int y = building.getY();
+        int bldRealWidth = building.getWidth() * building.getSize();
+        int bldRealLength = building.getLength() * building.getSize();
         List<CellCore> cellsArea = new ArrayList<>();
         for (int i = y + 1 - bldRealLength; i <= y; i ++) {
             for(int j = x; j <= x - 1 + bldRealWidth; j ++) {
@@ -88,8 +103,10 @@ public class FieldCore {
         return cellsArea;
     }
 
-    public boolean isAreaFree (int x, int y, int bldRealLength, int bldRealWidth) {
-        List<CellCore> cellsArea = getCellsUnderBuilding(x, y, bldRealLength, bldRealWidth);
+    public boolean isAreaFree (AbstractBuilding building) {
+        int bldRealWidth = building.getWidth() * building.getSize();
+        int bldRealLength = building.getLength() * building.getSize();
+        List<CellCore> cellsArea = getCellsUnderBuilding(building);
         if (cellsArea.size() < bldRealLength * bldRealWidth) return false;
         for (CellCore c: cellsArea) {
             if (c.getBuilding() != null) return false;
@@ -109,16 +126,13 @@ public class FieldCore {
                 }
             }
         }
-        cells.removeAll(getCellsUnderBuilding(cellX, cellY,
-                building.getLength() * building.getSize(),
-                building.getWidth() * building.getSize()));
+        cells.removeAll(getCellsUnderBuilding(building));
         return cells;
     }
 
     public void setBuildingMod(boolean bool) {
         if (!bool) {
-            if (buildingGhost != null) view.removeBuilding(buildingGhost.getView());
-            buildingGhost = null;
+            if (buildingGhost != null) removeBuildingGhost();
             makeBuildingsClickable(true);
         } else {
             makeBuildingsClickable(false);
@@ -152,23 +166,27 @@ public class FieldCore {
         }
     }
 
+    public void removeAuraForArea(AbstractBuilding buildingEmitter) {
+        Set<AbstractBuilding> set = new HashSet<>();
+        for (CellCore cell: getCellsInAura(buildingEmitter)) {
+            cell.removeAura(buildingEmitter.getOwnAura());
+            if (cell.getBuilding() != null) set.add(cell.getBuilding());
+        }
+        for (AbstractBuilding building: set) {
+            building.removeAura(buildingEmitter.getOwnAura());
+        }
+    }
+
     public void setBuildingForArea(AbstractBuilding building) {
-        List<CellCore> cells = getCellsUnderBuilding(chosenCell.getIndX(), chosenCell.getIndY(),
-                building.getLength() * building.getSize(),
-                building.getWidth() * building.getSize());
+        List<CellCore> cells = getCellsUnderBuilding(building);
         for (CellCore cellCore: cells) {
             cellCore.setBuilding(building);
         }
     }
 
     public void highlightAura(AbstractBuilding building, boolean bool) {
-        List<CellCore> cells = getCellsUnderBuilding(building.getX(), building.getY(),
-                building.getLength() * building.getSize(),
-                building.getWidth() * building.getSize());
-        for(CellCore cell: cells) {
-            if (bool) cell.getView().setAuraColor(building.getOwnAura());
-            else  cell.getView().clearAuraColor();
-        }
+        List<CellView> cells = getCellsInAura(building).stream().map(e -> e.getView()).collect(Collectors.toList());
+        view.highlightAura(cells, bool, building.getOwnAura());
     }
 
 
@@ -209,13 +227,26 @@ public class FieldCore {
         updateIncome();
     }
 
+    public void checkAreaForAuras(AbstractBuilding building) {
+        for (CellCore cell: getCellsUnderBuilding(building)) {
+            building.addAuras(cell.getAuras());
+        }
+    }
+
     //метод для удаления здания
     public void removeBuilding(AbstractBuilding building) {
         buildingsList.remove(building);
+        for (CellCore cell: getCellsUnderBuilding(building)) {
+            cell.removeBuilding();
+        }
+        removeAuraForArea(building);
         view.removeBuilding(building.getView());
+        setChosenBuilding(null);
+        updateIncome();
     }
 
     public void removeBuildingGhost() {
+        highlightAura(buildingGhost, false);
         view.removeBuilding(buildingGhost.getView());
         buildingGhost = null;
     }

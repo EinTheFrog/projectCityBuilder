@@ -64,8 +64,9 @@ public abstract class Creator {
         building.setVisibility(Visibility.VISIBLE);
 
         fieldCore.removeBuildingGhost();
-        fieldCore.addBuilding(building);
-        fieldCore.setBuildingForArea(building);
+        fieldCore.checkAreaForAuras(building);
         fieldCore.setAuraForArea(building);
+        fieldCore.setBuildingForArea(building);
+        fieldCore.addBuilding(building);
     }
 }

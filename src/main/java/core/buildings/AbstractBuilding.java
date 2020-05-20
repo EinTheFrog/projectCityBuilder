@@ -6,8 +6,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import view.Visibility;
 import view.buildings.AbstractBuildingView;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public abstract class AbstractBuilding {
     protected int x;
@@ -15,7 +14,7 @@ public abstract class AbstractBuilding {
     protected int size; // множитель, определяющий сколько клеток в одном измерении занимает здание
     protected int width;
     protected int length;
-    protected Set<Aura> alienAuras;
+    protected List<Aura> alienAuras;
     protected Aura ownAura;
     protected AbstractBuildingView buildingView;
     public BooleanProperty isChosen;
@@ -29,12 +28,20 @@ public abstract class AbstractBuilding {
         this.length = length;
         this.size = size;
         isChosen = new SimpleBooleanProperty(false);
-        alienAuras = new HashSet<>();
+        alienAuras = new ArrayList<>();
         ownAura = getOwnAura();
     }
 
     public void addAura(Aura aura) {
         alienAuras.add(aura);
+    }
+
+    public void addAuras(Collection<Aura> auras) {
+        alienAuras.addAll(auras);
+    }
+
+    public void removeAura(Aura aura) {
+        alienAuras.remove(aura);
     }
 
     public void setVisibility(Visibility visibility) {
