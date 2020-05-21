@@ -5,11 +5,11 @@ import view.buildings.AbstractBuildingView;
 
 
 public class TavernCore extends AbstractBuilding {
-    private int GOLD_PROFIT = 10;
-    private int GOLD_COST = 100;
-    private int FORCE_PROFIT = 0;
-    private int PEOPLE_CHANGE = -5;
-    private String NAME = "Tavern";
+    private final int GOLD_PROFIT = 10;
+    private final int GOLD_COST = 100;
+    private final int FORCE_PROFIT = 0;
+    private final int PEOPLE_CHANGE = -5;
+    private final String NAME = "Tavern";
 
     public TavernCore(int x, int y, int width, int length, int size) {
         super(x, y, width, length, size);

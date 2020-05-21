@@ -5,12 +5,12 @@ import view.buildings.AbstractBuildingView;
 
 
 public class HouseCore extends AbstractBuilding {
-    private int GOLD_PROFIT = 5;
-    private int GOLD_COST = 25;
-    private int FORCE_PROFIT = 0;
-    private int PEOPLE_CHANGE = 5;
+    private final int GOLD_PROFIT = 5;
+    private final int GOLD_COST = 25;
+    private final int FORCE_PROFIT = 0;
+    private final int PEOPLE_CHANGE = 5;
     private final int TAVERN_GOLD_BOOST = 5;
-    private String NAME = "House";
+    private final String NAME = "House";
 
     public HouseCore(int x, int y, int width, int length, int size) {
         super(x, y, width, length, size);

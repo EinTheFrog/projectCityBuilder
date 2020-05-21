@@ -14,7 +14,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class FieldCore {
-    private CellCore[][] cellsArray;
+    private final CellCore[][] cellsArray;
     private CellCore chosenCell;
     public final int SIZE; //кол-во клеток на одной стороне игрвого поля
     private FieldView view;
@@ -42,7 +42,7 @@ public class FieldCore {
 
     //методы добавления элементов на поле
     public void addGhost(AbstractBuilding buildingGhost) {
-        buildingGhost = Creator.createBuildingGhost(view, buildingGhost);
+        Creator.createBuildingGhost(view, buildingGhost);
         this.buildingGhost = buildingGhost;
     }
 

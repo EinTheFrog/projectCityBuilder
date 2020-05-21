@@ -1,7 +1,5 @@
 package core;
 
-import controller.DefeatMenuController;
-import controller.GameAppController;
 import render.DefeatMenu;
 import render.GameApp;
 

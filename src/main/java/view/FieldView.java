@@ -4,10 +4,7 @@ import core.Aura;
 import core.CellCore;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.transform.Scale;
 import render.GameApp;
 import view.buildings.AbstractBuildingView;
@@ -28,7 +25,7 @@ public class FieldView extends Pane {
     public DoubleProperty height;
 
     private double scaleValue = 1.0;
-    private Scale scale = new Scale();
+    private final Scale scale = new Scale();
     //для каждого поля у нас своё положение камеры, а значит у каждого поля должны быть свои параметры scale
     // и скорости перемщения камеры
     private double moveRange = GameApp.CELL_SIDE / MOVE_SPEED_DENOM;
@@ -92,8 +89,8 @@ public class FieldView extends Pane {
     public void addCell(int indX, int indY, CellView cellView) {
         //координаты cellView (по какой-то причине) считаются так, будто бы это прямоуголник,
         // после создания все становится нормально
-        double cellWidth = cellView.widthProperty.getValue();
-        double cellHeight = cellView.heightProperty.getValue();
+        double cellWidth = CellView.widthProperty.getValue();
+        double cellHeight = CellView.heightProperty.getValue();
         final double FIRST_CELL_X = cellWidth / 2 * indY;
         final double FIRST_CELL_Y = height.getValue() / 2 + cellHeight / 2 * indY - cellHeight / 2;
         double x = indX * cellWidth / 2 + FIRST_CELL_X;

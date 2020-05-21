@@ -3,7 +3,6 @@ package core;
 import core.buildings.AbstractBuilding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.scene.paint.Color;
 import view.CellView;
 
 import java.util.ArrayList;
@@ -12,7 +11,7 @@ import java.util.List;
 public class CellCore {
     private CellView view;
     private AbstractBuilding building;
-    private List<Aura> auras;
+    private final List<Aura> auras;
     private final int x;
     private final int y;
     public BooleanProperty isChosen = new SimpleBooleanProperty();

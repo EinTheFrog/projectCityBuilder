@@ -13,9 +13,7 @@ public class BuildingController {
         this.buildingView = buildingView;
     }
     public void addEventHandlers() {
-        buildingView.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            buildingCore.isChosen.setValue(true);
-        });
+        buildingView.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> buildingCore.isChosen.setValue(true));
     }
 
 

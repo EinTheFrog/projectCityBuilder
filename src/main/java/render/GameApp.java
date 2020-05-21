@@ -53,13 +53,9 @@ public class GameApp {
         }
 
         //привязываем координаты всех PopUp окон к координатам этого окна
-        gameStage.xProperty().addListener(((observable, oldValue, newValue) -> {
-            moveMenus();
-        }));
+        gameStage.xProperty().addListener(((observable, oldValue, newValue) -> moveMenus()));
 
-        gameStage.yProperty().addListener(((observable, oldValue, newValue) -> {
-           moveMenus();
-        }));
+        gameStage.yProperty().addListener(((observable, oldValue, newValue) -> moveMenus()));
     }
 
     private static void moveMenus() {

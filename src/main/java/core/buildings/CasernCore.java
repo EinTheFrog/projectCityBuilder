@@ -5,11 +5,11 @@ import view.buildings.AbstractBuildingView;
 
 
 public class CasernCore extends AbstractBuilding {
-    private int GOLD_PROFIT = 0;
-    private int GOLD_COST = 50;
-    private int FORCE_PROFIT = 5;
-    private int PEOPLE_CHANGE = -10;
-    private String NAME = "Casern";
+    private final int GOLD_PROFIT = 0;
+    private final int GOLD_COST = 50;
+    private final int FORCE_PROFIT = 5;
+    private final int PEOPLE_CHANGE = -10;
+    private final String NAME = "Casern";
 
     public CasernCore(int x, int y, int width, int length, int size) {
         super(x, y, width, length, size);

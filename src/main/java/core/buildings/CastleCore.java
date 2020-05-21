@@ -5,11 +5,11 @@ import view.buildings.AbstractBuildingView;
 
 
 public class CastleCore extends AbstractBuilding {
-    private int GOLD_PROFIT = 0;
-    private int GOLD_COST = 150;
-    private int FORCE_PROFIT = 20;
-    private int PEOPLE_CHANGE = -20;
-    private String NAME = "Castle";
+    private final int GOLD_PROFIT = 0;
+    private final int GOLD_COST = 150;
+    private final int FORCE_PROFIT = 20;
+    private final int PEOPLE_CHANGE = -20;
+    private final String NAME = "Castle";
 
     public CastleCore(int x, int y, int width, int length, int size) {
         super(x, y, width, length, size);

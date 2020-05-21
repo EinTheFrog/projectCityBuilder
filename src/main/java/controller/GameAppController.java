@@ -43,8 +43,8 @@ public class GameAppController implements Initializable {
     //множества для контроля за зажатыми клавишами,
     //curBtnPressed отвечает за клавиши, что уже были зажаты
     //newBtnPressed отвечает за клавиши, которые пользователь нажал
-    private static EnumSet <KeyboardButtons> curBtnPressed = EnumSet.noneOf(KeyboardButtons.class);
-    private static EnumSet <KeyboardButtons> newBtnPressed = EnumSet.noneOf(KeyboardButtons.class);
+    private static final EnumSet <KeyboardButtons> curBtnPressed = EnumSet.noneOf(KeyboardButtons.class);
+    private static final EnumSet <KeyboardButtons> newBtnPressed = EnumSet.noneOf(KeyboardButtons.class);
     public static Mod mod = Mod.CHOOSING_MOD; //при открытии игрвого окна мы находимся в режиме выбора
     private static FieldCore chosenFieldCore; //поле является абстрактными,
     // т.к у нас может быть только одно игрвое поле, накотором находится игрок
@@ -71,9 +71,7 @@ public class GameAppController implements Initializable {
         HBox.setHgrow(p1, Priority.ALWAYS);
         VBox.setVgrow(p2,Priority.ALWAYS);
         //добавление обработчика события для закрытия меню при щелчке
-        root.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-            closeMenuOnClick(event);
-        });
+        root.addEventFilter(MouseEvent.MOUSE_CLICKED, this::closeMenuOnClick);
 
         buttonSet = new HashSet<>();
         buttonSet.add(btnHouse);
@@ -94,9 +92,7 @@ public class GameAppController implements Initializable {
         fieldPane.setBackground( new Background(new BackgroundFill(GameApp.SPACE_COLOR, null, null)));
         fieldPane.getChildren().add(chosenFieldCore.getView());
 
-        fieldPane.addEventHandler(ScrollEvent.SCROLL, event -> {
-            chosenFieldCore.getView().zoom(event.getDeltaY());
-        });
+        fieldPane.addEventHandler(ScrollEvent.SCROLL, event -> chosenFieldCore.getView().zoom(event.getDeltaY()));
     }
 
     //методы для кнопок
@@ -180,9 +176,7 @@ public class GameAppController implements Initializable {
         timerTask = new TimerTask() {
             @Override
             public void run() {
-                Platform.runLater(() -> {
-                    Economy.changeTime(500);
-                });
+                Platform.runLater(() -> Economy.changeTime(500));
             }
         };
         GameApp.getTimer().schedule(timerMoveTask, 0, 20);
