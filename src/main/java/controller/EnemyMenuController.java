@@ -15,7 +15,6 @@ public class EnemyMenuController {
 
     @FXML
     Button btnPay, btnFight;
-
     @FXML
     VBox enemyPane;
 
@@ -23,7 +22,7 @@ public class EnemyMenuController {
         close();
         Economy.pay(cost);
         cost *= 2;
-        force -= 10;
+        force = force > 10? force - 10: force;
     }
 
     public void pressOnBtnFight() {
@@ -36,11 +35,11 @@ public class EnemyMenuController {
             Economy.decreaseForce(force);
         }
         force *= 2;
-        cost -= 10;
+        cost = cost > 10? cost - 10: cost;
     }
 
     public void close() {
-        GameAppController.resume();
+        GameApp.getController().resume();
         EnemyMenu.close();
     }
 

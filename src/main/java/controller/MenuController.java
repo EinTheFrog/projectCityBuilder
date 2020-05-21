@@ -2,7 +2,6 @@ package controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
@@ -26,7 +25,7 @@ public class MenuController implements Initializable {
     }
 
     public void pressOnBtnResume() {
-        GameAppController.resume();
+        GameApp.getController().resume();
         Menu.close();
     }
 
@@ -41,7 +40,7 @@ public class MenuController implements Initializable {
 
     public void pressESC(KeyEvent e) {
         if (e.getCode() == KeyCode.ESCAPE) {
-            GameAppController.resume();
+            GameApp.getController().resume();
             Menu.close();
         }
     }

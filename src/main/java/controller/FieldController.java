@@ -2,6 +2,7 @@ package controller;
 
 import core.FieldCore;
 import javafx.scene.input.KeyEvent;
+import render.GameApp;
 import view.FieldView;
 
 public class FieldController {
@@ -15,10 +16,10 @@ public class FieldController {
 
     public void addEventHandlers() {
         fieldView.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
-            GameAppController.keyPressed(event.getCode());
+            GameApp.getController().keyPressed(event.getCode());
         });
         fieldView.addEventHandler(KeyEvent.KEY_RELEASED, event -> {
-            GameAppController.keyReleased(event.getCode());
+            GameApp.getController().keyReleased(event.getCode());
         });
     }
 

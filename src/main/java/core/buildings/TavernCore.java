@@ -5,7 +5,6 @@ import view.buildings.AbstractBuildingView;
 
 
 public class TavernCore extends AbstractBuilding {
-    private AbstractBuildingView output;
     private int GOLD_PROFIT = 10;
     private int GOLD_COST = 100;
     private int FORCE_PROFIT = 0;

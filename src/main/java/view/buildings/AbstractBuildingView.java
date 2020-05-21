@@ -23,11 +23,11 @@ public abstract class AbstractBuildingView extends ImageView {
         Image img = new Image(in);
         setImage(img);
         fitWidthProperty().bind(CellView.widthProperty.multiply(size));
+        //устанавливаем высоту здания пропорционально ширине здания
         fitHeightProperty().bind(fitWidthProperty().multiply(getDimensionRatio()));
 
         setVisibility(visibility);
     }
-
 
     public void setVisibility(Visibility visibility) {
         this.visibility = visibility;
@@ -40,8 +40,6 @@ public abstract class AbstractBuildingView extends ImageView {
 
     public void moveTo(double newX, double newY) {
         relocate(newX - fitWidthProperty().getValue() / 2, newY - fitHeightProperty().getValue());
-/*        System.out.println("new " + newX + " " + newY);
-        System.out.println("this " + scaleXProperty().getValue());*/
     }
 
     public void setClickable(boolean bool) {
@@ -54,6 +52,12 @@ public abstract class AbstractBuildingView extends ImageView {
     }
 
     public abstract String getImgPath();
+
     public abstract AbstractBuildingView copy();
+
+    /**
+     * Сообщает соотношение высоты здания к его ширине
+     * @return
+     */
     protected abstract double getDimensionRatio();
 }

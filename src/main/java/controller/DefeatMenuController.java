@@ -1,7 +1,6 @@
 package controller;
 
 import render.DefeatMenu;
-import render.EnemyMenu;
 import render.GameApp;
 import render.MainMenu;
 
@@ -9,12 +8,8 @@ import java.io.IOException;
 
 public class DefeatMenuController {
 
-    public void pressOnBtnMenu() {
-        try {
-            MainMenu.open();
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
-        }
+    public void pressOnBtnMenu() throws IOException {
+        MainMenu.open();
         GameApp.close();
     }
 

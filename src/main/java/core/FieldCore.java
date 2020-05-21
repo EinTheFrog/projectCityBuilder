@@ -2,11 +2,9 @@ package core;
 
 import controller.Creator;
 import controller.FieldController;
-import controller.GameAppController;
 import controller.Mod;
 import core.buildings.AbstractBuilding;
 import core.buildings.HouseCore;
-import javafx.scene.layout.Pane;
 import render.GameApp;
 import view.CellView;
 import view.FieldView;
@@ -38,14 +36,19 @@ public class FieldCore {
 
     }
 
+    public void addView(FieldView view) {
+        this.view = view;
+    }
+
+    //методы добавления элементов на поле
     public void addGhost(AbstractBuilding buildingGhost) {
         buildingGhost = Creator.createBuildingGhost(view, buildingGhost);
         this.buildingGhost = buildingGhost;
     }
 
     public void addCell(CellCore cellCore) {
-        cellsArray[cellCore.getIndX()][cellCore.getIndY()] = cellCore;
-        view.addCell(cellCore.getIndX(), cellCore.getIndY(), cellCore.getView());
+        cellsArray[cellCore.getX()][cellCore.getY()] = cellCore;
+        view.addCell(cellCore.getX(), cellCore.getY(), cellCore.getView());
 
         cellCore.isChosen.addListener((obs, oldVal, newVal) -> {
             if (buildingGhost != null) {
@@ -59,7 +62,7 @@ public class FieldCore {
                     if (oldVal) chosenCell = null;
                     if (chosenCell != null) {
                         highlightAura(buildingGhost, false);
-                        buildingGhost.moveTo(chosenCell.getIndX(), chosenCell.getIndY());
+                        buildingGhost.moveTo(chosenCell.getX(), chosenCell.getY());
                         highlightAura(buildingGhost, true);
                         view.moveBuilding(chosenCell, buildingGhost.getView());
                     } else {
@@ -71,22 +74,66 @@ public class FieldCore {
         });
         cellCore.isClicked.addListener((obs, oldVal, newVal) -> {
             if (newVal) {
-                if (GameAppController.getMod() == Mod.BUILDING_MOD && isAreaFree(buildingGhost) &&
+                if (GameApp.getController().getMod() == Mod.BUILDING_MOD && isAreaFree(buildingGhost) &&
                         Economy.getGold() >= buildingGhost.getGoldCost()) {
                     Creator.buildBuilding(buildingGhost, this);
-                    GameAppController.setChoosingMod();
+                    GameApp.getController().setChoosingMod();
                 }
-                if (GameAppController.getMod() == Mod.CHOOSING_MOD) setChosenBuilding(null);
+                if (GameApp.getController().getMod() == Mod.CHOOSING_MOD) setChosenBuilding(null);
                 cellCore.isClicked.setValue(false);
             }
         });
     }
 
-    public void addView(FieldView view) {
-        this.view = view;
+    public void addBuilding(AbstractBuilding newBuilding) {
+        newBuilding.isChosen.addListener((obs, oldVal, newVal) -> {
+            if (newVal) {
+                GameApp.getController().chooseBuilding(newBuilding);
+                setChosenBuilding(newBuilding);
+                newBuilding.isChosen.setValue(false);
+            }
+        });
+        buildingsList.add(newBuilding);
+        view.addBuilding(newBuilding.getView());
+        buildingsList.sort(Comparator.comparingInt(this::getVerticalShift));
+        int k = buildingsList.indexOf(newBuilding);
+        for (int i = k; i < buildingsList.size(); i++) {
+            view.moveBuildingToFront(buildingsList.get(i).getView());
+        }
+        updateIncome();
+    }
+    //вспомогательный метод для определения расположения здания (на переднем или заднем плане находится)
+    private int getVerticalShift(AbstractBuilding building) {
+        int x = building.getX();
+        int y = building.getY();
+        return y - x;
     }
 
-    //метод для получения клеток того же здания
+    //методы для удаления зданий
+    public void removeBuilding(AbstractBuilding building) {
+        buildingsList.remove(building);
+        for (CellCore cell: getCellsUnderBuilding(building)) {
+            cell.removeBuilding();
+        }
+        removeAuraForArea(building);
+        view.removeBuilding(building.getView());
+        setChosenBuilding(null);
+        updateIncome();
+    }
+
+    public void removeBuildingGhost() {
+        highlightAura(buildingGhost, false);
+        view.removeBuilding(buildingGhost.getView());
+        buildingGhost = null;
+    }
+
+    public void removeRandomBuilding() {
+        Random rnd = new Random();
+        int k = rnd.nextInt(buildingsList.size());
+        removeBuilding(buildingsList.get(k));
+    }
+
+    //методы для работы с клетками на определенной площади
     public List<CellCore> getCellsUnderBuilding(AbstractBuilding building) {
         int x = building.getX();
         int y = building.getY();
@@ -130,31 +177,6 @@ public class FieldCore {
         return cells;
     }
 
-    public void setBuildingMod(boolean bool) {
-        if (!bool) {
-            if (buildingGhost != null) removeBuildingGhost();
-            makeBuildingsClickable(true);
-        } else {
-            makeBuildingsClickable(false);
-        }
-
-    }
-
-    public void setChosenBuilding (AbstractBuilding building) {
-        if (chosenBuilding != null) {
-            chosenBuilding.getView().highlight(false);
-            GameApp.getController().hideInfo();
-            highlightAura(chosenBuilding, false);
-        }
-        if (building != null) {
-            GameApp.getController().setInfo(building);
-            chosenBuilding = building;
-            chosenBuilding.getView().highlight(true);
-            highlightAura(chosenBuilding, true);
-        }
-        chosenBuilding = building;
-    }
-
     public void setAuraForArea(AbstractBuilding buildingEmitter) {
         Set<AbstractBuilding> set = new HashSet<>();
         for (CellCore cell: getCellsInAura(buildingEmitter)) {
@@ -184,11 +206,43 @@ public class FieldCore {
         }
     }
 
+    public void checkAreaForAuras(AbstractBuilding building) {
+        for (CellCore cell: getCellsUnderBuilding(building)) {
+            building.addAuras(cell.getAuras());
+        }
+    }
+
+    //метод для установки режима строительства
+    public void setBuildingMod(boolean bool) {
+        if (!bool) {
+            if (buildingGhost != null) removeBuildingGhost();
+            makeBuildingsClickable(true);
+        } else {
+            makeBuildingsClickable(false);
+        }
+
+    }
+
+    public void setChosenBuilding (AbstractBuilding building) {
+        if (chosenBuilding != null) {
+            chosenBuilding.getView().highlight(false);
+            GameApp.getController().hideInfo();
+            highlightAura(chosenBuilding, false);
+        }
+        if (building != null) {
+            GameApp.getController().setInfo(building);
+            chosenBuilding = building;
+            chosenBuilding.getView().highlight(true);
+            highlightAura(chosenBuilding, true);
+        }
+        chosenBuilding = building;
+    }
+
+    //методы для работы с графичеким представлением поля
     public void highlightAura(AbstractBuilding building, boolean bool) {
         List<CellView> cells = getCellsInAura(building).stream().map(e -> e.getView()).collect(Collectors.toList());
         view.highlightAura(cells, bool, building.getOwnAura());
     }
-
 
     public void makeBuildingsClickable (boolean bool) {
         for (AbstractBuilding building: buildingsList) {
@@ -200,65 +254,9 @@ public class FieldCore {
         }
     }
 
-
-    //метод для добавления нового здания
-    //вспомогательный метод для определения какое здание на каком плане находится
-    private int getVerticalShift(AbstractBuilding building) {
-        int x = building.getX();
-        int y = building.getY();
-        return y - x;
-    }
-
-    public void addBuilding(AbstractBuilding newBuilding) {
-        newBuilding.isChosen.addListener((obs, oldVal, newVal) -> {
-            if (newVal) {
-                GameApp.getController().chooseBuilding(newBuilding);
-                setChosenBuilding(newBuilding);
-                newBuilding.isChosen.setValue(false);
-            }
-        });
-        buildingsList.add(newBuilding);
-        view.addBuilding(newBuilding.getView());
-        buildingsList.sort(Comparator.comparingInt(this::getVerticalShift));
-        int k = buildingsList.indexOf(newBuilding);
-        for (int i = k; i < buildingsList.size(); i++) {
-            view.redrawBuilding(buildingsList.get(i).getView());
-        }
-        updateIncome();
-    }
-
-    public void checkAreaForAuras(AbstractBuilding building) {
-        for (CellCore cell: getCellsUnderBuilding(building)) {
-            building.addAuras(cell.getAuras());
-        }
-    }
-
-    //метод для удаления здания
-    public void removeBuilding(AbstractBuilding building) {
-        buildingsList.remove(building);
-        for (CellCore cell: getCellsUnderBuilding(building)) {
-            cell.removeBuilding();
-        }
-        removeAuraForArea(building);
-        view.removeBuilding(building.getView());
-        setChosenBuilding(null);
-        updateIncome();
-    }
-
-    public void removeBuildingGhost() {
-        highlightAura(buildingGhost, false);
-        view.removeBuilding(buildingGhost.getView());
-        buildingGhost = null;
-    }
-
-    public void removeRandomBuilding() {
-        Random rnd = new Random();
-        int k = rnd.nextInt(buildingsList.size());
-        removeBuilding(buildingsList.get(k));
-    }
-
-
-
+    /**
+     * метод для передачи классу Economy новых значений изменения ресурсов (gold, force, people)
+     */
     private void updateIncome() {
         int ppl = 0;
         int newGoldIncome = 0;
@@ -295,15 +293,15 @@ public class FieldCore {
     public FieldView getView() {
         return view;
     }
+
     public int getPeople() {
         return people;
     }
+
     public AbstractBuilding getChosenBuilding() {
         return chosenBuilding;
     }
-    public CellCore[][] getCellsArray() {
-        return cellsArray;
-    }
+
     public List<AbstractBuilding> getBuildingsList() {
         return buildingsList;
     }

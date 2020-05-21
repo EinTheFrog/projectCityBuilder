@@ -5,7 +5,6 @@ import view.buildings.AbstractBuildingView;
 
 
 public class CastleCore extends AbstractBuilding {
-    private AbstractBuildingView output;
     private int GOLD_PROFIT = 0;
     private int GOLD_COST = 150;
     private int FORCE_PROFIT = 20;

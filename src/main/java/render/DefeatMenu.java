@@ -1,48 +1,26 @@
 package render;
 
 import controller.DefeatMenuController;
-import controller.GameAppController;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
-
-import java.io.IOException;
-import java.net.URL;
 
 
 public class DefeatMenu {
     private static Popup defeatPopup;
-    private static DefeatMenuController myController;
     public static boolean isOpen = false;
 
     public static void open() {
         isOpen = true;
-        GameAppController.setMenuMod();
-        Stage owner = GameApp.gameStage;
-
+        GameApp.getController().setBlockedMod();
+        Stage owner = GameApp.getStage();
         if (defeatPopup != null) {
             defeatPopup.show(owner);
             return;
         }
-        defeatPopup = new Popup();
-        //задаем начальные элементы и параметры для них
-        FXMLLoader loader = new FXMLLoader();
-        URL xmlUrl = Menu.class.getResource("/DefeatMenu.fxml");
-        loader.setLocation(xmlUrl);
-        try {
-            Parent root = loader.load();
-            defeatPopup.getContent().add(root);
-            myController = loader.getController();
-            defeatPopup.show(owner);
-            myController.move(GameApp.getX() + GameApp.getWidth() / 2, GameApp.getY() + GameApp.getHeight() / 2);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static DefeatMenuController getController() {
-        return myController;
+        defeatPopup = Helper.createPopup("/DefeatMenu.fxml");
+        defeatPopup.hideOnEscapeProperty().setValue(false);
+        defeatPopup.show(owner);
+        DefeatMenuController.move(GameApp.getX() + GameApp.getWidth() / 2, GameApp.getY() + GameApp.getHeight() / 2);
     }
 
     public static void setX(double x) {

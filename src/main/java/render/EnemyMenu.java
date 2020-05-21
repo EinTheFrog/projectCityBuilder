@@ -1,47 +1,31 @@
 package render;
 
 import controller.EnemyMenuController;
-import controller.GameAppController;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 
-import java.net.URL;
-
 public class EnemyMenu {
     private static Popup enemyPopup;
-    private static EnemyMenuController myController;
     public static boolean  isOpen = false;
 
     public static void open () {
         isOpen = true;
-        GameAppController.setChoosingMod();
-        Stage owner = GameApp.gameStage;
-
+        GameApp.getController().setBlockedMod();
+        Stage owner = GameApp.getStage();
         if (enemyPopup != null) {
             enemyPopup.show(owner);
             return;
         }
-        enemyPopup = new Popup();
-        FXMLLoader loader = new FXMLLoader();
-        URL xmlUrl = GameApp.class.getResource("/EnemyMenu.fxml");
-        loader.setLocation(xmlUrl);
-        try {
-            Parent root = loader.load();
-            enemyPopup.getContent().add(root);
-            enemyPopup.hideOnEscapeProperty().setValue(false);
-            enemyPopup.show(owner);
-            myController = loader.getController();
-            myController.move(GameApp.getX() + GameApp.getWidth() / 2, GameApp.getY() + GameApp.getHeight() / 2);
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
+        enemyPopup = Helper.createPopup("/EnemyMenu.fxml");
+        enemyPopup.hideOnEscapeProperty().setValue(false);
+        enemyPopup.show(owner);
+        EnemyMenuController.move(GameApp.getX() + GameApp.getWidth() / 2, GameApp.getY() + GameApp.getHeight() / 2);
     }
+
     public static void close () {
         if (enemyPopup != null) {
             isOpen = false;
-            GameAppController.setChoosingMod();
+            GameApp.getController().setChoosingMod();
             enemyPopup.hide();
         }
     }
@@ -60,10 +44,6 @@ public class EnemyMenu {
 
     public static double getHeight() {
         return enemyPopup.getHeight();
-    }
-
-    public static EnemyMenuController getController() {
-        return myController;
     }
 
 }

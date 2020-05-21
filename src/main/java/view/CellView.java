@@ -9,13 +9,13 @@ import render.GameApp;
 
 
 public class CellView extends Polygon{
-
-    private final Color TAVERN_AURA_COLOR = Color.rgb(173,255,47, 0.3);
-    private final Color CASTLE_AURA_COLOR = Color.rgb(30,144,255, 0.3);
+    private final Color BASE_COLOR = Color.rgb(10, 106, 84);
+    private final Color TAVERN_AURA_COLOR = Color.rgb(250,210,0, 0.3);
+    private final Color CASTLE_AURA_COLOR = Color.rgb(200,144,255, 0.3);
     Color borderColor = Color.rgb(220, 220, 220);
 
     public static DoubleProperty widthProperty = new SimpleDoubleProperty(GameApp.CELL_SIDE * Math.cos(Math.PI / 6) * 2);
-    public static DoubleProperty heightProperty =new SimpleDoubleProperty( GameApp.CELL_SIDE * Math.sin(Math.PI / 6) * 2);
+    public static DoubleProperty heightProperty = new SimpleDoubleProperty( GameApp.CELL_SIDE * Math.sin(Math.PI / 6) * 2);
 
     public CellView () {
         double width = widthProperty.getValue();
@@ -28,8 +28,7 @@ public class CellView extends Polygon{
         );
         //отрисовывем клетку
         setStroke(borderColor);
-        setFill(new Color(0,0,0,0));
-        //setFocusTraversable(false);
+        setFill(BASE_COLOR);
     }
 
     public void setAuraColor(Aura aura) {
@@ -40,6 +39,6 @@ public class CellView extends Polygon{
     }
 
     public void clearAuraColor() {
-        this.setFill(new Color(0,0,0,0));
+        this.setFill(BASE_COLOR);
     }
 }

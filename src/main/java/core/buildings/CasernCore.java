@@ -5,7 +5,6 @@ import view.buildings.AbstractBuildingView;
 
 
 public class CasernCore extends AbstractBuilding {
-    private AbstractBuildingView output;
     private int GOLD_PROFIT = 0;
     private int GOLD_COST = 50;
     private int FORCE_PROFIT = 5;
@@ -26,7 +25,6 @@ public class CasernCore extends AbstractBuilding {
     @Override
     public int getGoldProfit() {
         int profit = GOLD_PROFIT;
-        if (alienAuras.contains(Aura.TAVERN)) profit += 5;
         return profit;
     }
 
@@ -37,7 +35,9 @@ public class CasernCore extends AbstractBuilding {
 
     @Override
     public int getForceProfit() {
-        return FORCE_PROFIT;
+        int profit = FORCE_PROFIT;
+        if (alienAuras.contains(Aura.TAVERN)) profit -= 3;
+        return profit;
     }
 
     @Override

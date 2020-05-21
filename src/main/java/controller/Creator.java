@@ -11,6 +11,9 @@ import view.buildings.*;
 
 import java.util.Timer;
 
+/**
+ * вспомогательный класс для создания сущностей
+ */
 public abstract class Creator {
 
     public static FieldCore createField() {

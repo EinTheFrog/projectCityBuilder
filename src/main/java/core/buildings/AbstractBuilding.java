@@ -69,12 +69,13 @@ public abstract class AbstractBuilding {
     public AbstractBuildingView getView() {
         return buildingView;
     }
-    public int getX() {
-        return x;
-    }
+
+    public int getX() { return x; }
+
     public int getY() {
         return y;
     }
+
     public void moveTo(int x, int y) {
         this.x = x;
         this.y = y;
@@ -83,9 +84,11 @@ public abstract class AbstractBuilding {
     public int getWidth() {
         return width;
     }
+
     public int getLength() {
         return length;
     }
+
     public int getSize() {
         return size;
     }

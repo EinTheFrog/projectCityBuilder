@@ -12,4 +12,7 @@
     <Button text="Start"
             onAction="#btnStartAction"
             fx:id="startButton"/>
+    <Button text="Quit"
+            onAction="#btnQuitAction"
+            fx:id="quitButton"/>
 </VBox>

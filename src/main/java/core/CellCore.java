@@ -13,16 +13,16 @@ public class CellCore {
     private CellView view;
     private AbstractBuilding building;
     private List<Aura> auras;
-    private final int indX;
-    private final int indY;
+    private final int x;
+    private final int y;
     public BooleanProperty isChosen = new SimpleBooleanProperty();
     public BooleanProperty isClicked = new SimpleBooleanProperty();
 
     //конструктор
     public CellCore (int i, int j) {
         //задаем значения параметров
-        indX = j;
-        indY = i;
+        x = j;
+        y = i;
         auras = new ArrayList<>();
         isChosen.setValue(false);
         isClicked.setValue(false);
@@ -44,25 +44,29 @@ public class CellCore {
         auras.remove(aura);
     }
 
-    public void addAuraColor(Color color) {
-        view.setFill(color);
-    }
-
-    public void removeAuraColor() {
-        view.clearAuraColor();
-    }
-
     //метод для присвоения клетке уже существующего здания (нужен, чтобы задать здание, занимающее более 1 клетки)
     public void setBuilding (AbstractBuilding building) {
         this.building = building;
     }
 
     //getters
-    public AbstractBuilding getBuilding () {
+    public AbstractBuilding getBuilding() {
         return building;
     }
-    public int getIndX() { return indX; }
-    public int getIndY() { return indY; }
-    public CellView getView() {return view;}
-    public List<Aura> getAuras() {return auras;}
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public CellView getView() {
+        return view;
+    }
+
+    public List<Aura> getAuras() {
+        return auras;
+    }
 }

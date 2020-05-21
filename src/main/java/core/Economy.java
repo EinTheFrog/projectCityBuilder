@@ -41,7 +41,7 @@ public abstract class Economy {
         GameApp.getController().updateIncome(goldIncome, forceIncome);
     }
 
-    //метод для EnemyMenu
+    //методы для EnemyMenu
     public static void pay (int cost) {
         gold = Math.max(gold - cost, 0);
         GameApp.getController().updateResources(gold, force, people);
@@ -49,6 +49,44 @@ public abstract class Economy {
             DefeatMenu.open();
         }
     }
+
+    /**
+     * метод, обновляющий значения ресурсов и времени, а также вызывающий EnemyMenu
+     * каждый период времени
+     * @param timeChangeInMills
+     */
+    public static void changeTime(int timeChangeInMills) {
+        time += timeChangeInMills / 1000.0;
+        timeBeforeGain -= timeChangeInMills;
+        timeBeforeEnemy -= timeChangeInMills;
+
+        GameApp.getController().updateTime((int) time);
+
+        if (timeBeforeGain < 0) timeBeforeGain = GAIN_TIME;
+        if (timeBeforeGain == 0) {
+            timeBeforeGain = GAIN_TIME;
+            gainResources();
+        }
+        if (timeBeforeEnemy < 0) timeBeforeEnemy = ENEMY_TIME;
+        if (timeBeforeEnemy == 0) {
+            timeBeforeEnemy = ENEMY_TIME;
+            GameApp.getController().showEnemy();
+        }
+    }
+
+    //методы для изменения значений ресурсов
+    private static void gainResources () {
+        force = Math.max(force + forceIncome, 0);
+        gold = Math.max(gold + goldIncome, 0);
+        GameApp.getController().updateResources(gold, force, people);
+    }
+
+    public static void updateIncome(int goldChange, int forceChange) {
+        goldIncome += goldChange;
+        forceIncome += forceChange;
+        GameApp.getController().updateIncome(goldIncome, forceIncome);
+    }
+
     public static void decreaseForce (int dec) {
         force = Math.max(force - dec, 0);
         GameApp.getController().updateResources(gold, force, people);
@@ -66,52 +104,7 @@ public abstract class Economy {
         return force;
     }
 
-    public static int getForceIncome() {
-        return forceIncome;
-    }
-
-    public static int getGoldIncome() {
-        return goldIncome;
-    }
-
-    public static int getPeople() {
-        return people;
-    }
-
     public static void chooseField(FieldCore fieldCore) {
         people = fieldCore.getPeople();
     }
-
-    public static void changeTime(int timeChangeInMills) {
-        time += timeChangeInMills / 1000.0;
-        timeBeforeGain -= timeChangeInMills;
-        timeBeforeEnemy -= timeChangeInMills;
-
-        GameApp.getController().updateTime((int) time);
-
-        if (timeBeforeGain < 0) timeBeforeGain = GAIN_TIME;
-        if (timeBeforeGain == 0) {
-            timeBeforeGain = GAIN_TIME;
-            gainResources();
-        }
-        if (timeBeforeEnemy < 0) timeBeforeEnemy = ENEMY_TIME;
-        if (timeBeforeEnemy == 0) {
-            timeBeforeEnemy = ENEMY_TIME;
-            GameAppController.setEnemyMod();
-            GameAppController.showEnemy();
-        }
-    }
-
-    public static void gainResources () {
-        force = Math.max(force + forceIncome, 0);
-        gold = Math.max(gold + goldIncome, 0);
-        GameApp.getController().updateResources(gold, force, people);
-    }
-
-    public static void updateIncome(int goldChange, int forceChange) {
-        goldIncome += goldChange;
-        forceIncome += forceChange;
-        GameApp.getController().updateIncome(goldIncome, forceIncome);
-    }
-
 }
