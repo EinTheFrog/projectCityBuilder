@@ -1,7 +1,6 @@
 package controller;
 
-import core.Economy;
-import core.FieldCore;
+import core.Resources;
 import core.buildings.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -15,9 +14,10 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.*;
-import render.EnemyMenu;
-import render.GameApp;
-import render.Menu;
+import javafx.stage.Screen;
+import render.StagesManager;
+import view.FieldView;
+import view.buildings.AbstractBuildingView;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -37,6 +37,8 @@ public class GameAppController implements Initializable {
     Parent root;
     @FXML
     private Button btnHouse, btnCasern, btnTavern, btnCastle;
+    @FXML
+    private Screen screen;
 
 
     private Set<Button> buttonSet;
@@ -46,22 +48,16 @@ public class GameAppController implements Initializable {
     private static final EnumSet <KeyboardButtons> curBtnPressed = EnumSet.noneOf(KeyboardButtons.class);
     private static final EnumSet <KeyboardButtons> newBtnPressed = EnumSet.noneOf(KeyboardButtons.class);
     public static Mod mod = Mod.CHOOSING_MOD; //при открытии игрвого окна мы находимся в режиме выбора
-    private static FieldCore chosenFieldCore; //поле является абстрактными,
-    // т.к у нас может быть только одно игрвое поле, накотором находится игрок
-    private static TimerTask timerTask;
-    private static TimerTask timerMoveTask;
+    //поле является static, т.к у нас может быть только одно игрвое поле, накотором находится игрок
+    static FieldView chosenField;
+    static Resources gameResources;
 
-    /**
-     * Метод для отображения призрака здания при строительстве.
-     * Добавляет призрак здания на поле, а также выводит информацию о выбранном типе здания в панель информации о здании
-     * @param buildingCore тип выбранного здания
-     */
-    private void createGhost(AbstractBuilding buildingCore) {
-        lblInfo.setText(buildingCore.getName());
-        chosenFieldCore.addGhost(buildingCore);
-        setInfo(buildingCore);
-        showInfo();
-    }
+    private Timer timer = new Timer(true);
+    private TimerTask timerTask;
+    private TimerTask timerMoveTask;
+
+    private final int FIELD_SIZE = 20;
+    private final double INDENT = 50;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -80,19 +76,22 @@ public class GameAppController implements Initializable {
         buttonSet.add(btnCastle);
 
         //создание игрвого поля
-        chosenFieldCore = Creator.createField();
-        Creator.createCellsForField(chosenFieldCore);
-        Economy.setStartParams();
-        Economy.chooseField(chosenFieldCore);
-        updateResources(Economy.START_GOLD, Economy.START_FORCE, Economy.START_PEOPLE);
-        updateIncome(0, 0);
-        updateTime(0);
+        //вручную высчитвываем размер панели, на которой находится поле, потому что панель еще не отрисована
+        // и мы не можем использовать getWidth()
+        final double paneWidth = screen.getVisualBounds().getWidth() * 5/9;
+        final double fieldSide = ( paneWidth  / 2 - INDENT) * Math.cos(Math.PI / 6);
+        gameResources = new Resources();
+        chosenField = Creator.createField(FIELD_SIZE, INDENT, fieldSide,
+                fieldPane.widthProperty(), fieldPane.heightProperty(), this, gameResources);
+        Creator.createCellsForField(chosenField);
+        gameResources.chooseField(chosenField.getCore());
+        updateResources();
+        updateIncome();
+        updateTime();
         startTimer();
 
-        fieldPane.setBackground( new Background(new BackgroundFill(GameApp.SPACE_COLOR, null, null)));
-        fieldPane.getChildren().add(chosenFieldCore.getView());
-
-        fieldPane.addEventHandler(ScrollEvent.SCROLL, event -> chosenFieldCore.getView().zoom(event.getDeltaY()));
+        fieldPane.getChildren().add(chosenField);
+        fieldPane.addEventHandler(ScrollEvent.SCROLL, event -> chosenField.zoom(event.getDeltaY()));
     }
 
     //методы для кнопок
@@ -117,25 +116,37 @@ public class GameAppController implements Initializable {
         createGhost(castleCore);
     }
     public void pressOnBtnDestroy() {
-        chosenFieldCore.removeBuilding(chosenFieldCore.getChosenBuilding());
+        chosenField.removeBuilding(chosenField.getChosenBuilding());
+    }
+
+    /**
+     * Метод для отображения призрака здания при строительстве.
+     * Добавляет призрак здания на поле, а также выводит информацию о выбранном типе здания в панель информации о здании
+     * @param buildingCore тип выбранного здания
+     */
+    private void createGhost(AbstractBuilding buildingCore) {
+        AbstractBuildingView buildingView = Creator.createBuildingGhost(chosenField, buildingCore);
+        lblInfo.setText(buildingCore.getName());
+        setInfo(buildingView);
+        showInfo();
     }
 
     //методы для обновления текста в метках
-    public void updateTime(int time) {
-        lblTime.setText(String.valueOf(time));
+    public void updateTime() {
+        lblTime.setText(String.valueOf(gameResources.getTime()));
     }
 
-    public void updateResources(int gold, int force, int people) {
-        lblGold.setText(String.valueOf(gold));
-        lblForce.setText(String.valueOf(force));
-        lblPeople.setText(String.valueOf(people));
+    public void updateResources() {
+        lblGold.setText(String.valueOf(gameResources.getGold()));
+        lblForce.setText(String.valueOf(gameResources.getForce()));
+        lblPeople.setText(String.valueOf(gameResources.getPeople()));
     }
 
-    public void updateIncome(int goldIncome, int forceIncome) {
-        final char goldSign = goldIncome >= 0? '+': '-';
-        lblGoldIncome.setText("(" + goldSign + goldIncome +")");
-        final char forceSign = forceIncome >= 0? '+': '-';
-        lblForceIncome.setText("(" + forceSign + forceIncome+")");
+    public void updateIncome() {
+        final char goldSign = gameResources.getGoldIncome() >= 0? '+': '-';
+        lblGoldIncome.setText("(" + goldSign + gameResources.getGoldIncome() + ")");
+        final char forceSign = gameResources.getForceIncome() >= 0? '+': '-';
+        lblForceIncome.setText("(" + forceSign + gameResources.getForceIncome() + ")");
     }
 
     public void showInfo() {
@@ -145,10 +156,11 @@ public class GameAppController implements Initializable {
         vBoxInfo.setVisible(false);
     }
 
-    public void setInfo(AbstractBuilding building) {
+    public void setInfo(AbstractBuildingView buildingView) {
+        AbstractBuilding building = buildingView.getCore();
         hideInfo();
         hideInfo();
-        InputStream in = GameApp.class.getResourceAsStream(building.getView().getImgPath());
+        InputStream in = GameAppController.class.getResourceAsStream(buildingView.getImgPath());
         Image img = new Image(in);
         imgInfo.setImage(img);
         String goldProfitTxt = building.getGoldProfit() > 0? "+" + building.getGoldProfit():
@@ -170,17 +182,21 @@ public class GameAppController implements Initializable {
                     dx += key.dx;
                     dy += key.dy;
                 }
-                chosenFieldCore.getView().move(dx, dy);
+                chosenField.move(dx, dy);
             }
         };
         timerTask = new TimerTask() {
             @Override
             public void run() {
-                Platform.runLater(() -> Economy.changeTime(500));
+                Platform.runLater(() -> {
+                    gameResources.changeTime(500);
+                    updateResources();
+                    updateTime();
+                });
             }
         };
-        GameApp.getTimer().schedule(timerMoveTask, 0, 20);
-        GameApp.getTimer().schedule(timerTask, 500, 500);
+        timer.schedule(timerMoveTask, 0, 20);
+        timer.schedule(timerTask, 500, 500);
     }
 
     private void stopTimer() {
@@ -189,7 +205,7 @@ public class GameAppController implements Initializable {
     }
 
     public void resume() {
-        startTimer();
+        if (timerTask == null) startTimer();
     }
 
     public void pause() {
@@ -220,10 +236,13 @@ public class GameAppController implements Initializable {
             case ESCAPE:
                 switch (mod) {
                     case CHOOSING_MOD:
-                        if (chosenFieldCore.getChosenBuilding() == null) Menu.open();
-                        else chosenFieldCore.setChosenBuilding(null); break;
+                        if (chosenField.getChosenBuilding() == null) {
+                            setMenuMod();
+                            StagesManager.Menu.open();
+                        }
+                        else chosenField.setChosenBuilding(null); break;
                     case BUILDING_MOD: setChoosingMod(); break;
-                    case MENU_MOD: Menu.close(); break;
+                    case MENU_MOD: StagesManager.Menu.close(); break;
                 }
                 break;
         }
@@ -269,7 +288,7 @@ public class GameAppController implements Initializable {
         if (mod == Mod.MENU_MOD) {
             if (event.getEventType() == MouseEvent.MOUSE_CLICKED || event.getEventType() == MouseEvent.MOUSE_DRAGGED) {
                 resume();
-                Menu.close();
+                StagesManager.Menu.close();
             }
             event.consume();
         }
@@ -279,16 +298,16 @@ public class GameAppController implements Initializable {
     //методы для выставления режима взаимедействия с пользователем
     public void setChoosingMod() {
         for (Button btn: buttonSet) btn.setDisable(false);
-        GameApp.getController().hideInfo();
+        hideInfo();
         mod = Mod.CHOOSING_MOD;
-        chosenFieldCore.setBuildingMod(false);
-        chosenFieldCore.setChosenBuilding(null);
+        chosenField.setBuildingMod(false);
+        chosenField.setChosenBuilding(null);
     }
 
     public void setBuildingMod() {
         hideInfo();
         mod = Mod.BUILDING_MOD;
-        chosenFieldCore.setBuildingMod(true);
+        chosenField.setBuildingMod(true);
     }
 
     public void setMenuMod() {
@@ -299,32 +318,27 @@ public class GameAppController implements Initializable {
 
     public void setBlockedMod() {
         pause();
-        chosenFieldCore.setChosenBuilding(null);
+        chosenField.setChosenBuilding(null);
         for (Button btn: buttonSet) btn.setDisable(true);
         mod = Mod.BLOCKED_MOD;
-    }
-
-    /**
-     * метод для выбора здания для постройки
-     * @param buildingCore
-     */
-    public void chooseBuilding(AbstractBuilding buildingCore) {
-        hideInfo();
-        chosenFieldCore.setChosenBuilding(buildingCore);
-        showInfo();
     }
 
     /**
      * метод для открытия окна коче
      */
     public void showEnemy() {
-        EnemyMenu.open();
+        StagesManager.EnemyMenu.open();
     }
 
     public Mod getMod() {
         return mod;
     }
-    public FieldCore getChosenFieldCore() {
-        return chosenFieldCore;
+
+    public double getScreenWidth() {
+        return screen.getVisualBounds().getWidth();
+    }
+
+    public double getScreenHeight() {
+        return screen.getVisualBounds().getHeight();
     }
 }

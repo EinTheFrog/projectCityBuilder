@@ -12,7 +12,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            MainMenu.open();
+            StagesManager.MainMenu.open();
         } catch (IOException e) {
             System.err.println("ERROR: Incorrect path to fxml file");
             e.printStackTrace();

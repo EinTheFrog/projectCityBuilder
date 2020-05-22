@@ -1,5 +1,7 @@
 package view.buildings;
 
+import core.buildings.AbstractBuilding;
+import javafx.beans.property.ReadOnlyDoubleProperty;
 import view.CellView;
 import view.Visibility;
 
@@ -7,8 +9,8 @@ public class TavernView extends AbstractBuildingView {
     private static final double PIC_WIDTH = 120;
     private static final double PIC_HEIGHT = 158;
 
-    public TavernView(int size, Visibility visibility) {
-        super(size, visibility);
+    public TavernView(AbstractBuilding buildingCore, double width, Visibility visibility) {
+        super(buildingCore, width, visibility);
     }
 
     @Override
@@ -18,7 +20,7 @@ public class TavernView extends AbstractBuildingView {
 
     @Override
     public AbstractBuildingView copy() {
-        TavernView houseView = new TavernView(size, visibility);
+        TavernView houseView = new TavernView(buildingCore.copy(), WIDTH, visibility);
         houseView.relocate(getLayoutX(), getLayoutY());
         return houseView;
     }

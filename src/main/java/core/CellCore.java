@@ -9,13 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CellCore {
-    private CellView view;
     private AbstractBuilding building;
     private final List<Aura> auras;
     private final int x;
     private final int y;
-    public BooleanProperty isChosen = new SimpleBooleanProperty();
-    public BooleanProperty isClicked = new SimpleBooleanProperty();
 
     //конструктор
     public CellCore (int i, int j) {
@@ -23,8 +20,6 @@ public class CellCore {
         x = j;
         y = i;
         auras = new ArrayList<>();
-        isChosen.setValue(false);
-        isClicked.setValue(false);
     }
 
     public void removeBuilding() {
@@ -33,10 +28,6 @@ public class CellCore {
 
     public void addAura (Aura aura) {
         auras.add(aura);
-    }
-
-    public void addView (CellView view) {
-        this.view = view;
     }
 
     public void removeAura(Aura aura) {
@@ -61,9 +52,6 @@ public class CellCore {
         return y;
     }
 
-    public CellView getView() {
-        return view;
-    }
 
     public List<Aura> getAuras() {
         return auras;

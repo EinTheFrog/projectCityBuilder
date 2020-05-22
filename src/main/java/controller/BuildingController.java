@@ -1,21 +1,12 @@
 package controller;
 
-import core.buildings.AbstractBuilding;
 import javafx.scene.input.MouseEvent;
 import view.buildings.AbstractBuildingView;
 
-public class BuildingController {
-    AbstractBuilding buildingCore;
-    AbstractBuildingView buildingView;
+public abstract class BuildingController {
 
-    public BuildingController(AbstractBuilding buildingCore, AbstractBuildingView buildingView) {
-        this.buildingCore = buildingCore;
-        this.buildingView = buildingView;
+    public static void addEventHandlers(AbstractBuildingView buildingView) {
+        buildingView.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> buildingView.isChosen.setValue(true));
     }
-    public void addEventHandlers() {
-        buildingView.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> buildingCore.isChosen.setValue(true));
-    }
-
-
 
 }

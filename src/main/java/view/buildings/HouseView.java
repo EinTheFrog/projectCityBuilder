@@ -1,5 +1,7 @@
 package view.buildings;
 
+import core.buildings.AbstractBuilding;
+import javafx.beans.property.ReadOnlyDoubleProperty;
 import view.CellView;
 import view.Visibility;
 
@@ -7,8 +9,8 @@ public class HouseView extends AbstractBuildingView {
     private static final double PIC_WIDTH = 128;
     private static final double PIC_HEIGHT = 128;
 
-    public HouseView(int size, Visibility visibility) {
-        super(size, visibility);
+    public HouseView(AbstractBuilding buildingCore, double width, Visibility visibility) {
+        super(buildingCore, width, visibility);
     }
 
     @Override
@@ -18,7 +20,7 @@ public class HouseView extends AbstractBuildingView {
 
     @Override
     public AbstractBuildingView copy() {
-        HouseView houseView = new HouseView(size, visibility);
+        HouseView houseView = new HouseView(buildingCore.copy(), WIDTH, visibility);
         houseView.relocate(getLayoutX(), getLayoutY());
         return houseView;
     }

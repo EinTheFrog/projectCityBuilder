@@ -1,14 +1,15 @@
 package view.buildings;
 
-import view.CellView;
+import core.buildings.AbstractBuilding;
+import core.buildings.CasernCore;
 import view.Visibility;
 
 public class CasernView extends AbstractBuildingView {
     private static final double PIC_WIDTH = 110;
     private static final double PIC_HEIGHT = 197;
 
-    public CasernView(int size, Visibility visibility) {
-        super(size, visibility);
+    public CasernView(AbstractBuilding buildingCore, double width, Visibility visibility) {
+        super(buildingCore, width, visibility);
     }
 
     @Override
@@ -18,7 +19,7 @@ public class CasernView extends AbstractBuildingView {
 
     @Override
     public AbstractBuildingView copy() {
-        CasernView houseView = new CasernView(size, visibility);
+        CasernView houseView = new CasernView(buildingCore.copy(), WIDTH, visibility);
         houseView.relocate(getLayoutX(), getLayoutY());
         return houseView;
     }

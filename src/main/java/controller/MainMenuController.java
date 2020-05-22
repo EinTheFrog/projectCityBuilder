@@ -1,7 +1,6 @@
 package controller;
 
-import render.GameApp;
-import render.MainMenu;
+import render.StagesManager;
 
 /**
  * класс-контроллер для главного меню
@@ -10,11 +9,11 @@ import render.MainMenu;
 public class MainMenuController {
 
     public void btnStartAction() {
-        GameApp.open();
-        MainMenu.close();
+        StagesManager.GameApp.open();
+        StagesManager.MainMenu.close();
     }
 
     public void btnQuitAction() {
-        MainMenu.close();
+        StagesManager.MainMenu.close();
     }
 }

@@ -1,32 +1,37 @@
 package view.buildings;
 
-import view.CellView;
+import core.buildings.AbstractBuilding;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import view.Visibility;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import render.GameApp;
 
 import java.io.InputStream;
 
 public abstract class AbstractBuildingView extends ImageView {
     protected Visibility visibility;
-    protected int size;
-    public AbstractBuildingView (int size, Visibility visibility) {
+    protected final double WIDTH;
+    protected AbstractBuilding buildingCore;
+    public BooleanProperty isChosen;
+    public AbstractBuildingView (AbstractBuilding buildingCore, double width, Visibility visibility) {
         this.setMouseTransparent(true);
         this.setPickOnBounds(false);
         this.setFocusTraversable(false);
 
-        this.size = size;
+        this.buildingCore = buildingCore;
+        setVisibility(visibility);
+        WIDTH = width;
+
+        isChosen = new SimpleBooleanProperty(false);
 
         String respath = getImgPath();
-        InputStream in = GameApp.class.getResourceAsStream(respath);
+        InputStream in = AbstractBuildingView.class.getResourceAsStream(respath);
         Image img = new Image(in);
         setImage(img);
-        fitWidthProperty().bind(CellView.widthProperty.multiply(size));
+        setFitWidth(WIDTH);
         //устанавливаем высоту здания пропорционально ширине здания
         fitHeightProperty().bind(fitWidthProperty().multiply(getDimensionRatio()));
-
-        setVisibility(visibility);
     }
 
     public void setVisibility(Visibility visibility) {
@@ -60,4 +65,8 @@ public abstract class AbstractBuildingView extends ImageView {
      * @return
      */
     protected abstract double getDimensionRatio();
+
+    public AbstractBuilding getCore() {
+        return buildingCore;
+    }
 }

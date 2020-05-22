@@ -11,7 +11,7 @@ public abstract class Helper {
     public static Popup createPopup (String resPath) {
         Popup popup = new Popup();
         FXMLLoader loader = new FXMLLoader();
-        URL xmlUrl = Menu.class.getResource(resPath);
+        URL xmlUrl = StagesManager.class.getResource(resPath);
         loader.setLocation(xmlUrl);
         try {
             Parent root = loader.load();

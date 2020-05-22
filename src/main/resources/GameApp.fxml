@@ -20,7 +20,8 @@
             <Pane xmlns:fx="http://javafx.com/fxml/1"
                   fx:id="fieldPane"
                   prefWidth="${screen.visualBounds.width * 5/9}"
-                  prefHeight = "${fieldPane.prefWidth * 9/16}">
+                  prefHeight = "${fieldPane.prefWidth * 9/16}"
+                  style="-fx-background-color: navy;">
                 <fx:define>
                     <Screen fx:factory="getPrimary" fx:id="screen"/>
                 </fx:define>

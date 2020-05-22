@@ -50,10 +50,6 @@ public class CasernCore extends AbstractBuilding {
         return NAME;
     }
 
-    @Override
-    public void addView(AbstractBuildingView buildingView) {
-        this.buildingView = buildingView;
-    }
 
     @Override
     public Aura getOwnAura() {

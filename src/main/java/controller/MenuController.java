@@ -1,52 +1,46 @@
 package controller;
 
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
-import render.GameApp;
-import render.MainMenu;
-import render.Menu;
+import render.StagesManager;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
 
-public class MenuController implements Initializable {
+public class MenuController {
     @FXML
     VBox menuRoot;
 
-    @Override
+    /*@Override
     public void initialize(URL location, ResourceBundle resources) {
         menuRoot.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            if (event.getCode() == KeyCode.ESCAPE) Menu.close();
+            if (event.getCode() == KeyCode.ESCAPE) StagesManager.Menu.close();
         });
-    }
+    }*/
 
     public void pressOnBtnResume() {
-        GameApp.getController().resume();
-        Menu.close();
+        StagesManager.Menu.close();
     }
 
     public void pressOnBtnMenu() {
         try {
-            MainMenu.open();
+            StagesManager.MainMenu.open();
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
-        GameApp.close();
+        StagesManager.GameApp.close();
     }
 
     public void pressESC(KeyEvent e) {
         if (e.getCode() == KeyCode.ESCAPE) {
-            GameApp.getController().resume();
-            Menu.close();
+            StagesManager.GameApp.getController().resume();
+            StagesManager.Menu.close();
         }
     }
 
     public static void move(double x, double y) {
-        Menu.setX(x - Menu.getWidth() / 2);
-        Menu.setY(y - Menu.getHeight() / 2);
+        StagesManager.Menu.setX(x - StagesManager.Menu.getWidth() / 2);
+        StagesManager.Menu.setY(y - StagesManager.Menu.getHeight() / 2);
     }
 }
