@@ -4,6 +4,9 @@ import core.buildings.HouseCore;
 
 import java.util.*;
 
+/**
+ * Класс, отвечающий за логическое представление игрвого поля
+ */
 public class FieldCore {
     private final CellCore[][] cellsArray;
     public final int SIZE; //кол-во клеток на одной стороне игрвого поля
@@ -13,6 +16,10 @@ public class FieldCore {
     private int people;
     Resources gameResources;
 
+    /**
+     * @param size кол-во клеток в одной стороне поля
+     * @param gameResources ссылка на объект ресурсов, к которому поле оюращается при постройке зданий и т.п.
+     */
     public FieldCore (int size, Resources gameResources) {
         this.gameResources = gameResources;
         //задаем параметры размера и клеток
@@ -24,14 +31,21 @@ public class FieldCore {
 
     }
 
+    /**
+     * Метод для добавления клетки на поле. Добавляет клетку в ячейку матрицы [x][y]
+     * @param cellCore - добавляемая клетка, x и y берутся из ее параметров
+     */
     public void addCell(CellCore cellCore) {
         cellsArray[cellCore.getX()][cellCore.getY()] = cellCore;
     }
 
     /**
-     *
-     * @param newBuilding
-     * @return -1, если не удалось построить здание, инчае номер плана, на котором находится здание
+     * Метод для создания здания на поле (логика). Покупает здание, устанавливает ауру на клетки вокруг здания,
+     * устанавливает ауру для новго здания в зависимости от клекток, на которых его построили,
+     * добавляет здание в список зданий поля
+     * @param newBuilding - здание, которое мы хотим добавить на поле/
+     * @return false, если не удалось добавить здание (не хватает золота, клетки,
+     * на которых мы хотим расположить здание заняты). Иначе - true
      */
     public boolean buildBuilding(AbstractBuilding newBuilding) {
         if (isAreaFree(newBuilding) && gameResources.getGold() >= newBuilding.getGoldCost()) {
@@ -48,6 +62,12 @@ public class FieldCore {
     }
 
     //методы для удаления зданий
+
+    /**
+     * Метод для удаления здания с поля (логика). Убирает здание из списка зданий поля, отчищает необходимые клетки
+     * от ауры удаленного здания, обновляет income для resources
+     * @param building
+     */
     public void removeBuilding(AbstractBuilding building) {
         buildingsList.remove(building);
         for (CellCore cell: getCellsUnderBuilding(building)) {
@@ -57,6 +77,10 @@ public class FieldCore {
         updateIncome();
     }
 
+    /**
+     * Метод для удаления здания по его порядковому номеру в списке зданий
+     * @param k
+     */
     public void removeBuilding(int k) {
         AbstractBuilding building = buildingsList.get(k);
         buildingsList.remove(building);
@@ -69,6 +93,12 @@ public class FieldCore {
 
 
     //методы для работы с клетками на определенной площади
+
+    /**
+     * Метод для получения клеток, находящихся под зданием.
+     * @param building - здание, под которым мы смотрим клетки.
+     * @return возвращает Set клеток
+     */
     public Set<CellCore> getCellsUnderBuilding(AbstractBuilding building) {
         int x = building.getX();
         int y = building.getY();
@@ -85,6 +115,11 @@ public class FieldCore {
         return cellsArea;
     }
 
+    /**
+     * Метод для проверки свободности пространства для постройки здания
+     * @param building - здание которое мы хотим построить.
+     * @return true, если пространство свободно. Иначе - false
+     */
     public boolean isAreaFree (AbstractBuilding building) {
         int bldRealWidth = building.getWidth() * building.getSize();
         int bldRealLength = building.getLength() * building.getSize();
@@ -96,8 +131,13 @@ public class FieldCore {
         return true;
     }
 
-    public List<CellCore> getCellsInAura(AbstractBuilding building) {
-        List<CellCore> cells = new ArrayList<>();
+    /**
+     * Метод для получения клеток в радиусе ауры здания
+     * @param building - здание в радиусе ауры которого мы ищем клетки
+     * @return Set клеток
+     */
+    public Set<CellCore> getCellsInAura(AbstractBuilding building) {
+        Set<CellCore> cells = new HashSet<>();
         int cellX = building.getX();
         int cellY = building.getY();
         int rad = building.getOwnAura().getRadius();
@@ -112,6 +152,10 @@ public class FieldCore {
         return cells;
     }
 
+    /**
+     * Метод для установки ауры для всех клеток и зданий в радиусе ауры указанного здания.
+     * @param buildingEmitter - здание, которое является источником ауры
+     */
     public void setAuraForArea(AbstractBuilding buildingEmitter) {
         for (CellCore cell: getCellsInAura(buildingEmitter)) {
             cell.addAura(buildingEmitter.getOwnAura());
@@ -119,6 +163,10 @@ public class FieldCore {
         }
     }
 
+    /**
+     * Метод для удаления ауры указанного здания с клеток и зданий, которые находились в ауре данного здания
+     * @param buildingEmitter - здание, бывшее источником ауры
+     */
     public void removeAuraForArea(AbstractBuilding buildingEmitter) {
         for (CellCore cell: getCellsInAura(buildingEmitter)) {
             cell.removeAura(buildingEmitter.getOwnAura());
@@ -126,6 +174,10 @@ public class FieldCore {
         }
     }
 
+    /**
+     * Метод для установки здания для всех зданий в области, которая находится под зданием
+     * @param building - здание, которое мы устнавливаем как параметр клеток, находящихся под этим самым зданием
+     */
     public void setBuildingForArea(AbstractBuilding building) {
         Set<CellCore> cells = getCellsUnderBuilding(building);
         for (CellCore cellCore: cells) {
@@ -133,6 +185,10 @@ public class FieldCore {
         }
     }
 
+    /**
+     * Метод для проверки области, на наличие аур
+     * @param building - здание, клетки под которым мы проверяем на наличие аур
+     */
     public void checkAreaForAuras(AbstractBuilding building) {
         for (CellCore cell: getCellsUnderBuilding(building)) {
             building.addAuras(cell.getAuras());

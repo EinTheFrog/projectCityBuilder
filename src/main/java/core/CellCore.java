@@ -1,13 +1,13 @@
 package core;
 
 import core.buildings.AbstractBuilding;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import view.CellView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Класс, отвечающий за логическое представление клетки
+ */
 public class CellCore {
     private AbstractBuilding building;
     private final List<Aura> auras;
@@ -16,7 +16,6 @@ public class CellCore {
 
     //конструктор
     public CellCore (int i, int j) {
-        //задаем значения параметров
         x = j;
         y = i;
         auras = new ArrayList<>();
@@ -34,7 +33,10 @@ public class CellCore {
         auras.remove(aura);
     }
 
-    //метод для присвоения клетке уже существующего здания (нужен, чтобы задать здание, занимающее более 1 клетки)
+    /**
+     * Метод для установки параметра здания для клетки. Благодаря нему клетка знает, что она занята или свободна.
+     * @param building
+     */
     public void setBuilding (AbstractBuilding building) {
         this.building = building;
     }
@@ -51,7 +53,6 @@ public class CellCore {
     public int getY() {
         return y;
     }
-
 
     public List<Aura> getAuras() {
         return auras;

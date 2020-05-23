@@ -7,6 +7,9 @@ import javafx.stage.Popup;
 import java.io.IOException;
 import java.net.URL;
 
+/**
+ * Вспомогательный класс для создания Popup-ов
+ */
 public abstract class Helper {
     public static Popup createPopup (String resPath) {
         Popup popup = new Popup();

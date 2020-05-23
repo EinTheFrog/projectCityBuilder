@@ -12,13 +12,6 @@ public class MenuController {
     @FXML
     VBox menuRoot;
 
-    /*@Override
-    public void initialize(URL location, ResourceBundle resources) {
-        menuRoot.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            if (event.getCode() == KeyCode.ESCAPE) StagesManager.Menu.close();
-        });
-    }*/
-
     public void pressOnBtnResume() {
         StagesManager.Menu.close();
     }

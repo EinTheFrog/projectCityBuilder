@@ -10,11 +10,21 @@ import javafx.scene.image.ImageView;
 
 import java.io.InputStream;
 
+/**
+ * Родительский класс для всех графических представлений
+ */
 public abstract class AbstractBuildingView extends ImageView {
+
     protected Visibility visibility;
     protected final double WIDTH;
     protected AbstractBuilding buildingCore;
     public BooleanProperty isChosen;
+
+    /**
+     * @param buildingCore - логическое представления зданияы
+     * @param width - необходимая ширина здания (предпопалагется, что она равна ширине клетки * размер здания)
+     * @param visibility - параметр, от которого зависит прозрачность здания
+     */
     public AbstractBuildingView (AbstractBuilding buildingCore, double width, Visibility visibility) {
         this.setMouseTransparent(true);
         this.setPickOnBounds(false);
@@ -46,6 +56,13 @@ public abstract class AbstractBuildingView extends ImageView {
         }
     }
 
+    /**
+     * Перемещает здания в указанные координаты родительсокго layout-а. Во время перемещения делает
+     * дополнительные смещения здания, чтобы оно перемещалось в указанную точку так, как это нужно нам (в указанной точке
+     * оказывается нижний угол здания)
+     * @param newX
+     * @param newY
+     */
     public void moveTo(double newX, double newY) {
         relocate(newX - fitWidthProperty().getValue() / 2, newY - fitHeightProperty().getValue());
     }
@@ -54,18 +71,28 @@ public abstract class AbstractBuildingView extends ImageView {
         setMouseTransparent(!bool);
     }
 
+    /**
+     * Метод включающий/выключающий вокпуг здания
+     * @param bool
+     */
     public void highlight (boolean bool) {
         if (bool) setStyle("-fx-effect: dropshadow(gaussian,#F5B041 , 5, 0.5, 0, 0)");
         else setStyle("-fx-effect: dropshadow(gaussian, rgba(0, 0, 0 ,0) , 10, 1.0, 0, 0)");
     }
 
+    /**
+     * Возвращает путь к текстуре здания
+     * @return String, в который записан путь
+     */
     public abstract String getImgPath();
 
+    /**
+     * Создает копию графического представления здания
+     */
     public abstract AbstractBuildingView copy();
 
     /**
-     * Сообщает соотношение высоты здания к его ширине
-     * @return
+     * @return отношение высоты текстуры здания к её ширине
      */
     protected abstract double getDimensionRatio();
 

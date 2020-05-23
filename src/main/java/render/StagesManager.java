@@ -2,20 +2,16 @@ package render;
 
 import controller.*;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.paint.Color;
 import javafx.stage.Popup;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Timer;
 
 /**
- * класс для игрвого окна приложения, в котором пользователь и играет
+ * Класс, отвечающий за все окна приложения
  */
 public abstract class StagesManager {
 
