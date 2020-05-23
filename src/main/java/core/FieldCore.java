@@ -48,6 +48,7 @@ public class FieldCore {
             checkAreaForAuras(newBuilding);
             setAuraForArea(newBuilding);
             setBuildingForArea(newBuilding);
+            buildingsList.add(newBuilding);
 
             updateIncome();
             return true;

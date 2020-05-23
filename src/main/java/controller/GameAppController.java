@@ -117,6 +117,7 @@ public class GameAppController implements Initializable {
     }
     public void pressOnBtnDestroy() {
         chosenField.removeBuilding(chosenField.getChosenBuilding());
+        chosenField.setChosenBuilding(null);
     }
 
     /**

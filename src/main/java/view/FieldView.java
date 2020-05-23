@@ -10,10 +10,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.transform.Scale;
 import view.buildings.AbstractBuildingView;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class FieldView extends Pane {
@@ -168,7 +165,7 @@ public class FieldView extends Pane {
                     if (oldVal) chosenCell = null;
                     if (chosenCell != null) {
                         highlightAura(buildingGhost, false);
-                        buildingGhost.moveTo(chosenCell.getCore().getX(), chosenCell.getCore().getY());
+                        buildingGhost.getCore().setCords(chosenCell.getCore().getX(), chosenCell.getCore().getY());
                         highlightAura(buildingGhost, true);
                         moveBuilding(chosenCell, buildingGhost);
                     } else {
@@ -282,7 +279,7 @@ public class FieldView extends Pane {
         buildingView.moveTo(x, y);
         int indX = cellView.getCore().getX();
         int indY = cellView.getCore().getY();
-        buildingView.getCore().moveTo(indX, indY);
+        buildingView.getCore().setCords(indX, indY);
     }
 
     /**
@@ -298,16 +295,9 @@ public class FieldView extends Pane {
         this.getChildren().remove(buildingView);
     }
 
-    public void highlightAura(List<CellView> cellViewList, boolean bool, Aura aura) {
-        for(CellView cellView: cellViewList) {
-            if (bool) cellView.setAuraColor(aura);
-            else  cellView.clearAuraColor();
-        }
-    }
-
     public void highlightAura(AbstractBuildingView building, boolean bool) {
-        List<CellView> cells = fieldCore.getCellsInAura(building.getCore()).stream().map(
-                e -> cellsArray[e.getX()][e.getY()]).collect(Collectors.toList());
+        Set<CellView> cells = fieldCore.getCellsInAura(building.getCore()).stream().map(
+                e -> cellsArray[e.getX()][e.getY()]).collect(Collectors.toSet());
         for(CellView cellView: cells) {
             if (bool) cellView.setAuraColor(building.getCore().getOwnAura());
             else  cellView.clearAuraColor();

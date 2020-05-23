@@ -3,6 +3,7 @@ package view.buildings;
 import core.buildings.AbstractBuilding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.scene.input.MouseEvent;
 import view.Visibility;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -32,6 +33,8 @@ public abstract class AbstractBuildingView extends ImageView {
         setFitWidth(WIDTH);
         //устанавливаем высоту здания пропорционально ширине здания
         fitHeightProperty().bind(fitWidthProperty().multiply(getDimensionRatio()));
+
+        addEventHandler(MouseEvent.MOUSE_CLICKED, event -> isChosen.setValue(true));
     }
 
     public void setVisibility(Visibility visibility) {
