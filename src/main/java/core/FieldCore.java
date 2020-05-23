@@ -113,13 +113,9 @@ public class FieldCore {
     }
 
     public void setAuraForArea(AbstractBuilding buildingEmitter) {
-        Set<AbstractBuilding> set = new HashSet<>();
         for (CellCore cell: getCellsInAura(buildingEmitter)) {
             cell.addAura(buildingEmitter.getOwnAura());
-            if (cell.getBuilding() != null) set.add(cell.getBuilding());
-        }
-        for (AbstractBuilding building: set) {
-            building.addAura(buildingEmitter.getOwnAura());
+            if (cell.getBuilding() != null) cell.getBuilding().addAura(buildingEmitter.getOwnAura());
         }
     }
 

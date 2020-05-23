@@ -1,7 +1,8 @@
 package core.buildings;
 
 import core.Aura;
-import view.buildings.AbstractBuildingView;
+
+import java.util.List;
 
 
 public class HouseCore extends AbstractBuilding {
@@ -16,9 +17,14 @@ public class HouseCore extends AbstractBuilding {
         super(x, y, width, length, size);
     }
 
+    public HouseCore(int x, int y, int width, int length, int size, List<Aura> aurasList) {
+        super(x, y, width, length, size);
+        this.alienAuras = aurasList;
+    }
+
     @Override
     public AbstractBuilding copy() {
-       HouseCore copy =  new HouseCore(x, y, width, length, size);
+       HouseCore copy =  new HouseCore(x, y, width, length, size, alienAuras);
        return copy;
     }
 

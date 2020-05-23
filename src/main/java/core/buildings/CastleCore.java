@@ -2,6 +2,8 @@ package core.buildings;
 
 import core.Aura;
 
+import java.util.List;
+
 
 public class CastleCore extends AbstractBuilding {
     private final int GOLD_PROFIT = 0;
@@ -14,9 +16,14 @@ public class CastleCore extends AbstractBuilding {
         super(x, y, width, length, size);
     }
 
+    public CastleCore(int x, int y, int width, int length, int size, List<Aura> aurasList) {
+        super(x, y, width, length, size);
+        this.alienAuras = aurasList;
+    }
+
     @Override
     public AbstractBuilding copy() {
-        CastleCore copy =  new CastleCore(x, y, width, length, size);
+        CastleCore copy =  new CastleCore(x, y, width, length, size, alienAuras);
         return copy;
     }
 

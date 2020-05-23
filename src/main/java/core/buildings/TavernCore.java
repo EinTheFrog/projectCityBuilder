@@ -3,6 +3,8 @@ package core.buildings;
 import core.Aura;
 import view.buildings.AbstractBuildingView;
 
+import java.util.List;
+
 
 public class TavernCore extends AbstractBuilding {
     private final int GOLD_PROFIT = 10;
@@ -15,9 +17,14 @@ public class TavernCore extends AbstractBuilding {
         super(x, y, width, length, size);
     }
 
+    public TavernCore(int x, int y, int width, int length, int size, List<Aura> aurasList) {
+        super(x, y, width, length, size);
+        this.alienAuras = aurasList;
+    }
+
     @Override
     public AbstractBuilding copy() {
-        TavernCore copy =  new TavernCore(x, y, width, length, size);
+        TavernCore copy =  new TavernCore(x, y, width, length, size, alienAuras);
         return copy;
     }
 

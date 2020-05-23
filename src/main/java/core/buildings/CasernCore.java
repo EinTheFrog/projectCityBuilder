@@ -2,6 +2,8 @@ package core.buildings;
 
 import core.Aura;
 
+import java.util.List;
+
 
 public class CasernCore extends AbstractBuilding {
     private final int GOLD_PROFIT = 0;
@@ -14,9 +16,14 @@ public class CasernCore extends AbstractBuilding {
         super(x, y, width, length, size);
     }
 
+    public CasernCore(int x, int y, int width, int length, int size, List<Aura> aurasList) {
+        super(x, y, width, length, size);
+        this.alienAuras = aurasList;
+    }
+
     @Override
     public AbstractBuilding copy() {
-        CasernCore copy =  new CasernCore(x, y, width, length, size);
+        CasernCore copy =  new CasernCore(x, y, width, length, size, alienAuras);
         return copy;
     }
 

@@ -19,7 +19,7 @@ public class Resources {
     private int gainTimePassed;
     private int enemyTimePassed;
     public static final int GAIN_TIME = 1_000;
-    public static final int ENEMY_TIME = 5_000;
+    public static final int ENEMY_TIME = 25_000;
 
     private double time = 0;
 
