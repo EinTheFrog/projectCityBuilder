@@ -1,7 +1,6 @@
 package core.buildings;
 
 import core.Aura;
-import view.buildings.AbstractBuildingView;
 
 
 public class CastleCore extends AbstractBuilding {

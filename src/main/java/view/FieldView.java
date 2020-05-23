@@ -194,14 +194,11 @@ public class FieldView extends Pane {
             highlightAura(chosenBuilding, false);
         }
         if (building != null) {
-            fieldCore.setChosenBuilding(building.getCore());
             controller.setInfo(building);
             controller.showInfo();
             chosenBuilding = building;
             chosenBuilding.highlight(true);
             highlightAura(chosenBuilding, true);
-        } else {
-            fieldCore.setChosenBuilding(null);
         }
         chosenBuilding = building;
     }
@@ -226,15 +223,18 @@ public class FieldView extends Pane {
     }
 
     public void removeBuildingGhost() {
-        fieldCore.removeBuildingGhost();
         highlightAura(buildingGhost, false);
         getChildren().remove(buildingGhost);
         buildingGhost = null;
     }
 
     public void removeRandomBuilding() {
+        if (buildingsList.size() == 0) return;
+        int k;
         Random rnd = new Random();
-        int k = rnd.nextInt(buildingsList.size());
+        if (buildingsList.size() == 1) k = 0;
+        else k = rnd.nextInt(buildingsList.size() - 1);
+        fieldCore.removeBuilding(k);
         removeBuilding(buildingsList.get(k));
     }
 
@@ -293,6 +293,8 @@ public class FieldView extends Pane {
     public void removeBuilding(AbstractBuildingView buildingView) {
         fieldCore.removeBuilding(buildingView.getCore());
         this.getChildren().remove(buildingView);
+        controller.updateResources();
+        controller.updateIncome();
     }
 
     public void highlightAura(AbstractBuildingView building, boolean bool) {

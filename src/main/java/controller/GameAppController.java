@@ -55,6 +55,7 @@ public class GameAppController implements Initializable {
     private Timer timer = new Timer(true);
     private TimerTask timerTask;
     private TimerTask timerMoveTask;
+    private boolean timerIsRunning;
 
     private final int FIELD_SIZE = 20;
     private final double INDENT = 50;
@@ -88,6 +89,8 @@ public class GameAppController implements Initializable {
         updateResources();
         updateIncome();
         updateTime();
+
+        timerIsRunning = false;
         startTimer();
 
         fieldPane.getChildren().add(chosenField);
@@ -153,6 +156,7 @@ public class GameAppController implements Initializable {
     public void showInfo() {
         vBoxInfo.setVisible(true);
     }
+
     public void hideInfo() {
         vBoxInfo.setVisible(false);
     }
@@ -174,6 +178,7 @@ public class GameAppController implements Initializable {
 
     //методы для работы с таймером
     private void startTimer() {
+        timerIsRunning = true;
         timerMoveTask = new TimerTask() {
             @Override
             public void run() {
@@ -190,9 +195,10 @@ public class GameAppController implements Initializable {
             @Override
             public void run() {
                 Platform.runLater(() -> {
-                    gameResources.changeTime(500);
+                    boolean enemiesCame = gameResources.changeTime(500);
                     updateResources();
                     updateTime();
+                    if (enemiesCame) showEnemy();
                 });
             }
         };
@@ -201,16 +207,17 @@ public class GameAppController implements Initializable {
     }
 
     private void stopTimer() {
+        timerIsRunning = false;
         timerMoveTask.cancel();
         timerTask.cancel();
     }
 
     public void resume() {
-        if (timerTask == null) startTimer();
+        if (!timerIsRunning) startTimer();
     }
 
     public void pause() {
-        stopTimer();
+        if (timerIsRunning) stopTimer();
     }
 
     //методы для обработки информации о нажатых клавишах
@@ -328,18 +335,11 @@ public class GameAppController implements Initializable {
      * метод для открытия окна коче
      */
     public void showEnemy() {
+        setBlockedMod();
         StagesManager.EnemyMenu.open();
     }
 
     public Mod getMod() {
         return mod;
-    }
-
-    public double getScreenWidth() {
-        return screen.getVisualBounds().getWidth();
-    }
-
-    public double getScreenHeight() {
-        return screen.getVisualBounds().getHeight();
     }
 }

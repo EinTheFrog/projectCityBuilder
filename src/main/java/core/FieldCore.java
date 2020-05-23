@@ -6,11 +6,8 @@ import java.util.*;
 
 public class FieldCore {
     private final CellCore[][] cellsArray;
-    private CellCore chosenCell;
     public final int SIZE; //кол-во клеток на одной стороне игрвого поля
     private final List<AbstractBuilding> buildingsList;
-    private AbstractBuilding buildingGhost;
-    private AbstractBuilding chosenBuilding;
     private int goldIncome;
     private int forceIncome;
     private int people;
@@ -27,11 +24,6 @@ public class FieldCore {
 
     }
 
-    //методы добавления элементов на поле
-    public void addGhost(AbstractBuilding buildingGhost) {
-        this.buildingGhost = buildingGhost;
-    }
-
     public void addCell(CellCore cellCore) {
         cellsArray[cellCore.getX()][cellCore.getY()] = cellCore;
     }
@@ -44,7 +36,6 @@ public class FieldCore {
     public boolean buildBuilding(AbstractBuilding newBuilding) {
         if (isAreaFree(newBuilding) && gameResources.getGold() >= newBuilding.getGoldCost()) {
             gameResources.buyBuilding(newBuilding.getGoldCost(), newBuilding.getPeopleChange());
-            removeBuildingGhost();
             checkAreaForAuras(newBuilding);
             setAuraForArea(newBuilding);
             setBuildingForArea(newBuilding);
@@ -53,7 +44,6 @@ public class FieldCore {
             updateIncome();
             return true;
         }
-        setChosenBuilding(null);
         return false;
     }
 
@@ -64,13 +54,19 @@ public class FieldCore {
             cell.removeBuilding();
         }
         removeAuraForArea(building);
-        setChosenBuilding(null);
         updateIncome();
     }
 
-    public void removeBuildingGhost() {
-        buildingGhost = null;
+    public void removeBuilding(int k) {
+        AbstractBuilding building = buildingsList.get(k);
+        buildingsList.remove(building);
+        for (CellCore cell: getCellsUnderBuilding(building)) {
+            cell.removeBuilding();
+        }
+        removeAuraForArea(building);
+        updateIncome();
     }
+
 
     //методы для работы с клетками на определенной площади
     public Set<CellCore> getCellsUnderBuilding(AbstractBuilding building) {
@@ -128,13 +124,9 @@ public class FieldCore {
     }
 
     public void removeAuraForArea(AbstractBuilding buildingEmitter) {
-        Set<AbstractBuilding> set = new HashSet<>();
         for (CellCore cell: getCellsInAura(buildingEmitter)) {
             cell.removeAura(buildingEmitter.getOwnAura());
-            if (cell.getBuilding() != null) set.add(cell.getBuilding());
-        }
-        for (AbstractBuilding building: set) {
-            building.removeAura(buildingEmitter.getOwnAura());
+            if (cell.getBuilding() != null) cell.getBuilding().removeAura(buildingEmitter.getOwnAura());
         }
     }
 
@@ -151,14 +143,7 @@ public class FieldCore {
         }
     }
 
-    //метод для установки режима строительства
 
-
-    public void setChosenBuilding (AbstractBuilding building) {
-        chosenBuilding = building;
-    }
-
-    //методы для работы с графичеким представлением поля
 
     /**
      * метод для передачи классу Economy новых значений изменения ресурсов (gold, force, people)
@@ -198,10 +183,6 @@ public class FieldCore {
     //getters
     public int getPeople() {
         return people;
-    }
-
-    public AbstractBuilding getChosenBuilding() {
-        return chosenBuilding;
     }
 
     public List<AbstractBuilding> getBuildingsList() {

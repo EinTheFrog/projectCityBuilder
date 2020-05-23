@@ -119,6 +119,7 @@ public abstract class StagesManager {
         public static void close () {
             if (enemyPopup != null) {
                 isOpen = false;
+                GameApp.myController.updateResources();
                 GameApp.myController.setChoosingMod();
                 GameApp.myController.resume();
                 enemyPopup.hide();
@@ -192,7 +193,7 @@ public abstract class StagesManager {
 
         public static void open() {
             isOpen = true;
-            GameApp.getController().setBlockedMod();
+            GameApp.myController.setBlockedMod();
             Stage owner = GameApp.gameStage;
             if (defeatPopup != null) {
                 defeatPopup.show(owner);

@@ -1,7 +1,5 @@
 package core;
 
-import controller.GameAppController;
-
 import java.util.Random;
 
 public class Resources {
@@ -15,24 +13,28 @@ public class Resources {
     private int forceIncome;
     private int goldIncome;
 
-    private static int enemyForce = 20;
-    private static int enemyCost = 100;
+    private int enemyForce = 20;
+    private int enemyCost = 100;
 
-    private static int timeBeforeGain = 0;
-    private static int timeBeforeEnemy = 0;
+    private int gainTimePassed;
+    private int enemyTimePassed;
     public static final int GAIN_TIME = 1_000;
-    public static final int ENEMY_TIME = 50_000;
-    private static double time = 0;
+    public static final int ENEMY_TIME = 5_000;
+
+    private double time = 0;
+
+    private boolean userLost;
 
     public Resources() {
-        timeBeforeGain = 0;
-        timeBeforeEnemy = 0;
+        enemyTimePassed = 0;
+        gainTimePassed = 0;
         gold = START_GOLD;
         force = START_FORCE;
         people = START_PEOPLE;
         forceIncome = 0;
         goldIncome = 0;
         time = 0;
+        userLost = false;
     }
 
     //метод для покупки здания
@@ -42,37 +44,35 @@ public class Resources {
     }
 
     //методы для EnemyMenu
-    public boolean pay (int cost) {
-
+    public void pay (int cost) {
         if (gold - cost < 0) {
             gold = 0;
-            return false;
+            userLost = true;
         }
         else gold = gold - cost;
-        return true;
     }
 
     /**
      * метод, обновляющий значения ресурсов и времени, а также вызывающий EnemyMenu
      * каждый период времени
      * возвращает boolean, показывающий, пришли враги или нет
-     * @param timeChangeInMills
+     * @param timeChangeInMills should be less than Resources.ENEMY_TIME
      */
     public boolean changeTime(int timeChangeInMills) {
+        if (timeChangeInMills > ENEMY_TIME) System.err.println("Too big argument in changeTime");
         time += timeChangeInMills / 1000.0;
-        timeBeforeGain -= timeChangeInMills;
-        timeBeforeEnemy -= timeChangeInMills;
-
-        if (timeBeforeGain < 0) timeBeforeGain = GAIN_TIME;
-        if (timeBeforeGain == 0) {
-            timeBeforeGain = GAIN_TIME;
+        int k =0;
+        for (int i = 1; i <= (timeChangeInMills + gainTimePassed)/GAIN_TIME; i++) {
             gainResources();
+            k++;
         }
-        if (timeBeforeEnemy < 0) timeBeforeEnemy = ENEMY_TIME;
-        if (timeBeforeEnemy == 0) {
-            timeBeforeEnemy = ENEMY_TIME;
+        gainTimePassed += timeChangeInMills - GAIN_TIME * k;
+
+        if ((enemyTimePassed + timeChangeInMills) / ENEMY_TIME > 0) {
+            enemyTimePassed = 0;
             return true;
         }
+        enemyTimePassed += timeChangeInMills;
         return false;
     }
 
@@ -83,17 +83,25 @@ public class Resources {
     }
 
     public boolean beatEnemies() {
-        boolean win = true;
         Random rnd = new Random();
         int result = rnd.nextInt(100);
         if (result > (force / (force + enemyForce)) * 100) {
+            beatEnemies(false);
+            return false;
+        } else {
+            beatEnemies(true);
+            return true;
+        }
+    }
+
+    public void beatEnemies(boolean bool) {
+        boolean win = true;
+        if (!bool) {
             pay(enemyForce * 5);
             decreaseForce(enemyForce);
-            win = false;
         }
         enemyForce *= 2;
         enemyCost = enemyCost > 10? enemyCost - 10: enemyCost;
-        return win;
     }
 
     public void payEnemies() {
@@ -127,6 +135,10 @@ public class Resources {
         return people;
     }
 
+    public void setGold(int gold) {
+        this.gold = gold;
+    }
+
     public void chooseField(FieldCore fieldCore) {
         people = fieldCore.getPeople();
     }
@@ -136,10 +148,14 @@ public class Resources {
     }
 
     public int getForceIncome() {
-        return goldIncome;
+        return forceIncome;
     }
 
     public int getTime() {
         return (int) time;
+    }
+
+    public boolean userLost() {
+        return userLost;
     }
 }

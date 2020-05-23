@@ -2,23 +2,22 @@ package controller;
 
 import render.StagesManager;
 
-import java.util.Random;
-
 public class EnemyMenuController {
     public void pressOnBtnPay() {
-        close();
         GameAppController.gameResources.payEnemies();
+        close();
     }
 
     public void pressOnBtnFight() {
-        close();
         if (!GameAppController.gameResources.beatEnemies()) {
             GameAppController.chosenField.removeRandomBuilding();
         }
+        close();
     }
 
     public void close() {
         StagesManager.EnemyMenu.close();
+        if (GameAppController.gameResources.userLost()) StagesManager.DefeatMenu.open();
     }
 
     public static void move (double x, double y) {
