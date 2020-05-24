@@ -6,6 +6,7 @@ import core.Aura;
 import core.FieldCore;
 import core.buildings.AbstractBuilding;
 import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.transform.Scale;
 import view.buildings.AbstractBuildingView;
@@ -104,6 +105,9 @@ public class FieldView extends Pane {
         scale.setY(1);
         move(0,0);
         this.getTransforms().add(scale);
+
+        addEventHandler(KeyEvent.KEY_PRESSED, event -> controller.keyPressed(event.getCode()));
+        addEventHandler(KeyEvent.KEY_RELEASED, event -> controller.keyReleased(event.getCode()));
     }
 
     //метод для приближения камеры
@@ -232,9 +236,8 @@ public class FieldView extends Pane {
         if (buildingsList.size() == 0) return;
         int k;
         Random rnd = new Random();
-        if (buildingsList.size() == 1) k = 0;
-        else k = rnd.nextInt(buildingsList.size() - 1);
-        fieldCore.removeBuilding(k);
+        k = rnd.nextInt(buildingsList.size());
+        fieldCore.removeBuilding(k );
         removeBuilding(buildingsList.get(k));
     }
 

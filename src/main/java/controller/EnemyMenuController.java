@@ -21,8 +21,7 @@ public class EnemyMenuController {
     }
 
     public static void move (double x, double y) {
-        StagesManager.EnemyMenu.setX(x - StagesManager.EnemyMenu.getWidth() / 2);
-        StagesManager.EnemyMenu.setY(y - StagesManager.EnemyMenu.getHeight() / 2);
+        StagesManager.EnemyMenu.setCoords(x, y);
     }
 
 }

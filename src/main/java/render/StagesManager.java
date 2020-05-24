@@ -48,9 +48,6 @@ public abstract class StagesManager {
                 gameStage.setScene(new Scene(root));
                 myController = loader.getController();
                 gameStage.show();
-                gameStage.setOnCloseRequest(event -> {
-                    Stage stage = gameStage;
-                });
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -122,20 +119,8 @@ public abstract class StagesManager {
             }
         }
 
-        public static void setX(double x) {
-            enemyPopup.setX(x);
-        }
-
-        public static void setY(double y) {
-            enemyPopup.setY(y);
-        }
-
-        public static double getWidth() {
-            return enemyPopup.getWidth();
-        }
-
-        public static double getHeight() {
-            return enemyPopup.getHeight();
+        public static void setCoords(double x, double y) {
+            StagesManager.setCoords(x, y, enemyPopup);
         }
 
     }
@@ -166,20 +151,8 @@ public abstract class StagesManager {
             }
         }
 
-        public static void setX(double x) {
-            menuPopup.setX(x);
-        }
-
-        public static void setY(double y) {
-            menuPopup.setY(y);
-        }
-
-        public static double getWidth() {
-            return menuPopup.getWidth();
-        }
-
-        public static double getHeight() {
-            return menuPopup.getHeight();
+        public static void setCoords(double x, double y) {
+            StagesManager.setCoords(x, y, menuPopup);
         }
     }
 
@@ -202,21 +175,14 @@ public abstract class StagesManager {
                     GameApp.getY() + GameApp.getHeight() / 2);
         }
 
-        public static void setX(double x) {
-            defeatPopup.setX(x);
+        public static void setCoords(double x, double y) {
+            StagesManager.setCoords(x, y, defeatPopup);
         }
+    }
 
-        public static void setY(double y) {
-            defeatPopup.setY(y);
-        }
-
-        public static double getWidth() {
-            return defeatPopup.getWidth();
-        }
-
-        public static double getHeight() {
-            return defeatPopup.getHeight();
-        }
+    private static void setCoords(double x, double y, Popup popup) {
+        popup.setX(x - popup.getWidth() / 2);
+        popup.setY(y - popup.getHeight() / 2);
     }
 
 

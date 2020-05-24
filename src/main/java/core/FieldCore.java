@@ -45,7 +45,7 @@ public class FieldCore {
      * добавляет здание в список зданий поля
      * @param newBuilding - здание, которое мы хотим добавить на поле/
      * @return false, если не удалось добавить здание (не хватает золота, клетки,
-     * на которых мы хотим расположить здание заняты). Иначе - true
+     * на которых мы хотим расположить здание заняты), иначе - true
      */
     public boolean buildBuilding(AbstractBuilding newBuilding) {
         if (isAreaFree(newBuilding) && gameResources.getGold() >= newBuilding.getGoldCost()) {
@@ -118,7 +118,7 @@ public class FieldCore {
     /**
      * Метод для проверки свободности пространства для постройки здания
      * @param building - здание которое мы хотим построить.
-     * @return true, если пространство свободно. Иначе - false
+     * @return true, если пространство свободно, иначе - false
      */
     public boolean isAreaFree (AbstractBuilding building) {
         int bldRealWidth = building.getWidth() * building.getSize();

@@ -11,7 +11,6 @@ public class DefeatMenuController {
     }
 
     public static void move(double x, double y) {
-        StagesManager.DefeatMenu.setX(x - StagesManager.DefeatMenu.getWidth() / 2);
-        StagesManager.DefeatMenu.setY(y - StagesManager.DefeatMenu.getHeight() / 2);
+        StagesManager.DefeatMenu.setCoords(x , y);
     }
 }

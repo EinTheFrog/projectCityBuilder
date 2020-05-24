@@ -11,7 +11,7 @@ public class Resources {
     public static final int START_FORCE = 0;
     public static final int START_PEOPLE = 0;
     public static final int GAIN_TIME = 1_000;
-    public static final int ENEMY_TIME = 25_000;
+    public static final int ENEMY_TIME = 3_000;
 
     private int gold ;
     private int force;

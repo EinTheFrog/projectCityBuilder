@@ -27,13 +27,11 @@ public class MenuController {
 
     public void pressESC(KeyEvent e) {
         if (e.getCode() == KeyCode.ESCAPE) {
-            StagesManager.GameApp.getController().resume();
             StagesManager.Menu.close();
         }
     }
 
     public static void move(double x, double y) {
-        StagesManager.Menu.setX(x - StagesManager.Menu.getWidth() / 2);
-        StagesManager.Menu.setY(y - StagesManager.Menu.getHeight() / 2);
+        StagesManager.Menu.setCoords(x , y);
     }
 }

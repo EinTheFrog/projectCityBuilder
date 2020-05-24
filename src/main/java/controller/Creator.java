@@ -4,6 +4,7 @@ import core.CellCore;
 import core.FieldCore;
 import core.Resources;
 import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.scene.input.KeyEvent;
 import view.Visibility;
 import core.buildings.AbstractBuilding;
 import view.CellView;
@@ -22,7 +23,6 @@ public abstract class Creator {
         final double moveSpeed = fieldSide / (4 * size);
         FieldView fieldView = new FieldView(fieldCore, controller, size, indent, fieldSide,
                 paneWidth, paneHeight, moveSpeed);
-        FieldController.addEventHandlers(fieldView, controller);
         return fieldView;
     }
 

@@ -1,7 +1,5 @@
 package controller;
 
-import core.CellCore;
-
 import javafx.scene.input.MouseEvent;
 import view.CellView;
 
