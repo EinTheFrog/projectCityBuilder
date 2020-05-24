@@ -11,7 +11,7 @@ public class Resources {
     public static final int START_FORCE = 0;
     public static final int START_PEOPLE = 0;
     public static final int GAIN_TIME = 1_000;
-    public static final int ENEMY_TIME = 3_000;
+    public static final int ENEMY_TIME = 5_000;
 
     private int gold ;
     private int force;
@@ -41,7 +41,11 @@ public class Resources {
         userLost = false;
     }
 
-    //метод для покупки здания
+    /**
+     * Метод для покупки здания
+     * @param goldCost - стоимость здания в золоте
+     * @param peopleChange - параметр, отвечающий за то, как изменится популяция поселения от постройки здания
+     */
     public void buyBuilding (int goldCost, int peopleChange) {
         gold -= goldCost;
         people += peopleChange;

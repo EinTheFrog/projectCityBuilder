@@ -1,7 +1,6 @@
 package view.buildings;
 
 import core.buildings.AbstractBuilding;
-import core.buildings.CasernCore;
 import view.Visibility;
 
 public class CasernView extends AbstractBuildingView {

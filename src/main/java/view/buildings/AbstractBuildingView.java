@@ -21,8 +21,8 @@ public abstract class AbstractBuildingView extends ImageView {
     public BooleanProperty isChosen;
 
     /**
-     * @param buildingCore - логическое представления зданияы
-     * @param width - необходимая ширина здания (предпопалагется, что она равна ширине клетки * размер здания)
+     * @param buildingCore - логическое представления здания
+     * @param width - необходимая ширина здания (предпопалагется, что она равна ширине клетки)
      * @param visibility - параметр, от которого зависит прозрачность здания
      */
     public AbstractBuildingView (AbstractBuilding buildingCore, double width, Visibility visibility) {
@@ -47,6 +47,10 @@ public abstract class AbstractBuildingView extends ImageView {
         addEventHandler(MouseEvent.MOUSE_CLICKED, event -> isChosen.setValue(true));
     }
 
+    /**
+     * Метод устанавливающий прозрачность здания (есть 3 типа прозрачности, см. Visibility)
+     * @param visibility
+     */
     public void setVisibility(Visibility visibility) {
         this.visibility = visibility;
         switch (visibility) {

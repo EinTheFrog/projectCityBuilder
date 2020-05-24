@@ -1,8 +1,6 @@
 package view.buildings;
 
 import core.buildings.AbstractBuilding;
-import javafx.beans.property.ReadOnlyDoubleProperty;
-import view.CellView;
 import view.Visibility;
 
 public class HouseView extends AbstractBuildingView {

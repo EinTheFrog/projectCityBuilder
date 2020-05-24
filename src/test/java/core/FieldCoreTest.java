@@ -18,23 +18,23 @@ class FieldCoreTest {
             }
         }
 
-        final AbstractBuilding house1 = new HouseCore(0,0,1,1,2);
+        final AbstractBuilding house1 = new HouseCore(0,0,2,2);
         fieldCore.buildBuilding(house1);
         assertEquals(0, fieldCore.getBuildingsList().size());
 
-        final AbstractBuilding house2 = new HouseCore(1,1,1,1,2);
+        final AbstractBuilding house2 = new HouseCore(1,1,2,2);
         fieldCore.buildBuilding(house2);
         assertEquals(1, fieldCore.getBuildingsList().size());
         assertEquals(5, gameResources.getGoldIncome());
 
-        fieldCore.buildBuilding(new CastleCore(8,3,1,1,4));
-        fieldCore.buildBuilding(new CastleCore(8,10,1,1,5));
+        fieldCore.buildBuilding(new CastleCore(8,3,4,4));
+        fieldCore.buildBuilding(new CastleCore(8,10,5,5));
         assertEquals(2, fieldCore.getBuildingsList().size());
         assertEquals(0, gameResources.getForceIncome());
 
         gameResources.setGold(2000);
         for (int i = 11; i < 20; i ++) {
-            final AbstractBuilding house3 = new HouseCore(10, i,1,1,1);
+            final AbstractBuilding house3 = new HouseCore(10, i,1,1);
             fieldCore.buildBuilding(house3);
         }
         assertEquals(20, gameResources.getForceIncome());
@@ -44,7 +44,7 @@ class FieldCoreTest {
         assertEquals(10, fieldCore.getBuildingsList().size());
 
         gameResources.setGold(2000);
-        final AbstractBuilding tavern = new TavernCore(3,3,1,1,2);
+        final AbstractBuilding tavern = new TavernCore(3,3,2,2);
         fieldCore.buildBuilding(tavern);
         final AbstractBuilding houseCopy = house2.copy();
         assertEquals(10, houseCopy.getGoldProfit());
@@ -62,11 +62,11 @@ class FieldCoreTest {
             }
         }
 
-        final AbstractBuilding tavern = new TavernCore(2,2,1,1,2);
+        final AbstractBuilding tavern = new TavernCore(2,2,2,2);
         fieldCore.buildBuilding(tavern);
         assertEquals(1, fieldCore.getBuildingsList().size());
 
-        final AbstractBuilding house1 = new HouseCore(1,1,1,1,2);
+        final AbstractBuilding house1 = new HouseCore(1,1,2,2);
         fieldCore.buildBuilding(house1);
         assertEquals(1, fieldCore.getBuildingsList().size());
         assertEquals(0, gameResources.getGoldIncome());
@@ -75,7 +75,7 @@ class FieldCoreTest {
         assertEquals(1, fieldCore.getBuildingsList().size());
         assertEquals(0, gameResources.getGoldIncome());
 
-        final AbstractBuilding house2 = new HouseCore(4,1,1,1,2);
+        final AbstractBuilding house2 = new HouseCore(4,1,2,2);
         fieldCore.buildBuilding(house2);
         assertEquals(2, fieldCore.getBuildingsList().size());
         assertEquals(20, gameResources.getGoldIncome());
@@ -97,21 +97,21 @@ class FieldCoreTest {
         }
         resources.chooseField(fieldCore);
 
-        final AbstractBuilding tavern = new TavernCore(1,1,1,1,2);
+        final AbstractBuilding tavern = new TavernCore(1,2,2,1);
         fieldCore.buildBuilding(tavern);
 
-        final AbstractBuilding house1 = new HouseCore(3,1,1,1,2);
+        final AbstractBuilding house1 = new HouseCore(3,2,2,1);
         fieldCore.buildBuilding(house1);
         resources.changeTime(5_000);
         assertEquals(275, resources.getGold());
 
         for (int i = 5; i < 20; i += 4) {
-            final AbstractBuilding house2 = new HouseCore(i,1,1,1,2);
+            final AbstractBuilding house2 = new HouseCore(i,1,2,2);
             fieldCore.buildBuilding(house2);
         }
 
         for (int i = 5; i < 20; i += 4) {
-            final AbstractBuilding casern = new CasernCore(i,10,1,1,2);
+            final AbstractBuilding casern = new CasernCore(i,10,2,2);
             fieldCore.buildBuilding(casern);
         }
         assertEquals(10, resources.getForceIncome());

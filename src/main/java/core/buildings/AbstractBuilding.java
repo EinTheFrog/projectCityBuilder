@@ -5,7 +5,7 @@ import core.Aura;
 import java.util.*;
 
 /**
- * Ролительский класс для всех зданий
+ * Родительский класс для всех зданий
  */
 public abstract class AbstractBuilding {
     protected int x;
@@ -20,8 +20,7 @@ public abstract class AbstractBuilding {
      * @param x - логическая координата на поле
      * @param y - логическая координата на поле
      * @param width - логический размер в кол-ве занимаемых клеток
-     * @param length
-     * @param size
+     * @param length - логический размер в кол-ве занимаемых клеток
      */
     public AbstractBuilding (int x, int y, int width, int length) {
         //задаем параметры
@@ -34,19 +33,36 @@ public abstract class AbstractBuilding {
         ownAura = getOwnAura();
     }
 
+    /**
+     * Метод для добавления ауры зданию (аура влияет на проивзодимые зданием ресурсы).
+     * @param aura
+     */
     public void addAura(Aura aura) {
         alienAuras.add(aura);
     }
 
+    /**
+     * Метод для добаваления целой колекции аур
+     * @param auras
+     */
     public void addAuras(Collection<Aura> auras) {
         alienAuras.addAll(auras);
     }
 
+    /**
+     * Метод для удаления указанной ауры у здания
+     * Внутри ауры хранятся списком. Здание имеет ауру с каждой клетки, поэтому при аура будет убрана только,
+     * если будут удалены ауры со всех клеток под зданием
+     * @param aura
+     */
     public void removeAura(Aura aura) {
         alienAuras.remove(aura);
     }
 
-    //метод для создания копии здания
+    /**
+     * Метод для создания копии здания
+     * @return
+     */
     public abstract AbstractBuilding copy();
 
     public abstract int getGoldProfit();
@@ -55,13 +71,16 @@ public abstract class AbstractBuilding {
 
     public abstract int getForceProfit();
 
+    /**
+     * Метод, позволяющий узнать как здание изменяет популяцию поселения
+     * @return
+     */
     public abstract int getPeopleChange();
 
     public abstract Aura getOwnAura();
 
     public abstract String getName();
 
-    //getters
 
     public int getX() { return x; }
 

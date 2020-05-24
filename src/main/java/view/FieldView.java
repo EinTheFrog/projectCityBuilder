@@ -2,9 +2,7 @@ package view;
 
 import controller.GameAppController;
 import controller.Mod;
-import core.Aura;
 import core.FieldCore;
-import core.buildings.AbstractBuilding;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
@@ -14,8 +12,12 @@ import view.buildings.AbstractBuildingView;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Класс, отвечающий за графическое представление игрвого поля
+ * Хранит все графические представления клеток и постпроенных зданий
+ * Содержит обработчики нажатия клавиш
+ */
 public class FieldView extends Pane {
-    private static final double MOVE_SPEED_DENOM = 8; //
     private static final double BASE_SCROLL = 200;
 
     private FieldCore fieldCore;
@@ -28,7 +30,6 @@ public class FieldView extends Pane {
 
     private double width;
     private double height;
-    private double side;
     public final int SIZE;
     private ReadOnlyDoubleProperty paneWidth;
     private ReadOnlyDoubleProperty paneHeight;
@@ -40,8 +41,8 @@ public class FieldView extends Pane {
     //на поле все клетки одинаковы
     private final CellView[][] cellsArray;
     private CellView chosenCell;
-    private double cellWidth;
-    private double cellHeight;
+    private final double cellWidth;
+    private final double cellHeight;
 
     private AbstractBuildingView buildingGhost;
     private  AbstractBuildingView chosenBuilding;
@@ -49,30 +50,29 @@ public class FieldView extends Pane {
 
     private GameAppController controller;
 
-    //для каждого поля у нас своё положение камеры, а значит у каждого поля должны быть свои параметры scale
-    // и скорости перемщения камеры
+    // для каждого поля (сейчас в правилах игры у игрока может быть всего одно поле) у нас своё положение камеры,
+    // а значит у каждого поля должны быть свои параметры scale и скорости перемещения камеры
     private double moveRange;
     private final double START_MOVE_RANGE;
 
     /**
-     *
-     * @param size
-     * @param indent
-     * @param side
-     * @param paneWidth - параметр, необходимый, для работы приближения камеры (вычисления нового положения
-     *                 поля расчитываются относительно центра панели, на которй он находится)
-     * @param paneHeight
-     * @param moveRange
+     * @param size - кол-во клеток для одной стороны поля
+     * @param indent - начальный отступ поля от границы экрана
+     * @param side - длина стороны графического представления игрвого поля
+     * @param paneWidth - ширина родительского layout-а, необходима для работы приближения камеры
+     *                 (вычисления нового положения поля расчитываются относительно центра панели, на которй он находится)
+     * @param paneHeight - высота родительского layout-а, необходима для работы приближения камеры
+     *                  (вычисления нового положения поля расчитываются относительно центра панели, на которй он находится)
+     * @param moveRange - скорость, с которой мы перемещаем поле при симуляции движения камеры
      */
     public FieldView (FieldCore fieldCore, GameAppController controller, int size, double indent, double side,
                       ReadOnlyDoubleProperty paneWidth, ReadOnlyDoubleProperty paneHeight, double moveRange) {
-        //позволяем фокусироваться на игровом поле
+        //фокусируемся на графическом представлении игрвого поля
         setFocusTraversable(true);
         requestFocus();
 
         this.fieldCore = fieldCore;
         SIZE = size;
-        this.side = side;
         width = 2 * side * Math.cos(Math.PI / 6);
         height = 2 * side * Math.sin(Math.PI / 6);
         START_WIDTH = width;
@@ -110,7 +110,9 @@ public class FieldView extends Pane {
         addEventHandler(KeyEvent.KEY_RELEASED, event -> controller.keyReleased(event.getCode()));
     }
 
-    //метод для приближения камеры
+    /**
+     * Метод для симуляции приближения камеры к игрвому полю
+     */
     public void zoom (double scrollValue) {
         //увеличивая значение scale создаем эфект приближения камеры
         if (scaleValue + scrollValue / BASE_SCROLL > 0.1 && scaleValue + scrollValue / BASE_SCROLL < 10)
@@ -126,22 +128,34 @@ public class FieldView extends Pane {
         moveRange = START_MOVE_RANGE / scaleValue;
     }
 
-    //метод для симуляции приближения камеры к игрвому полю
+    /**
+     * Вспомогательный метод для zoom()
+     * @param scaleValue
+     */
     private void setScale (double scaleValue) {
         scale.setX(scaleValue);
         scale.setY(scaleValue);
     }
 
-    //метод для перемщения камеры (самого поля относительно камеры)
+    /**
+     * Метод для перемщения камеры (самого поля относительно камеры). В методе производятся вычисления, позовляющие
+     * корректно перемещать здание при любом значении scale
+     */
     public void move(double dx, double dy) {
         fieldMoveX += dx * moveRange;
         fieldMoveY += dy * moveRange;
         //вычитываем координаты поля для его отрисовки в зависимости от scale
         fieldX = (fieldMoveX - paneWidth.getValue() / 2) * scaleValue + paneWidth.getValue() / 2;
         fieldY = (fieldMoveY - paneHeight.getValue() / 2) * scaleValue + paneHeight.getValue() / 2;
-        this.relocate(fieldX, fieldY);
+        relocate(fieldX, fieldY);
     }
 
+    /**
+     * Метод добавляющий клетку. При добавлении на параметры isClicked и is Chosen клетки устанавливаются слушаетели,
+     * чтобы поле могло реагировать, когда наводит курсор или клмикает по како-либо клетке. С помощью такой реализации
+     * поле знает о клетках, которые находятся на нем, однако клетки не знают о поле, на котором находятся
+     * @param cellView
+     */
     public void addCell(CellView cellView) {
         int indX = cellView.getCore().getX();
         int indY = cellView.getCore().getY();
@@ -155,7 +169,7 @@ public class FieldView extends Pane {
         double x = indX * cellWidth / 2 + FIRST_CELL_X;
         double y = FIRST_CELL_Y - indX * cellHeight / 2;
         cellView.relocate(x, y);
-        this.getChildren().add(cellView);
+        getChildren().add(cellView);
 
         cellView.isChosen.addListener((obs, oldVal, newVal) -> {
             if (buildingGhost != null) {
@@ -181,16 +195,19 @@ public class FieldView extends Pane {
         });
         cellView.isClicked.addListener((obs, oldVal, newVal) -> {
             if (newVal) {
-                if (controller.getMod() == Mod.BUILDING_MOD) {
-                    buyBuilding();
-                    controller.setChoosingMod();
-                }
+                if (controller.getMod() == Mod.BUILDING_MOD) buyBuilding();
                 if (controller.getMod() == Mod.CHOOSING_MOD) setChosenBuilding(null);
                 cellView.isClicked.setValue(false);
             }
         });
     }
 
+    /**
+     * Задает значение выбранного пользовтелем здания для поля. У выбранного здания включается подсветка (у всех
+     * остальных зданий она выключается). Также поле вызывает метод GameAppController-а, который показывает пользователю
+     * панель с информацией о выбранном здании
+     * @param building
+     */
     public void setChosenBuilding (AbstractBuildingView building) {
         if (chosenBuilding != null) {
             controller.hideInfo();
@@ -207,7 +224,11 @@ public class FieldView extends Pane {
         chosenBuilding = building;
     }
 
-    public void makeBuildingsClickable (boolean bool) {
+    /**
+     * Включает/ выключает обработчики щелчков на зданиях поля, а также устанаваливает для них подходящую прозрачность
+     * @param bool
+     */
+    private void makeBuildingsClickable (boolean bool) {
         for (AbstractBuildingView building: buildingsList) {
             if (bool) {
                 building.setVisibility(Visibility.VISIBLE);
@@ -217,31 +238,50 @@ public class FieldView extends Pane {
         }
     }
 
+    /**
+     * Включает/выключает режим постройки для поля. В режиме постройки мы не можем выбирать здания, стоящие на поле,
+     * построенные здания становятся полупрозрачными, чтобы пользователю было удобнее строить здания,
+     * а на выбранной курсором клетке появляется призрак здания, которое пользователь хочет  построить
+     * @param bool
+     */
     public void setBuildingMod(boolean bool) {
         if (!bool) {
-            if (buildingGhost != null) removeBuildingGhost();
+            if (buildingGhost != null) removeGhost();
             makeBuildingsClickable(true);
         } else {
             makeBuildingsClickable(false);
         }
     }
 
-    public void removeBuildingGhost() {
+    /**
+     * Удаляет призрак здания (полупрозрачное здание, помогающие пользователю выбрать место для постройки реального здания)
+     * с графического представления поля
+     */
+    private void removeGhost() {
         highlightAura(buildingGhost, false);
         getChildren().remove(buildingGhost);
         buildingGhost = null;
     }
 
+    /**
+     * Метод, удаляющйи случайное здание с поля (как с графической так и с логической реализации)
+     * Включает проверку на пустоту списка зданий и создание случайной переменной
+     */
     public void removeRandomBuilding() {
         if (buildingsList.size() == 0) return;
         int k;
         Random rnd = new Random();
         k = rnd.nextInt(buildingsList.size());
-        fieldCore.removeBuilding(k );
         removeBuilding(buildingsList.get(k));
     }
 
-    public void buyBuilding() {
+    /**
+     * Метод для создания здания. Создает копию призрака здания (делая копию непрозрачной). Пытается добавить здания в
+     * логическое прдеставление поля. Если удается это сделать - доавляет слушаетеля для параметра isChosen для новго
+     * здания (это нужно, чтобы здание не хранило информации о поле, на котором расположено) и включает choosingMod
+     * с помощью экземпляра GameAppController
+     */
+    private void buyBuilding() {
         AbstractBuildingView buildingView = buildingGhost.copy();
         boolean wasBuilt = fieldCore.buildBuilding(buildingView.getCore());
         if (wasBuilt) {
@@ -252,31 +292,31 @@ public class FieldView extends Pane {
                 }
             });
             buildingsList.add(buildingView);
-            this.getChildren().add(buildingView);
-            buildingsList.sort(Comparator.comparingInt(this::getVerticalShift));
-            int k = buildingsList.indexOf(buildingView);
-            for (int i = k; i < buildingsList.size(); i++) {
-                moveBuildingToFront(buildingsList.get(i));
-            }
+            getChildren().add(buildingView);
+            updateBuildingsDisposal(buildingView);
 
             controller.updateResources();
             controller.updateIncome();
+            controller.setChoosingMod();
         }
     }
 
-    //вспомогательный метод для определения расположения здания (на переднем или заднем плане находится)
-    private int getVerticalShift(AbstractBuildingView building) {
-        int x = building.getCore().getX();
-        int y = building.getCore().getY();
-        return y - x;
-    }
-
+    /**
+     * Удаляет призрак здания (полупрозрачное здание, помогающие пользователю выбрать место для постройки реального здания)
+     * с графического представления поля
+     */
     public void addGhost(AbstractBuildingView buildingGhost) {
         this.buildingGhost = buildingGhost;
         getChildren().add(buildingGhost);
     }
 
-    public void moveBuilding(CellView cellView, AbstractBuildingView buildingView) {
+    /**
+     * Перемещает графическое представление здания на место указанной клетки.
+     * Также задает логическому представлению здания координаты указанной клетки
+     * @param cellView
+     * @param buildingView
+     */
+    private void moveBuilding(CellView cellView, AbstractBuildingView buildingView) {
         double x = cellView.getLayoutX();
         double y = cellView.getLayoutY();
         buildingView.moveTo(x, y);
@@ -286,21 +326,46 @@ public class FieldView extends Pane {
     }
 
     /**
-     * метод перемещающий здание на передний план
+     * метод обновляющий удаление зданий от камеры таким образом, чтобы передние здания отрисовывались поверх задних
      * @param buildingView
      */
-    public void moveBuildingToFront(AbstractBuildingView buildingView) {
-        buildingView.toFront();
+    private void updateBuildingsDisposal(AbstractBuildingView buildingView) {
+        buildingsList.sort(Comparator.comparingInt(this::getVerticalShift));
+        int k = buildingsList.indexOf(buildingView);
+        for (int i = k; i < buildingsList.size(); i++) {
+            buildingsList.get(i).toFront();
+        }
+    }
+    /** Вспомогательный метод для определения расположения здания (на переднем или заднем плане находится)
+     * @param building
+     * @return
+     */
+    private int getVerticalShift(AbstractBuildingView building) {
+        int x = building.getCore().getX();
+        int y = building.getCore().getY();
+        return y - x;
     }
 
+    /**
+     * Метод, удаляющий графическое представления здания с поля, из списка зданий и само здание
+     * из логического представления поля
+     * @param buildingView
+     */
     public void removeBuilding(AbstractBuildingView buildingView) {
         fieldCore.removeBuilding(buildingView.getCore());
-        this.getChildren().remove(buildingView);
+        getChildren().remove(buildingView);
         controller.updateResources();
         controller.updateIncome();
+        buildingsList.remove(buildingView);
     }
 
-    public void highlightAura(AbstractBuildingView building, boolean bool) {
+
+    /**
+     * Метод включающий/выключающий подсветку для всех клеток в радиусе ауры здания
+     * @param building
+     * @param bool
+     */
+    private void highlightAura(AbstractBuildingView building, boolean bool) {
         Set<CellView> cells = fieldCore.getCellsInAura(building.getCore()).stream().map(
                 e -> cellsArray[e.getX()][e.getY()]).collect(Collectors.toSet());
         for(CellView cellView: cells) {
@@ -315,10 +380,6 @@ public class FieldView extends Pane {
 
     public double getY() {
         return fieldY;
-    }
-
-    public double getSide() {
-        return side;
     }
 
     public double getCellWidth() {

@@ -198,7 +198,8 @@ public class FieldCore {
 
 
     /**
-     * метод для передачи классу Economy новых значений изменения ресурсов (gold, force, people)
+     * Метод для передачи классу Economy новых значений изменения ресурсов (gold, force, people).
+     * Если для работы здания не хватает людей - оно не приносит ресурсов
      */
     private void updateIncome() {
         int ppl = 0;

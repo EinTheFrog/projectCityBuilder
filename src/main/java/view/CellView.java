@@ -11,8 +11,6 @@ import javafx.scene.shape.Polygon;
 
 public class CellView extends Polygon{
     private final Color BASE_COLOR = Color.rgb(10, 106, 84);
-    private final Color TAVERN_AURA_COLOR = Color.rgb(250,210,0, 0.3);
-    private final Color CASTLE_AURA_COLOR = Color.rgb(200,144,255, 0.3);
     Color borderColor = Color.rgb(220, 220, 220);
     public BooleanProperty isChosen = new SimpleBooleanProperty();
     public BooleanProperty isClicked = new SimpleBooleanProperty();
@@ -42,10 +40,7 @@ public class CellView extends Polygon{
     }
 
     public void setAuraColor(Aura aura) {
-        switch (aura) {
-            case TAVERN: setFill(TAVERN_AURA_COLOR); break;
-            case CASTLE: setFill(CASTLE_AURA_COLOR); break;
-        }
+        setFill(aura.getColor());
     }
 
     public void clearAuraColor() {
