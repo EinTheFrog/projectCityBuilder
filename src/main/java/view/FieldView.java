@@ -296,7 +296,6 @@ public class FieldView extends Pane {
             updateBuildingsDisposal(buildingView);
 
             controller.updateResources();
-            controller.updateIncome();
             controller.setChoosingMod();
         }
     }
@@ -355,7 +354,6 @@ public class FieldView extends Pane {
         fieldCore.removeBuilding(buildingView.getCore());
         getChildren().remove(buildingView);
         controller.updateResources();
-        controller.updateIncome();
         buildingsList.remove(buildingView);
     }
 

@@ -87,8 +87,6 @@ public class GameAppController implements Initializable {
         Creator.createCellsForField(chosenField);
         gameResources.chooseField(chosenField.getCore());
         updateResources();
-        updateIncome();
-        updateTime();
 
         timerIsRunning = false;
         startTimer();
@@ -135,18 +133,15 @@ public class GameAppController implements Initializable {
         showInfo();
     }
 
-    //методы для обновления текста в метках
-    public void updateTime() {
-        lblTime.setText(String.valueOf(gameResources.getTime()));
-    }
-
+    /**
+     * Метод, обновляющий текст в метках ресурсов
+     */
     public void updateResources() {
         lblGold.setText(String.valueOf(gameResources.getGold()));
         lblForce.setText(String.valueOf(gameResources.getForce()));
         lblPeople.setText(String.valueOf(gameResources.getPeople()));
-    }
+        lblTime.setText(String.valueOf(gameResources.getTime()));
 
-    public void updateIncome() {
         final char goldSign = gameResources.getGoldIncome() >= 0? '+': '-';
         lblGoldIncome.setText("(" + goldSign + gameResources.getGoldIncome() + ")");
         final char forceSign = gameResources.getForceIncome() >= 0? '+': '-';
@@ -161,9 +156,12 @@ public class GameAppController implements Initializable {
         vBoxInfo.setVisible(false);
     }
 
+    /**
+     * Метод для показа панели информации о выбранном здании
+     * @param buildingView
+     */
     public void setInfo(AbstractBuildingView buildingView) {
         AbstractBuilding building = buildingView.getCore();
-        hideInfo();
         hideInfo();
         InputStream in = GameAppController.class.getResourceAsStream(buildingView.getImgPath());
         Image img = new Image(in);
@@ -176,7 +174,9 @@ public class GameAppController implements Initializable {
         showInfo();
     }
 
-    //методы для работы с таймером
+    /**
+     * Метод, запускающий процессы для таймера
+     */
     private void startTimer() {
         timerIsRunning = true;
         timerMoveTask = new TimerTask() {
@@ -197,7 +197,6 @@ public class GameAppController implements Initializable {
                 Platform.runLater(() -> {
                     boolean enemiesCame = gameResources.changeTime(500);
                     updateResources();
-                    updateTime();
                     if (enemiesCame) showEnemy();
                 });
             }
@@ -206,21 +205,33 @@ public class GameAppController implements Initializable {
         timer.schedule(timerTask, 500, 500);
     }
 
+    /**
+     * Метод, отменяющий процессы для таймера
+     */
     private void stopTimer() {
         timerIsRunning = false;
         timerMoveTask.cancel();
         timerTask.cancel();
     }
 
+    /**
+     * Метод для запуска процессов для таймера, если они не запущены
+     */
     public void resume() {
         if (!timerIsRunning) startTimer();
     }
 
+    /**
+     * Метод для запуска процессов для таймера, если они запущены
+     */
     public void pause() {
         if (timerIsRunning) stopTimer();
     }
 
-    //методы для обработки информации о нажатых клавишах
+    /**
+     * Метод, обрабатывающий нажатые клавиши и вызывающий соответствующие методы
+     * @param code
+     */
     public void keyPressed(KeyCode code) {
         boolean playerMovesCam = false;
         switch (code) {
@@ -255,9 +266,13 @@ public class GameAppController implements Initializable {
                 break;
         }
         //если игрок двигает камеру, то вызываем метод для перемещения камеры
-        if (playerMovesCam) startCameraMovement();
+        if (playerMovesCam) updatePressedButtons();
     }
 
+    /**
+     * Метод, обрабатывающий нажатые клавиши и вызывающий соответствующие методы
+     * @param code
+     */
     public void keyReleased(KeyCode code) {
         switch (code) {
             case W:
@@ -275,15 +290,13 @@ public class GameAppController implements Initializable {
                 newBtnPressed.remove(KeyboardButtons.S);
                 break;
         }
-        stopCameraMovement();
+        updatePressedButtons();
     }
 
-    //методы для перемещения камеры
-    private void startCameraMovement() {
-        curBtnPressed.addAll(newBtnPressed);
-    }
-
-    private void stopCameraMovement() {
+    /**
+     * Метод для обновления нажатых клавиш
+     */
+    private void updatePressedButtons() {
         curBtnPressed.clear();
         curBtnPressed.addAll(newBtnPressed);
     }
@@ -303,7 +316,9 @@ public class GameAppController implements Initializable {
         if (mod == Mod.BLOCKED_MOD) event.consume();
     }
 
-    //методы для выставления режима взаимедействия с пользователем
+    /**
+     * Метод, выключающий buildingMod для fieldView и  включащий  возможность наживать на кнопки
+     */
     public void setChoosingMod() {
         for (Button btn: buttonSet) btn.setDisable(false);
         hideInfo();
@@ -312,18 +327,28 @@ public class GameAppController implements Initializable {
         chosenField.setChosenBuilding(null);
     }
 
+    /**
+     * Метод, прячущий панель информации и включающий buildingMod для fieldView
+     */
     public void setBuildingMod() {
         hideInfo();
         mod = Mod.BUILDING_MOD;
         chosenField.setBuildingMod(true);
     }
 
+    /**
+     * Метод, останавливающий процесса таймера, отключащий возможность наживать на кнопки
+     */
     public void setMenuMod() {
         for (Button btn: buttonSet) btn.setDisable(true);
         pause();
         mod = Mod.MENU_MOD;
     }
 
+    /**
+     * Метод, снимающий выделение со выбранного здания, отключащий возможность наживать на кнопки
+     * и останавливающий процесса таймера
+     */
     public void setBlockedMod() {
         pause();
         chosenField.setChosenBuilding(null);
@@ -332,7 +357,7 @@ public class GameAppController implements Initializable {
     }
 
     /**
-     * метод для открытия окна коче
+     * метод для открытия окно врагов
      */
     public void showEnemy() {
         setBlockedMod();
