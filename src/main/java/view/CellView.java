@@ -4,6 +4,7 @@ import core.Aura;
 import core.CellCore;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 
@@ -31,6 +32,13 @@ public class CellView extends Polygon{
 
         isChosen.setValue(false);
         isClicked.setValue(false);
+
+        addEventHandler(MouseEvent.MOUSE_EXITED, event -> isChosen.setValue(false));
+        addEventHandler(MouseEvent.MOUSE_ENTERED, event -> isChosen.setValue(true));
+        addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            isClicked.setValue(true);
+            event.consume();
+        });
     }
 
     public void setAuraColor(Aura aura) {

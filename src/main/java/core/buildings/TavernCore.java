@@ -13,18 +13,18 @@ public class TavernCore extends AbstractBuilding {
     private final int PEOPLE_CHANGE = -5;
     private final String NAME = "Tavern";
 
-    public TavernCore(int x, int y, int width, int length, int size) {
-        super(x, y, width, length, size);
+    public TavernCore(int x, int y, int width, int length) {
+        super(x, y, width, length);
     }
 
-    public TavernCore(int x, int y, int width, int length, int size, List<Aura> aurasList) {
-        super(x, y, width, length, size);
+    public TavernCore(int x, int y, int width, int length, List<Aura> aurasList) {
+        super(x, y, width, length);
         this.alienAuras = aurasList;
     }
 
     @Override
     public AbstractBuilding copy() {
-        TavernCore copy =  new TavernCore(x, y, width, length, size, alienAuras);
+        TavernCore copy =  new TavernCore(x, y, width, length, alienAuras);
         return copy;
     }
 

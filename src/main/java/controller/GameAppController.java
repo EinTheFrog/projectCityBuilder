@@ -100,22 +100,22 @@ public class GameAppController implements Initializable {
     //методы для кнопок
     public void pressOnHouseButton() {
         setBuildingMod();
-        HouseCore houseCore = new HouseCore(0,0, 1, 1, 2);
+        HouseCore houseCore = new HouseCore(0,0, 2, 2);
         createGhost(houseCore);
     }
     public void pressOnCasernButton() {
         setBuildingMod();
-        CasernCore casernCore = new CasernCore(0,0, 1, 1, 2);
+        CasernCore casernCore = new CasernCore(0,0, 2, 2);
         createGhost(casernCore);
     }
     public void pressOnTavernButton() {
         setBuildingMod();
-        TavernCore tavernCore = new TavernCore(0,0, 1, 1, 2);
+        TavernCore tavernCore = new TavernCore(0,0, 2, 2);
         createGhost(tavernCore);
     }
     public void pressOnCastleButton() {
         setBuildingMod();
-        CastleCore castleCore = new CastleCore(0,0, 1, 1, 6);
+        CastleCore castleCore = new CastleCore(0,0, 6, 6);
         createGhost(castleCore);
     }
     public void pressOnBtnDestroy() {

@@ -4,7 +4,6 @@ import core.CellCore;
 import core.FieldCore;
 import core.Resources;
 import javafx.beans.property.ReadOnlyDoubleProperty;
-import javafx.scene.input.KeyEvent;
 import view.Visibility;
 import core.buildings.AbstractBuilding;
 import view.CellView;
@@ -12,7 +11,7 @@ import view.FieldView;
 import view.buildings.*;
 
 /**
- * вспомогательный класс для создания сущностей
+ * Вспомогательный класс для создания сущностей
  */
 public abstract class Creator {
 
@@ -31,7 +30,6 @@ public abstract class Creator {
             for (int j = 0; j < fieldView.SIZE; j++) {
                 CellCore cellCore = new CellCore(j, i);
                 CellView cellView = new CellView(fieldView.getCellWidth(), fieldView.getCellHeight(), cellCore);
-                CellController.addEventHandlers(cellView);
                 fieldView.addCell(cellView);
             }
         }
@@ -41,16 +39,16 @@ public abstract class Creator {
         AbstractBuildingView buildingView;
         switch (buildingCore.getName()) {
             case "House": buildingView = new HouseView(buildingCore,
-                    buildingCore.getSize() * fieldView.getCellWidth(), Visibility.INVISIBLE);
+                    buildingCore.getWidth() * fieldView.getCellWidth(), Visibility.INVISIBLE);
             break;
             case "Casern": buildingView = new CasernView(buildingCore,
-                    buildingCore.getSize() * fieldView.getCellWidth(), Visibility.INVISIBLE);
+                    buildingCore.getWidth() * fieldView.getCellWidth(), Visibility.INVISIBLE);
             break;
             case "Tavern": buildingView = new TavernView(buildingCore,
-                    buildingCore.getSize() * fieldView.getCellWidth(), Visibility.INVISIBLE);
+                    buildingCore.getWidth() * fieldView.getCellWidth(), Visibility.INVISIBLE);
             break;
             default: buildingView = new CastleView(buildingCore,
-                    buildingCore.getSize() * fieldView.getCellWidth(), Visibility.INVISIBLE);
+                    buildingCore.getWidth() * fieldView.getCellWidth(), Visibility.INVISIBLE);
             break;
         }
         fieldView.addGhost(buildingView);

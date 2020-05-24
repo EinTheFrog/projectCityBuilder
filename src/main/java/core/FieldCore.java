@@ -102,8 +102,8 @@ public class FieldCore {
     public Set<CellCore> getCellsUnderBuilding(AbstractBuilding building) {
         int x = building.getX();
         int y = building.getY();
-        int bldRealWidth = building.getWidth() * building.getSize();
-        int bldRealLength = building.getLength() * building.getSize();
+        int bldRealWidth = building.getWidth();
+        int bldRealLength = building.getLength();
         Set<CellCore> cellsArea = new HashSet<>();
         for (int i = y + 1 - bldRealLength; i <= y; i ++) {
             for(int j = x; j <= x - 1 + bldRealWidth; j ++) {
@@ -121,8 +121,8 @@ public class FieldCore {
      * @return true, если пространство свободно, иначе - false
      */
     public boolean isAreaFree (AbstractBuilding building) {
-        int bldRealWidth = building.getWidth() * building.getSize();
-        int bldRealLength = building.getLength() * building.getSize();
+        int bldRealWidth = building.getWidth();
+        int bldRealLength = building.getLength();
         Set<CellCore> cellsArea = getCellsUnderBuilding(building);
         if (cellsArea.size() < bldRealLength * bldRealWidth) return false;
         for (CellCore c: cellsArea) {
@@ -141,8 +141,8 @@ public class FieldCore {
         int cellX = building.getX();
         int cellY = building.getY();
         int rad = building.getOwnAura().getRadius();
-        for (int i = cellY + 1 - building.getSize() * building.getLength() - rad; i <= cellY + rad; i ++) {
-            for(int j = cellX - rad; j <= cellX - 1 + building.getSize() * building.getWidth() + rad; j ++) {
+        for (int i = cellY + 1 - building.getLength() - rad; i <= cellY + rad; i ++) {
+            for(int j = cellX - rad; j <= cellX - 1 + building.getWidth() + rad; j ++) {
                 if (i >= 0 && j >= 0 && i < SIZE && j < SIZE ) {
                     cells.add(cellsArray[j][i]);
                 }

@@ -13,18 +13,18 @@ public class HouseCore extends AbstractBuilding {
     private final int TAVERN_GOLD_BOOST = 5;
     private final String NAME = "House";
 
-    public HouseCore(int x, int y, int width, int length, int size) {
-        super(x, y, width, length, size);
+    public HouseCore(int x, int y, int width, int length) {
+        super(x, y, width, length);
     }
 
-    public HouseCore(int x, int y, int width, int length, int size, List<Aura> aurasList) {
-        super(x, y, width, length, size);
+    public HouseCore(int x, int y, int width, int length, List<Aura> aurasList) {
+        super(x, y, width, length);
         this.alienAuras = aurasList;
     }
 
     @Override
     public AbstractBuilding copy() {
-       HouseCore copy =  new HouseCore(x, y, width, length, size, alienAuras);
+       HouseCore copy =  new HouseCore(x, y, width, length, alienAuras);
        return copy;
     }
 

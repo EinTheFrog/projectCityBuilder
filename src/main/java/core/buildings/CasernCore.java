@@ -12,18 +12,18 @@ public class CasernCore extends AbstractBuilding {
     private final int PEOPLE_CHANGE = -10;
     private final String NAME = "Casern";
 
-    public CasernCore(int x, int y, int width, int length, int size) {
-        super(x, y, width, length, size);
+    public CasernCore(int x, int y, int width, int length) {
+        super(x, y, width, length);
     }
 
-    public CasernCore(int x, int y, int width, int length, int size, List<Aura> aurasList) {
-        super(x, y, width, length, size);
+    public CasernCore(int x, int y, int width, int length, List<Aura> aurasList) {
+        super(x, y, width, length);
         this.alienAuras = aurasList;
     }
 
     @Override
     public AbstractBuilding copy() {
-        CasernCore copy =  new CasernCore(x, y, width, length, size, alienAuras);
+        CasernCore copy =  new CasernCore(x, y, width, length, alienAuras);
         return copy;
     }
 

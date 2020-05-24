@@ -12,18 +12,18 @@ public class CastleCore extends AbstractBuilding {
     private final int PEOPLE_CHANGE = -20;
     private final String NAME = "Castle";
 
-    public CastleCore(int x, int y, int width, int length, int size) {
-        super(x, y, width, length, size);
+    public CastleCore(int x, int y, int width, int length) {
+        super(x, y, width, length);
     }
 
-    public CastleCore(int x, int y, int width, int length, int size, List<Aura> aurasList) {
-        super(x, y, width, length, size);
+    public CastleCore(int x, int y, int width, int length, List<Aura> aurasList) {
+        super(x, y, width, length);
         this.alienAuras = aurasList;
     }
 
     @Override
     public AbstractBuilding copy() {
-        CastleCore copy =  new CastleCore(x, y, width, length, size, alienAuras);
+        CastleCore copy =  new CastleCore(x, y, width, length, alienAuras);
         return copy;
     }
 

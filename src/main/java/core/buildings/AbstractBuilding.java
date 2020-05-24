@@ -4,23 +4,31 @@ import core.Aura;
 
 import java.util.*;
 
+/**
+ * Ролительский класс для всех зданий
+ */
 public abstract class AbstractBuilding {
     protected int x;
     protected int y;
-    protected int size; // множитель, определяющий сколько клеток в одном измерении занимает здание
     protected int width;
     protected int length;
     protected List<Aura> alienAuras;
     protected Aura ownAura;
 
-    //конструктор
-    public AbstractBuilding (int x, int y, int width, int length, int size) {
+    /**
+     *
+     * @param x - логическая координата на поле
+     * @param y - логическая координата на поле
+     * @param width - логический размер в кол-ве занимаемых клеток
+     * @param length
+     * @param size
+     */
+    public AbstractBuilding (int x, int y, int width, int length) {
         //задаем параметры
         this.x = x;
         this.y = y;
         this.width = width;
         this.length = length;
-        this.size = size;
 
         alienAuras = new ArrayList<>();
         ownAura = getOwnAura();
@@ -72,9 +80,5 @@ public abstract class AbstractBuilding {
 
     public int getLength() {
         return length;
-    }
-
-    public int getSize() {
-        return size;
     }
 }
