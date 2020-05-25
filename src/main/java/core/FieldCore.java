@@ -14,13 +14,13 @@ public class FieldCore {
     private int goldIncome;
     private int forceIncome;
     private int people;
-    Resources gameResources;
+    GameResources gameResources;
 
     /**
      * @param size кол-во клеток в одной стороне поля
      * @param gameResources ссылка на объект ресурсов, к которому поле оюращается при постройке зданий и т.п.
      */
-    public FieldCore (int size, Resources gameResources) {
+    public FieldCore (int size, GameResources gameResources) {
         this.gameResources = gameResources;
         //задаем параметры размера и клеток
         SIZE = size;
@@ -28,7 +28,6 @@ public class FieldCore {
         buildingsList = new ArrayList<>();
         //создаем массив для хранения клеток
         cellsArray = new CellCore[size][size];
-
     }
 
     /**

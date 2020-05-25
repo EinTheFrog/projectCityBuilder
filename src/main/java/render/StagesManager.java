@@ -58,6 +58,7 @@ public abstract class StagesManager {
             gameStage.yProperty().addListener(((observable, oldValue, newValue) -> moveMenus()));
         }
 
+        
         private static void moveMenus() {
             if (Menu.isOpen) MenuController.move(getX() + getWidth() / 2, getY() + getHeight() / 2);
             if (EnemyMenu.isOpen)EnemyMenuController.move(getX() + getWidth() / 2, getY() + getHeight() / 2);
@@ -185,5 +186,22 @@ public abstract class StagesManager {
         popup.setY(y - popup.getHeight() / 2);
     }
 
-
+    /**
+     * Вспомогательный класс для создания Popup-ов
+     */
+    private static abstract class Helper {
+        public static Popup createPopup (String resPath) {
+            Popup popup = new Popup();
+            FXMLLoader loader = new FXMLLoader();
+            URL xmlUrl = StagesManager.class.getResource(resPath);
+            loader.setLocation(xmlUrl);
+            try {
+                Parent root = loader.load();
+                popup.getContent().add(root);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return popup;
+        }
+    }
 }

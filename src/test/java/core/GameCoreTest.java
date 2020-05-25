@@ -5,25 +5,19 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class FieldCoreTest {
+class GameCoreTest {
 
     @Test
     void addBuilding() {
-        Resources gameResources = new Resources();
+        GameResources gameResources = new GameResources();
         FieldCore fieldCore = new FieldCore(20, gameResources);
-        for (int i = 0; i < fieldCore.SIZE; i++) {
-            for (int j = 0; j < fieldCore.SIZE; j++) {
-                CellCore cellCore = new CellCore(j, i);
-                fieldCore.addCell(cellCore);
-            }
-        }
+        createCells(fieldCore);
+        gameResources.chooseField(fieldCore);
 
-        final AbstractBuilding house1 = new HouseCore(0,0,2,2);
-        fieldCore.buildBuilding(house1);
+        fieldCore.buildBuilding(new HouseCore(0,0,2,2));
         assertEquals(0, fieldCore.getBuildingsList().size());
 
-        final AbstractBuilding house2 = new HouseCore(1,1,2,2);
-        fieldCore.buildBuilding(house2);
+        fieldCore.buildBuilding(new HouseCore(1,1,2,2));
         assertEquals(1, fieldCore.getBuildingsList().size());
         assertEquals(5, gameResources.getGoldIncome());
 
@@ -34,8 +28,7 @@ class FieldCoreTest {
 
         gameResources.setGold(2000);
         for (int i = 11; i < 20; i ++) {
-            final AbstractBuilding house3 = new HouseCore(10, i,1,1);
-            fieldCore.buildBuilding(house3);
+            fieldCore.buildBuilding(new HouseCore(10, i,1,1));
         }
         assertEquals(20, gameResources.getForceIncome());
         assertEquals(11, fieldCore.getBuildingsList().size());
@@ -46,37 +39,43 @@ class FieldCoreTest {
         gameResources.setGold(2000);
         final AbstractBuilding tavern = new TavernCore(3,3,2,2);
         fieldCore.buildBuilding(tavern);
-        final AbstractBuilding houseCopy = house2.copy();
+        final AbstractBuilding houseCopy = fieldCore.getBuildingsList().get(0).copy();
         assertEquals(10, houseCopy.getGoldProfit());
+
+        GameResources gameResources2 = new GameResources();
+        FieldCore fieldCore2 = new FieldCore(2, gameResources2);
+        createCells(fieldCore);
+        gameResources.chooseField(fieldCore);
+
+        fieldCore2.buildBuilding(new HouseCore(5,5,1,1));
+        assertEquals(0, fieldCore2.getBuildingsList().size());
+
+        fieldCore2.buildBuilding(new HouseCore(1,1,3,3));
+        assertEquals(0, fieldCore2.getBuildingsList().size());
     }
 
 
     @Test
     void removeBuilding() {
-        Resources gameResources = new Resources();
+        GameResources gameResources = new GameResources();
         FieldCore fieldCore = new FieldCore(20, gameResources);
-        for (int i = 0; i < fieldCore.SIZE; i++) {
-            for (int j = 0; j < fieldCore.SIZE; j++) {
-                CellCore cellCore = new CellCore(j, i);
-                fieldCore.addCell(cellCore);
-            }
-        }
+        createCells(fieldCore);
+        gameResources.chooseField(fieldCore);
 
-        final AbstractBuilding tavern = new TavernCore(2,2,2,2);
+        AbstractBuilding tavern  = new TavernCore(2,2,2,2);
         fieldCore.buildBuilding(tavern);
         assertEquals(1, fieldCore.getBuildingsList().size());
 
-        final AbstractBuilding house1 = new HouseCore(1,1,2,2);
-        fieldCore.buildBuilding(house1);
+        final AbstractBuilding house = new HouseCore(1,1,2,2);
+        fieldCore.buildBuilding(house);
         assertEquals(1, fieldCore.getBuildingsList().size());
         assertEquals(0, gameResources.getGoldIncome());
 
-        fieldCore.removeBuilding(house1);
+        fieldCore.removeBuilding(house);
         assertEquals(1, fieldCore.getBuildingsList().size());
         assertEquals(0, gameResources.getGoldIncome());
 
-        final AbstractBuilding house2 = new HouseCore(4,1,2,2);
-        fieldCore.buildBuilding(house2);
+        fieldCore.buildBuilding(new HouseCore(4,1,2,2));
         assertEquals(2, fieldCore.getBuildingsList().size());
         assertEquals(20, gameResources.getGoldIncome());
 
@@ -87,23 +86,18 @@ class FieldCoreTest {
 
     @Test
     void beatEnemies() {
-        Resources resources = new Resources();
-        FieldCore fieldCore = new FieldCore(20, resources);
-        for (int i = 0; i < fieldCore.SIZE; i++) {
-            for (int j = 0; j < fieldCore.SIZE; j++) {
-                CellCore cellCore = new CellCore(j, i);
-                fieldCore.addCell(cellCore);
-            }
-        }
-        resources.chooseField(fieldCore);
+        GameResources gameResources = new GameResources();
+        FieldCore fieldCore = new FieldCore(20, gameResources);
+        createCells(fieldCore);
+        gameResources.chooseField(fieldCore);
 
         final AbstractBuilding tavern = new TavernCore(1,2,2,1);
         fieldCore.buildBuilding(tavern);
 
         final AbstractBuilding house1 = new HouseCore(3,2,2,1);
         fieldCore.buildBuilding(house1);
-        resources.changeTime(5_000);
-        assertEquals(275, resources.getGold());
+        gameResources.changeTime(5_000);
+        assertEquals(275, gameResources.getGold());
 
         for (int i = 5; i < 20; i += 4) {
             final AbstractBuilding house2 = new HouseCore(i,1,2,2);
@@ -114,20 +108,33 @@ class FieldCoreTest {
             final AbstractBuilding casern = new CasernCore(i,10,2,2);
             fieldCore.buildBuilding(casern);
         }
-        assertEquals(10, resources.getForceIncome());
-        resources.changeTime(5_000);
+        assertEquals(10, gameResources.getForceIncome());
+        gameResources.changeTime(5_000);
 
-        assertEquals(50, resources.getForce());
-        resources.beatEnemies();
+        assertEquals(50, gameResources.getForce());
+        gameResources.beatEnemies();
     }
 
     @Test
     void payEnemies() {
-        Resources resources = new Resources();
-        resources.payEnemies();
-        resources.payEnemies();
-        resources.payEnemies();
-        assertEquals(true, resources.userLost());
+        GameResources gameResources = new GameResources();
+        gameResources.payEnemies();
+        gameResources.payEnemies();
+        gameResources.payEnemies();
+        assertEquals(true, gameResources.userLost());
+    }
+
+    /**
+     * Вспомогательный метод для создания клеток на поле
+     * @param fieldCore
+     */
+    private void createCells(FieldCore fieldCore) {
+        for (int i = 0; i < fieldCore.SIZE; i++) {
+            for (int j = 0; j < fieldCore.SIZE; j++) {
+                CellCore cellCore = new CellCore(j, i);
+                fieldCore.addCell(cellCore);
+            }
+        }
     }
 
 }

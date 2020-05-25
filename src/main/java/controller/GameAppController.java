@@ -1,6 +1,6 @@
 package controller;
 
-import core.Resources;
+import core.GameResources;
 import core.buildings.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -50,7 +50,7 @@ public class GameAppController implements Initializable {
     public static Mod mod = Mod.CHOOSING_MOD; //при открытии игрвого окна мы находимся в режиме выбора
     //поле является static, т.к у нас может быть только одно игрвое поле, накотором находится игрок
     static FieldView chosenField;
-    static Resources gameResources;
+    static GameResources gameResources;
 
     private Timer timer = new Timer(true);
     private TimerTask timerTask;
@@ -81,10 +81,9 @@ public class GameAppController implements Initializable {
         // и мы не можем использовать getWidth()
         final double paneWidth = screen.getVisualBounds().getWidth() * 5/9;
         final double fieldSide = ( paneWidth  / 2 - INDENT) * Math.cos(Math.PI / 6);
-        gameResources = new Resources();
+        gameResources = new GameResources();
         chosenField = Creator.createField(FIELD_SIZE, INDENT, fieldSide,
                 fieldPane.widthProperty(), fieldPane.heightProperty(), this, gameResources);
-        Creator.createCellsForField(chosenField);
         gameResources.chooseField(chosenField.getCore());
         updateResources();
 

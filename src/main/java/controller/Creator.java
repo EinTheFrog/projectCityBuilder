@@ -1,12 +1,10 @@
 package controller;
 
-import core.CellCore;
 import core.FieldCore;
-import core.Resources;
+import core.GameResources;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import view.Visibility;
 import core.buildings.AbstractBuilding;
-import view.CellView;
 import view.FieldView;
 import view.buildings.*;
 
@@ -17,22 +15,12 @@ public abstract class Creator {
 
     public static FieldView createField(int size, double indent, double fieldSide, ReadOnlyDoubleProperty paneWidth,
                                         ReadOnlyDoubleProperty paneHeight, GameAppController controller,
-                                        Resources gameResources) {
+                                        GameResources gameResources) {
         FieldCore fieldCore = new FieldCore(size, gameResources);
         final double moveSpeed = fieldSide / (4 * size);
         FieldView fieldView = new FieldView(fieldCore, controller, size, indent, fieldSide,
                 paneWidth, paneHeight, moveSpeed);
         return fieldView;
-    }
-
-    public static void createCellsForField(FieldView fieldView) {
-        for (int i = 0; i < fieldView.SIZE; i++) {
-            for (int j = 0; j < fieldView.SIZE; j++) {
-                CellCore cellCore = new CellCore(j, i);
-                CellView cellView = new CellView(fieldView.getCellWidth(), fieldView.getCellHeight(), cellCore);
-                fieldView.addCell(cellView);
-            }
-        }
     }
 
     public static AbstractBuildingView createBuildingGhost(FieldView fieldView, AbstractBuilding buildingCore) {

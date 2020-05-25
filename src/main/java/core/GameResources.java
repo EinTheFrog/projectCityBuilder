@@ -5,7 +5,7 @@ import java.util.Random;
 /**
  * Класс, отвечающий за все операции ресурсами, включая gold, force, people и time.
  */
-public class Resources {
+public class GameResources {
     //константы
     public static final int START_GOLD = 300;
     public static final int START_FORCE = 0;
@@ -29,7 +29,7 @@ public class Resources {
 
     private boolean userLost;
 
-    public Resources() {
+    public GameResources() {
         enemyTimePassed = 0;
         gainTimePassed = 0;
         gold = START_GOLD;

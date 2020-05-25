@@ -2,6 +2,7 @@ package view;
 
 import controller.GameAppController;
 import controller.Mod;
+import core.CellCore;
 import core.FieldCore;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.scene.input.KeyEvent;
@@ -108,6 +109,14 @@ public class FieldView extends Pane {
 
         addEventHandler(KeyEvent.KEY_PRESSED, event -> controller.keyPressed(event.getCode()));
         addEventHandler(KeyEvent.KEY_RELEASED, event -> controller.keyReleased(event.getCode()));
+
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                CellCore cellCore = new CellCore(j, i);
+                CellView cellView = new CellView(getCellWidth(), getCellHeight(), cellCore);
+                addCell(cellView);
+            }
+        }
     }
 
     /**
@@ -156,7 +165,7 @@ public class FieldView extends Pane {
      * поле знает о клетках, которые находятся на нем, однако клетки не знают о поле, на котором находятся
      * @param cellView
      */
-    public void addCell(CellView cellView) {
+    private void addCell(CellView cellView) {
         int indX = cellView.getCore().getX();
         int indY = cellView.getCore().getY();
 
