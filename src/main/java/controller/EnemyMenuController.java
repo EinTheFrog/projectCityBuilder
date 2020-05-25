@@ -9,14 +9,18 @@ public class EnemyMenuController {
     }
 
     public void pressOnBtnFight() {
-        if (!GameAppController.gameResources.beatEnemies()) {
+        boolean userWon = GameAppController.gameResources.beatEnemies();
+        if (!userWon) {
             GameAppController.chosenField.removeRandomBuilding();
         }
-        close();
+        StagesManager.ResultMenu.open(userWon);
+        StagesManager.EnemyMenu.close();
     }
 
     public void close() {
         StagesManager.EnemyMenu.close();
+        StagesManager.GameApp.getController().setChoosingMod();
+        StagesManager.GameApp.getController().resume();
         if (GameAppController.gameResources.userLost()) StagesManager.DefeatMenu.open();
     }
 

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+
+<VBox fx:id="resultPane"
+      xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controller.ResultMenuController"
+      onKeyPressed="#pressESC"
+      styleClass="root">
+    <stylesheets>
+        <URL value="@RedLord.css" />
+    </stylesheets>
+
+    <Label fx:id="txtResult"/>
+
+    <HBox  styleClass="enemyHBox">
+        <Button fx:id="btnResume"
+                onAction="#pressOnBtnResume"
+                text="resume">
+        </Button>
+    </HBox>
+</VBox>

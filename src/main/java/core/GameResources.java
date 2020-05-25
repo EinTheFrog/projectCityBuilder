@@ -11,25 +11,29 @@ public class GameResources {
     public static final int START_FORCE = 0;
     public static final int START_PEOPLE = 0;
     public static final int GAIN_TIME = 1_000;
-    public static final int ENEMY_TIME = 25_000;
+    public static final int ENEMY_TIME = 10_000;
+    public static final int START_ENEMY_FORCE = 20;
+    public static final int START_ENEMY_COST = 100;
 
     private int gold ;
-    private int force;
+    private double force;
     private int people;
     private int forceIncome;
     private int goldIncome;
 
-    private int enemyForce = 20;
-    private int enemyCost = 100;
+    private double enemyForce;
+    private int enemyCost;
 
     private int gainTimePassed;
     private int enemyTimePassed;
 
-    private double time = 0;
+    private double time;
 
     private boolean userLost;
 
     public GameResources() {
+        enemyForce = START_ENEMY_FORCE;
+        enemyCost = START_ENEMY_COST;
         enemyTimePassed = 0;
         gainTimePassed = 0;
         gold = START_GOLD;
@@ -103,10 +107,9 @@ public class GameResources {
     }
 
     public void beatEnemies(boolean bool) {
-        boolean win = true;
         if (!bool) {
-            pay(enemyForce * 5);
-            decreaseForce(enemyForce);
+            pay((int) enemyForce * 5);
+            decreaseForce((int) enemyForce);
         }
         enemyForce *= 2;
         enemyCost = enemyCost > 10? enemyCost - 10: enemyCost;
@@ -136,7 +139,7 @@ public class GameResources {
     }
 
     public int getForce() {
-        return force;
+        return (int)force;
     }
 
     public int getPeople() {
