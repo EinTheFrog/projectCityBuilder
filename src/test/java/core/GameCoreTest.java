@@ -30,7 +30,7 @@ class GameCoreTest {
         for (int i = 11; i < 20; i ++) {
             fieldCore.buildBuilding(new HouseCore(10, i,1,1));
         }
-        assertEquals(20, gameResources.getForceIncome());
+        assertEquals(100, gameResources.getForceIncome());
         assertEquals(11, fieldCore.getBuildingsList().size());
 
         fieldCore.removeBuilding(1);

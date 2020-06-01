@@ -11,6 +11,7 @@ public class HouseCore extends AbstractBuilding {
     private final int FORCE_PROFIT = 0;
     private final int PEOPLE_CHANGE = 5;
     private final int TAVERN_GOLD_BOOST = 5;
+    private final int CASTLE_PEOPLE_BOOST = 2;
     private final String NAME = "House";
 
     public HouseCore(int x, int y, int width, int length) {
@@ -48,7 +49,9 @@ public class HouseCore extends AbstractBuilding {
 
     @Override
     public int getPeopleChange() {
-        return PEOPLE_CHANGE;
+        int change = PEOPLE_CHANGE;
+        if (alienAuras.contains(Aura.TAVERN)) change += CASTLE_PEOPLE_BOOST;;
+        return change;
     }
 
     @Override

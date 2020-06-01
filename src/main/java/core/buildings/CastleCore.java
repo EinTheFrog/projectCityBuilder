@@ -8,7 +8,7 @@ import java.util.List;
 public class CastleCore extends AbstractBuilding {
     private final int GOLD_PROFIT = 0;
     private final int GOLD_COST = 150;
-    private final int FORCE_PROFIT = 20;
+    private final int FORCE_PROFIT = 100;
     private final int PEOPLE_CHANGE = -20;
     private final String NAME = "Castle";
 
@@ -30,9 +30,7 @@ public class CastleCore extends AbstractBuilding {
 
     @Override
     public int getGoldProfit() {
-        int profit = GOLD_PROFIT;
-        if (alienAuras.contains(Aura.TAVERN)) profit += 5;
-        return profit;
+        return GOLD_PROFIT;
     }
 
     @Override
@@ -55,7 +53,7 @@ public class CastleCore extends AbstractBuilding {
 
     @Override
     public Aura getOwnAura() {
-        return Aura.NONE;
+        return Aura.CASTLE;
     }
 
 }
