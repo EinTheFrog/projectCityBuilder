@@ -1,16 +1,18 @@
 package controller;
-import render.StagesManager;
+import popups.DefeatMenu;
+import stages.GameApp;
+import stages.MainMenu;
 
 import java.io.IOException;
 
 public class DefeatMenuController {
 
     public void pressOnBtnMenu() throws IOException {
-        StagesManager.MainMenu.open();
-        StagesManager.GameApp.close();
+        MainMenu.open();
+        GameApp.close();
     }
 
     public static void move(double x, double y) {
-        StagesManager.DefeatMenu.setCoords(x , y);
+        DefeatMenu.setCoords(x , y);
     }
 }

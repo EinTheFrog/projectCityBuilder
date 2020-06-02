@@ -1,7 +1,10 @@
 package render;
 
+
 import javafx.application.Application;
+import javafx.scene.control.Alert;
 import javafx.stage.Stage;
+import stages.MainMenu;
 
 import java.io.IOException;
 
@@ -12,10 +15,13 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            StagesManager.MainMenu.open();
-        } catch (IOException e) {
-            System.err.println("ERROR: Incorrect path to fxml file");
-            e.printStackTrace();
+            MainMenu.open();
+        } catch (IllegalStateException | IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("ERROR");
+            alert.setHeaderText("ERROR: Incorrect path to fxml file");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
         }
     }
 

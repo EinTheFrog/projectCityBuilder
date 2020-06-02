@@ -1,6 +1,9 @@
 package controller;
 
-import render.StagesManager;
+import popups.DefeatMenu;
+import popups.EnemyMenu;
+import popups.ResultMenu;
+import stages.GameApp;
 
 public class EnemyMenuController {
     public void pressOnBtnPay() {
@@ -13,19 +16,19 @@ public class EnemyMenuController {
         if (!userWon) {
             GameAppController.chosenField.removeRandomBuilding();
         }
-        StagesManager.ResultMenu.open(userWon);
-        StagesManager.EnemyMenu.close();
+        ResultMenu.open(userWon);
+        EnemyMenu.close();
     }
 
     public void close() {
-        StagesManager.EnemyMenu.close();
-        StagesManager.GameApp.getController().setChoosingMod();
-        StagesManager.GameApp.getController().resume();
-        if (GameAppController.gameResources.userLost()) StagesManager.DefeatMenu.open();
+        EnemyMenu.close();
+        GameApp.getController().setChoosingMod();
+        GameApp.getController().resume();
+        if (GameAppController.gameResources.userLost()) DefeatMenu.open();
     }
 
     public static void move (double x, double y) {
-        StagesManager.EnemyMenu.setCoords(x, y);
+        EnemyMenu.setCoords(x, y);
     }
 
 }

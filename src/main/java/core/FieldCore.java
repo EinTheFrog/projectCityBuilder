@@ -14,7 +14,7 @@ public class FieldCore {
     private int goldIncome;
     private int forceIncome;
     private int people;
-    GameResources gameResources;
+    private GameResources gameResources;
 
     /**
      * @param size кол-во клеток в одной стороне поля

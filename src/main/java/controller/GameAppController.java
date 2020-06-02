@@ -15,7 +15,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Screen;
-import render.StagesManager;
+import popups.EnemyMenu;
+import popups.Menu;
 import view.FieldView;
 import view.buildings.AbstractBuildingView;
 
@@ -26,15 +27,15 @@ import java.util.*;
 
 public class GameAppController implements Initializable {
     @FXML
-    Label lblGold, lblGoldIncome, lblForce, lblForceIncome, lblPeople, lblTime, lblInfo, lblGoldCost, lblPeopleCost, lblForceCost;
+    private Label lblGold, lblGoldIncome, lblForce, lblForceIncome, lblPeople, lblTime, lblInfo, lblGoldCost, lblPeopleCost, lblForceCost;
     @FXML
     public Pane fieldPane, p1, p2;
     @FXML
-    ImageView imgInfo;
+    private ImageView imgInfo;
     @FXML
-    VBox vBoxInfo;
+    private VBox vBoxInfo;
     @FXML
-    Parent root;
+    private Parent root;
     @FXML
     private Button btnHouse, btnCasern, btnTavern, btnCastle;
     @FXML
@@ -256,11 +257,11 @@ public class GameAppController implements Initializable {
                     case CHOOSING_MOD:
                         if (chosenField.getChosenBuilding() == null) {
                             setMenuMod();
-                            StagesManager.Menu.open();
+                            Menu.open();
                         }
                         else chosenField.setChosenBuilding(null); break;
                     case BUILDING_MOD: setChoosingMod(); break;
-                    case MENU_MOD: StagesManager.Menu.close(); break;
+                    case MENU_MOD: Menu.close(); break;
                 }
                 break;
         }
@@ -308,7 +309,7 @@ public class GameAppController implements Initializable {
         if (mod == Mod.MENU_MOD) {
             if (event.getEventType() == MouseEvent.MOUSE_CLICKED || event.getEventType() == MouseEvent.MOUSE_DRAGGED) {
                 resume();
-                StagesManager.Menu.close();
+                Menu.close();
             }
             event.consume();
         }
@@ -360,7 +361,7 @@ public class GameAppController implements Initializable {
      */
     public void showEnemy() {
         setBlockedMod();
-        StagesManager.EnemyMenu.open();
+        EnemyMenu.open();
     }
 
     public Mod getMod() {

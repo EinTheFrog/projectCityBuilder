@@ -4,12 +4,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import render.StagesManager;
+import popups.DefeatMenu;
+import popups.ResultMenu;
 
 
 public class ResultMenuController {
     @FXML
-    Label txtResult;
+    private Label txtResult;
 
     public void pressOnBtnResume() {
         close();
@@ -20,17 +21,17 @@ public class ResultMenuController {
         else txtResult.setText("You have lost");
     }
     public static void move(double x, double y) {
-        StagesManager.ResultMenu.setCoords(x , y);
+        ResultMenu.setCoords(x , y);
     }
 
     public void pressESC(KeyEvent e) {
         if (e.getCode() == KeyCode.ESCAPE) {
-            StagesManager.ResultMenu.close();
+            ResultMenu.close();
         }
     }
 
     public void close() {
-        StagesManager.ResultMenu.close();
-        if (GameAppController.gameResources.userLost()) StagesManager.DefeatMenu.open();
+        ResultMenu.close();
+        if (GameAppController.gameResources.userLost()) DefeatMenu.open();
     }
 }
