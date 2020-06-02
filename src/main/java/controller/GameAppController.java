@@ -2,7 +2,8 @@ package controller;
 
 import core.GameResources;
 import core.buildings.*;
-import javafx.application.Platform;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -15,6 +16,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Screen;
+import javafx.util.Duration;
 import popups.EnemyMenu;
 import popups.Menu;
 import view.FieldView;
@@ -53,10 +55,7 @@ public class GameAppController implements Initializable {
     static FieldView chosenField;
     static GameResources gameResources;
 
-    private Timer timer = new Timer(true);
-    private TimerTask timerTask;
-    private TimerTask timerMoveTask;
-    private boolean timerIsRunning;
+    private Timeline gameLoop;
 
     private final int FIELD_SIZE = 20;
     private final double INDENT = 50;
@@ -71,11 +70,14 @@ public class GameAppController implements Initializable {
         //добавление обработчика события для закрытия меню при щелчке
         root.addEventFilter(MouseEvent.MOUSE_CLICKED, this::closeMenuOnClick);
 
-        buttonSet = new HashSet<>();
-        buttonSet.add(btnHouse);
-        buttonSet.add(btnCasern);
-        buttonSet.add(btnTavern);
-        buttonSet.add(btnCastle);
+        buttonSet = new HashSet<>() {
+            {
+                add(btnHouse);
+                add(btnCasern);
+                add(btnTavern);
+                add(btnCastle);
+            }
+        };
 
         //создание игрвого поля
         //вручную высчитвываем размер панели, на которой находится поле, потому что панель еще не отрисована
@@ -88,11 +90,20 @@ public class GameAppController implements Initializable {
         gameResources.chooseField(chosenField.getCore());
         updateResources();
 
-        timerIsRunning = false;
-        startTimer();
-
         fieldPane.getChildren().add(chosenField);
         fieldPane.addEventHandler(ScrollEvent.SCROLL, event -> chosenField.zoom(event.getDeltaY()));
+
+
+
+        KeyFrame keyFrame = new KeyFrame(
+                Duration.seconds(0.017), // 60 FPS
+                e -> {
+                    moveTask();
+                    resourceTask();
+                });
+        gameLoop = new Timeline(keyFrame);
+        gameLoop.setCycleCount(Timeline.INDEFINITE);
+        gameLoop.play();
     }
 
     //методы для кнопок
@@ -136,7 +147,7 @@ public class GameAppController implements Initializable {
     /**
      * Метод, обновляющий текст в метках ресурсов
      */
-    public void updateResources() {
+    private void updateResources() {
         lblGold.setText(String.valueOf(gameResources.getGold()));
         lblForce.setText(String.valueOf(gameResources.getForce()));
         lblPeople.setText(String.valueOf(gameResources.getPeople()));
@@ -174,58 +185,42 @@ public class GameAppController implements Initializable {
         showInfo();
     }
 
-    /**
-     * Метод, запускающий процессы для таймера
-     */
-    private void startTimer() {
-        timerIsRunning = true;
-        timerMoveTask = new TimerTask() {
-            @Override
-            public void run() {
-                double dy = 0;
-                double dx = 0;
-                for (KeyboardButtons key: curBtnPressed) {
-                    dx += key.dx;
-                    dy += key.dy;
-                }
-                chosenField.move(dx, dy);
-            }
-        };
-        timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                Platform.runLater(() -> {
-                    boolean enemiesCame = gameResources.changeTime(500);
-                    updateResources();
-                    if (enemiesCame) showEnemy();
-                });
-            }
-        };
-        timer.schedule(timerMoveTask, 0, 20);
-        timer.schedule(timerTask, 500, 500);
+    private void moveTask() {
+        double dy = 0;
+        double dx = 0;
+        for (KeyboardButtons key: curBtnPressed) {
+            dx += key.dx;
+            dy += key.dy;
+        }
+        chosenField.move(dx, dy);
     }
+
+    private void resourceTask() {
+        boolean enemiesCame = gameResources.changeTime(17);
+        updateResources();
+        if (enemiesCame) showEnemy();
+    }
+
 
     /**
      * Метод, отменяющий процессы для таймера
      */
     private void stopTimer() {
-        timerIsRunning = false;
-        timerMoveTask.cancel();
-        timerTask.cancel();
+        gameLoop.pause();
     }
 
     /**
      * Метод для запуска процессов для таймера, если они не запущены
      */
     public void resume() {
-        if (!timerIsRunning) startTimer();
+        gameLoop.play();
     }
 
     /**
      * Метод для запуска процессов для таймера, если они запущены
      */
     public void pause() {
-        if (timerIsRunning) stopTimer();
+        stopTimer();
     }
 
     /**
@@ -351,6 +346,7 @@ public class GameAppController implements Initializable {
      */
     public void setBlockedMod() {
         pause();
+        chosenField.setBuildingMod(false);
         chosenField.setChosenBuilding(null);
         for (Button btn: buttonSet) btn.setDisable(true);
         mod = Mod.BLOCKED_MOD;

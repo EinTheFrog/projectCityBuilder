@@ -50,7 +50,7 @@ public class HouseCore extends AbstractBuilding {
     @Override
     public int getPeopleChange() {
         int change = PEOPLE_CHANGE;
-        if (alienAuras.contains(Aura.TAVERN)) change += CASTLE_PEOPLE_BOOST;;
+        if (alienAuras.contains(Aura.CASTLE)) change += CASTLE_PEOPLE_BOOST;;
         return change;
     }
 

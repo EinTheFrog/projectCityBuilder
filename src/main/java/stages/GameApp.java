@@ -37,6 +37,7 @@ public class GameApp extends MyAbstractStage {
 
     public static void close() {
         instance.closeStage();
+        instance = null;
     }
 
     private GameAppController getInstanceController() {

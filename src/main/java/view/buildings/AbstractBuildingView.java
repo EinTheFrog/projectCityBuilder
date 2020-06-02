@@ -53,11 +53,7 @@ public abstract class AbstractBuildingView extends ImageView {
      */
     public void setVisibility(Visibility visibility) {
         this.visibility = visibility;
-        switch (visibility) {
-            case VISIBLE: setOpacity(1); break;
-            case GHOST: setOpacity(0.5); break;
-            case INVISIBLE: setOpacity(0); break;
-        }
+        setOpacity(visibility.getOpacity());
     }
 
     /**

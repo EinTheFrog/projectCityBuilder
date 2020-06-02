@@ -21,14 +21,7 @@ javafx {
 }
 
 mainClassName = "render.MainLauncher"
-jar {
-    manifest {
-        attributes "Main-Class": "render.MainLauncher"
-    }
-    from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    }
-}
+
 test {
     useJUnitPlatform()
 }

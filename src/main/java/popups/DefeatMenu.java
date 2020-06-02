@@ -1,6 +1,6 @@
 package popups;
 
-import controller.MenuController;
+import controller.DefeatMenuController;
 import javafx.fxml.FXMLLoader;
 import stages.GameApp;
 
@@ -16,10 +16,11 @@ public class DefeatMenu extends MyAbstractPopup {
     }
 
     public static void open () {
+        GameApp.getController().setBlockedMod();
         if (instance == null) instance = new DefeatMenu("/DefeatMenu.fxml");
         instance.isOpen = true;
         instance.showPopup(GameApp.getStage());
-        MenuController.move(GameApp.getXCenter(), GameApp.getYCenter());
+        DefeatMenuController.move(GameApp.getXCenter(), GameApp.getYCenter());
     }
 
     public static void setCoords(double x, double y) {

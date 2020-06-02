@@ -21,6 +21,7 @@ public abstract class MyAbstractPopup {
         try {
             Parent root = loader.load();
             popup.getContent().add(root);
+            popup.hideOnEscapeProperty().set(false);
             retainController(loader);
         } catch (IllegalStateException | IOException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);

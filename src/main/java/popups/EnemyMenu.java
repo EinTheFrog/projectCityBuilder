@@ -1,5 +1,6 @@
 package popups;
 
+import controller.EnemyMenuController;
 import controller.MenuController;
 import javafx.fxml.FXMLLoader;
 import stages.GameApp;
@@ -20,13 +21,12 @@ public class EnemyMenu extends MyAbstractPopup {
         if (instance == null) instance = new EnemyMenu("/EnemyMenu.fxml");
         instance.isOpen = true;
         instance.showPopup(GameApp.getStage());
-        MenuController.move(GameApp.getXCenter(), GameApp.getYCenter());
+        EnemyMenuController.move(GameApp.getXCenter(), GameApp.getYCenter());
     }
 
     public static void close () {
         if (instance != null) {
             instance.isOpen = false;
-            GameApp.getController().updateResources();
             instance.hidePopup();
         }
     }
