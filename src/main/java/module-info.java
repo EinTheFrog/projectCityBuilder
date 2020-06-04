@@ -1,4 +1,4 @@
-module projectCityBuilder.main {
+module projectCityBuilder {
     requires javafx.fxml;
     requires javafx.controls;
     requires javafx.graphics;

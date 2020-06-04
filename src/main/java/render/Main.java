@@ -14,15 +14,7 @@ import java.io.IOException;
 public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
-        try {
-            MainMenu.open();
-        } catch (IllegalStateException | IOException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("ERROR");
-            alert.setHeaderText("ERROR: Incorrect path to fxml file");
-            alert.setContentText(e.getMessage());
-            alert.showAndWait();
-        }
+        MainMenu.open();
     }
 
     public static void main (String[] args) {

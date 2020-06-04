@@ -14,11 +14,7 @@ public class MenuController {
     }
 
     public void pressOnBtnMenu() {
-        try {
-            MainMenu.open();
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
-        }
+        MainMenu.open();
         GameApp.close();
     }
 
