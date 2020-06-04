@@ -1,6 +1,5 @@
 package stages;
 
-import controller.GameAppController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -17,7 +16,7 @@ abstract class MyAbstractStage {
         //создаем окно и корневой узел с помощью fxml
         stage = new Stage();
         FXMLLoader loader = new FXMLLoader();
-        URL xmlUrl = MyAbstractStage.class.getResource(resPath);
+        URL xmlUrl = getClass().getResource(resPath);
         loader.setLocation(xmlUrl);
         try {
             Parent root = loader.load();

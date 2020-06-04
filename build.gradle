@@ -1,5 +1,4 @@
 plugins {
-    id 'java'
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.0.8'
 }
@@ -20,7 +19,9 @@ javafx {
     modules = [ 'javafx.controls', 'javafx.fxml' ]
 }
 
-mainClassName = "render.MainLauncher"
+application {
+    mainClass = "render.Main"
+}
 
 test {
     useJUnitPlatform()
