@@ -2,11 +2,9 @@ package stages;
 
 import javafx.fxml.FXMLLoader;
 
-import java.io.IOException;
-
 public class MainMenu extends MyAbstractStage {
     private static MainMenu instance;
-    private static final String RESPATH = "/MainMenu.fxml";
+    private static final String RESPATH = "/design/MainMenu.fxml";
     private MainMenu(String resPath) {
         super(resPath);
     }

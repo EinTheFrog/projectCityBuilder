@@ -16,7 +16,7 @@ abstract class MyAbstractStage {
         //создаем окно и корневой узел с помощью fxml
         stage = new Stage();
         FXMLLoader loader = new FXMLLoader();
-        URL xmlUrl = getClass().getClassLoader().getResource("/MainMenu.fxml");
+        URL xmlUrl = getClass().getClassLoader().getResource("/design/MainMenu.fxml");
         loader.setLocation(xmlUrl);
         try {
             Parent root = loader.load();
