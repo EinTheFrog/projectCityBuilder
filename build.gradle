@@ -11,7 +11,8 @@ repositories {
 }
 
 dependencies {
-    testImplementation('org.junit.jupiter:junit-jupiter:5.6.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 }
 
 javafx {
@@ -19,16 +20,26 @@ javafx {
     modules = [ 'javafx.controls', 'javafx.fxml' ]
 }
 
+plugins.withType(JavaPlugin).configureEach {
+    java {
+        modularity.inferModulePath = true
+    }
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+}
+
 application {
-    mainModule ="main"
-    mainClass = "render.Main"
+    mainModule = 'render'
+    mainClass = 'render.Main'
 }
 
 test {
     useJUnitPlatform()
 }
 
-task uberJar(type: Jar) {
+/*task uberJar(type: Jar) {
     archiveClassifier = 'uber'
 
     manifest {
@@ -41,4 +52,4 @@ task uberJar(type: Jar) {
     from {
         configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
     }
-}
+}*/
