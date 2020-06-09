@@ -17,7 +17,7 @@ public class EnemyMenu extends MyAbstractPopup {
 
     public static void open () {
         GameApp.getController().setBlockedMod();
-        if (instance == null) instance = new EnemyMenu("/design/EnemyMenu.fxml");
+        if (instance == null) instance = new EnemyMenu("/stages/EnemyMenu.fxml");
         instance.isOpen = true;
         instance.showPopup(GameApp.getStage());
         EnemyMenuController.move(GameApp.getXCenter(), GameApp.getYCenter());

@@ -1,18 +1,20 @@
 plugins {
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.0.8'
+    id 'org.beryx.jlink' version '2.12.0'
 }
 
-group 'org.example'
-version '1.0'
-
 repositories {
-    mavenCentral()
+    jcenter()
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
 }
 
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.1'
 }
 
 javafx {
@@ -20,36 +22,12 @@ javafx {
     modules = [ 'javafx.controls', 'javafx.fxml' ]
 }
 
-plugins.withType(JavaPlugin).configureEach {
-    java {
-        modularity.inferModulePath = true
+mainClassName = "$moduleName/render.Main"
+
+jlink {
+    options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
+    launcher {
+        name = 'hellofx'
     }
 }
 
-tasks.withType(Test).configureEach {
-    useJUnitPlatform()
-}
-
-application {
-    mainModule = 'render'
-    mainClass = 'render.Main'
-}
-
-test {
-    useJUnitPlatform()
-}
-
-/*task uberJar(type: Jar) {
-    archiveClassifier = 'uber'
-
-    manifest {
-        attributes 'Main-Class': 'render.MainLauncher'
-    }
-
-    from sourceSets.main.output
-
-    dependsOn configurations.runtimeClasspath
-    from {
-        configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
-    }
-}*/

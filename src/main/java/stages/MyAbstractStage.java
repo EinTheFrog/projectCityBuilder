@@ -15,15 +15,11 @@ abstract class MyAbstractStage {
     protected MyAbstractStage(String resPath) {
         //создаем окно и корневой узел с помощью fxml
         stage = new Stage();
-        Class c = getClass();
-        FXMLLoader loader = new FXMLLoader();
-        URL xmlUrl = getClass().getClassLoader().getResource(resPath);;
-        loader.setLocation(xmlUrl);
         try {
-            Parent root = loader.load();
-            retainController(loader);
-            //задаем сцену и окрываем окно
+            URL url = getClass().getResource(resPath);
+            Parent root = FXMLLoader.load(url);
             stage.setScene(new Scene(root));
+            stage.show();
         } catch (IllegalStateException | IOException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("ERROR");

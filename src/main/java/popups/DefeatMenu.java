@@ -17,7 +17,7 @@ public class DefeatMenu extends MyAbstractPopup {
 
     public static void open () {
         GameApp.getController().setBlockedMod();
-        if (instance == null) instance = new DefeatMenu("/design/DefeatMenu.fxml");
+        if (instance == null) instance = new DefeatMenu("/stages/DefeatMenu.fxml");
         instance.isOpen = true;
         instance.showPopup(GameApp.getStage());
         DefeatMenuController.move(GameApp.getXCenter(), GameApp.getYCenter());

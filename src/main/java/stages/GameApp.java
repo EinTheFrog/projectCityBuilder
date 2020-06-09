@@ -11,7 +11,7 @@ import popups.ResultMenu;
 public class GameApp extends MyAbstractStage {
     private static GameApp instance;
     private GameAppController myController;
-    private static final String RESPATH = "/design/GameApp.fxml";
+    private static final String RESPATH = "GameApp.fxml";
     private GameApp(String resPath) {
         super(resPath);
     }

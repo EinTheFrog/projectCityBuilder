@@ -4,7 +4,7 @@ import javafx.fxml.FXMLLoader;
 
 public class MainMenu extends MyAbstractStage {
     private static MainMenu instance;
-    private static final String RESPATH = "/design/MainMenu.fxml";
+    private static final String RESPATH = "MainMenu.fxml";
     private MainMenu(String resPath) {
         super(resPath);
     }
