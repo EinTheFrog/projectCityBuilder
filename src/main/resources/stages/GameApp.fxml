@@ -17,7 +17,7 @@
 
     <center>
         <StackPane>
-            <Pane xmlns:fx="http://javafx.com/fxml/1"
+            <Pane xmlns:fx="http://javafx.com/fxml"
                   fx:id="fieldPane"
                   prefWidth="${screen.visualBounds.width * 5/9}"
                   prefHeight = "${fieldPane.prefWidth * 9/16}"
@@ -39,7 +39,7 @@
                                 fx:id="imgInfo"
                                 fitWidth = "${fieldPane.height / 6}"
                                 fitHeight = "${fieldPane.height / 6}">
-                            <image> <Image url="/textures/btnHouse.png" backgroundLoading="true"/></image>
+                            <image> <Image url="@/textures/btnHouse.png" backgroundLoading="true"/></image>
                         </ImageView>
 
                         <HBox styleClass="hBox">
