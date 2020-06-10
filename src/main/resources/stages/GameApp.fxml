@@ -39,7 +39,7 @@
                                 fx:id="imgInfo"
                                 fitWidth = "${fieldPane.height / 6}"
                                 fitHeight = "${fieldPane.height / 6}">
-                            <image> <Image url="@/textures/btnHouse.png" backgroundLoading="true"/></image>
+                            <image> <Image url="@../textures/castle.png" backgroundLoading="true"/></image>
                         </ImageView>
 
                         <HBox styleClass="hBox">
@@ -47,7 +47,7 @@
                                 <ImageView
                                         fitWidth = "${fieldPane.height / 20}"
                                         fitHeight = "${fieldPane.height / 20}">
-                                    <image> <Image url="/textures/gold.png" backgroundLoading="true"/></image>
+                                    <image> <Image url="@../textures/gold.png" backgroundLoading="true"/></image>
                                 </ImageView>
                                 <Label fx:id="lblGoldCost"/>
                             </HBox>
@@ -55,7 +55,7 @@
                                 <ImageView
                                         fitWidth = "${fieldPane.height / 20}"
                                         fitHeight = "${fieldPane.height / 20}">
-                                    <image> <Image url="/textures/people.png" backgroundLoading="true"/></image>
+                                    <image> <Image url="@../textures/people.png" backgroundLoading="true"/></image>
                                 </ImageView>
                                 <Label fx:id="lblPeopleCost"/>
                             </HBox>
@@ -63,7 +63,7 @@
                                 <ImageView
                                         fitWidth = "${fieldPane.height / 20}"
                                         fitHeight = "${fieldPane.height / 20}">
-                                    <image> <Image url="/textures/force.png" backgroundLoading="true"/></image>
+                                    <image> <Image url="@../textures/force.png" backgroundLoading="true"/></image>
                                 </ImageView>
                                 <Label fx:id="lblForceCost"/>
                             </HBox>
@@ -84,7 +84,7 @@
                 <ImageView
                         fitWidth = "${fieldPane.height / 20}"
                         fitHeight = "${fieldPane.height / 20}">
-                    <image> <Image url="/textures/gold.png" backgroundLoading="true"/></image>
+                    <image> <Image url="@../textures/gold.png" backgroundLoading="true"/></image>
                 </ImageView>
                 <Label fx:id="lblGold" text="0"/>
                 <Label fx:id="lblGoldIncome" text="+0"/>
@@ -95,7 +95,7 @@
                 <ImageView
                         fitWidth = "${fieldPane.height / 20}"
                         fitHeight = "${fieldPane.height / 20}">
-                    <image> <Image url="/textures/force.png" backgroundLoading="true"/></image>
+                    <image> <Image url="@../textures/force.png" backgroundLoading="true"/></image>
                 </ImageView>
                 <Label fx:id="lblForce" text="0"/>
                 <Label fx:id="lblForceIncome" text="+0"/>
@@ -106,7 +106,7 @@
                 <ImageView
                         fitWidth = "${fieldPane.height / 20}"
                         fitHeight = "${fieldPane.height / 20}">
-                    <image> <Image url="/textures/people.png" backgroundLoading="true"/></image>
+                    <image> <Image url="@../textures/people.png" backgroundLoading="true"/></image>
                 </ImageView>
                 <Label fx:id="lblPeople" text="0"/>
             </HBox>
@@ -116,7 +116,7 @@
                 <ImageView
                         fitWidth = "${fieldPane.height / 20}"
                         fitHeight = "${fieldPane.height / 20}">
-                    <image> <Image url="/textures/time.png" backgroundLoading="true"/></image>
+                    <image> <Image url="@../textures/time.png" backgroundLoading="true"/></image>
                 </ImageView>
                 <Label fx:id="lblTime" text="0"/>
             </HBox>
@@ -133,7 +133,7 @@
                     <ImageView
                             fitWidth = "${fieldPane.height / 10}"
                             fitHeight = "${fieldPane.height / 10}">
-                        <image> <Image url="/textures/btnHouse.png" backgroundLoading="true"/></image>
+                        <image> <Image url="@../textures/btnHouse.png" backgroundLoading="true"/></image>
                     </ImageView>
                 </graphic>
             </Button>
@@ -143,7 +143,7 @@
                     <ImageView
                             fitWidth = "${fieldPane.height / 10}"
                             fitHeight = "${fieldPane.height / 10}">
-                        <image> <Image url="/textures/btnCasern.png" backgroundLoading="true"/></image>
+                        <image> <Image url="@../textures/btnCasern.png" backgroundLoading="true"/></image>
                     </ImageView>
                 </graphic>
             </Button>
@@ -153,7 +153,7 @@
                     <ImageView
                             fitWidth = "${fieldPane.height / 10}"
                             fitHeight = "${fieldPane.height / 10}">
-                        <image> <Image url="/textures/btnTavern.png" backgroundLoading="true"/></image>
+                        <image> <Image url="@../textures/btnTavern.png" backgroundLoading="true"/></image>
                     </ImageView>
                 </graphic>
             </Button>
@@ -163,7 +163,7 @@
                     <ImageView
                             fitWidth = "${fieldPane.height / 10}"
                             fitHeight = "${fieldPane.height / 10}">
-                        <image> <Image url = "/textures/btnCastle.png" backgroundLoading="true"/></image>
+                        <image> <Image url = "@../textures/btnCastle.png" backgroundLoading="true"/></image>
                     </ImageView>
                 </graphic>
             </Button>

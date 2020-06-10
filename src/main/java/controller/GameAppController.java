@@ -93,8 +93,6 @@ public class GameAppController implements Initializable {
         fieldPane.getChildren().add(chosenField);
         fieldPane.addEventHandler(ScrollEvent.SCROLL, event -> chosenField.zoom(event.getDeltaY()));
 
-
-
         KeyFrame keyFrame = new KeyFrame(
                 Duration.seconds(0.017), // 60 FPS
                 e -> {

@@ -26,6 +26,7 @@ abstract class MyAbstractStage {
             alert.setHeaderText("ERROR: Incorrect path to fxml file");
             alert.setContentText(e.getMessage());
             System.err.println(e.getMessage());
+            e.printStackTrace();
             alert.showAndWait();
         }
     }
