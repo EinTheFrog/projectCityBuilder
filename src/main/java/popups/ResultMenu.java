@@ -21,7 +21,7 @@ public class ResultMenu extends MyAbstractPopup {
     }
 
     public static void open (Boolean userWon) {
-        if (instance == null) instance = new ResultMenu("/stages/ResultMenu.fxml");
+        if (instance == null) instance = new ResultMenu("ResultMenu.fxml");
         instance.isOpen = true;
         instance.showPopup(GameApp.getStage());
         instance.getInstanceController().setText(userWon);

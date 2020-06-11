@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class DefeatMenuController {
 
-    public void pressOnBtnMenu() throws IOException {
+    public void pressOnBtnMenu() {
         MainMenu.open();
         GameApp.close();
     }

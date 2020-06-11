@@ -28,7 +28,7 @@ public abstract class MyAbstractPopup {
             alert.setTitle("ERROR");
             alert.setHeaderText("ERROR: Incorrect path to fxml file");
             alert.setContentText(e.getMessage());
-            alert.showAndWait();
+            alert.show();
         }
     }
 

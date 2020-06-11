@@ -15,7 +15,7 @@
       prefHeight="${imgEnemy.fitHeight}"
       prefWidth="${imgEnemy.fitWidth}">
     <stylesheets>
-        <URL value="@RedLord.css" />
+        <URL value="@../stylesheets/RedLord.css" />
     </stylesheets>
 
     <Label text="Nomads came"/>
@@ -28,7 +28,7 @@
             <Screen fx:factory="getPrimary" fx:id="screen"/>
         </fx:define>
 
-        <image> <Image url="/textures/nomads.jpg" backgroundLoading="true"/></image>
+        <image> <Image url="@../textures/nomads.jpg" backgroundLoading="true"/></image>
     </ImageView>
 
     <HBox  styleClass="enemyHBox">

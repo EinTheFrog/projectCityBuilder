@@ -17,8 +17,8 @@ public class ResultMenuController {
     }
 
     public void setText(Boolean userWon) {
-        if (userWon) txtResult.setText("You have won!");
-        else txtResult.setText("You have lost");
+        if (userWon) txtResult.setText("You won!");
+        else txtResult.setText("You lose");
     }
     public static void move(double x, double y) {
         ResultMenu.setCoords(x , y);

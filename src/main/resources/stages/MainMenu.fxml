@@ -7,7 +7,7 @@
         prefHeight="600" prefWidth="400"
         fx:controller="controller.MainMenuController">
     <stylesheets>
-        <URL value="@RedLord.css" />
+        <URL value="@../stylesheets/RedLord.css" />
     </stylesheets>
     <Button text="Start"
             onAction="#btnStartAction"

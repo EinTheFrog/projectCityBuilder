@@ -12,7 +12,7 @@
       onKeyPressed="#pressESC"
       styleClass="root">
     <stylesheets>
-        <URL value="@RedLord.css" />
+        <URL value="@../stylesheets/RedLord.css" />
     </stylesheets>
 
     <Button fx:id="btnResume"

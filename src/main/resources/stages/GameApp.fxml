@@ -12,7 +12,7 @@
             fx:controller="controller.GameAppController">
 
     <stylesheets>
-        <URL value="@RedLord.css" />
+        <URL value="@../stylesheets/RedLord.css" />
     </stylesheets>
 
     <center>

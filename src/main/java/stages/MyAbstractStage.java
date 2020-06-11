@@ -17,7 +17,9 @@ abstract class MyAbstractStage {
         stage = new Stage();
         try {
             URL url = getClass().getResource(resPath);
-            Parent root = FXMLLoader.load(url);
+            FXMLLoader loader = new FXMLLoader(url);
+            Parent root = loader.load();
+            retainController(loader);
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IllegalStateException | IOException e) {

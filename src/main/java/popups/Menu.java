@@ -18,7 +18,7 @@ public class Menu extends MyAbstractPopup {
     }
 
     public static void open () {
-        if (instance == null) instance = new Menu("/stages/Menu.fxml");
+        if (instance == null) instance = new Menu("Menu.fxml");
         instance.isOpen = true;
         instance.popup.hideOnEscapeProperty().set(true);
         instance.showPopup(GameApp.getStage());
