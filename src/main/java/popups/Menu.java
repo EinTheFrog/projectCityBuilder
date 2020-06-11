@@ -8,34 +8,29 @@ import stages.GameApp;
 public class Menu extends MyAbstractPopup {
     private static Menu instance;
 
-    public Menu(String resPath) {
+    private Menu(String resPath) {
         super(resPath);
     }
 
     @Override
-    void retainController(FXMLLoader loader) {
+    void retainController(FXMLLoader loader) { }
 
+    public static Menu getInstance() {
+        if (instance == null) instance = new Menu("Menu.fxml");
+        return instance;
     }
 
-    public static void open () {
-        if (instance == null) instance = new Menu("Menu.fxml");
+    public void open () {
         instance.isOpen = true;
         instance.popup.hideOnEscapeProperty().set(true);
-        instance.showPopup(GameApp.getStage());
-        MenuController.move(GameApp.getXCenter(), GameApp.getYCenter());
+        instance.showPopup(GameApp.getInstance().getStage());
     }
 
-    public static void close () {
-        if (instance != null) {
-            instance.isOpen = false;
-            GameApp.getController().setChoosingMod();
-            GameApp.getController().resume();
-            instance.hidePopup();
-        }
-    }
-
-    public static void setCoords(double x, double y) {
-        instance.setInstanceCoords(x, y);
+    public void close () {
+        isOpen = false;
+        GameApp.getInstance().getController().setChoosingMod();
+        GameApp.getInstance().getController().resume();
+        hidePopup();
     }
 
     public static boolean isOpen() {

@@ -12,7 +12,7 @@ public class DefeatMenuController {
         GameApp.close();
     }
 
-    public static void move(double x, double y) {
+    /*public static void move(double x, double y) {
         DefeatMenu.setCoords(x , y);
-    }
+    }*/
 }

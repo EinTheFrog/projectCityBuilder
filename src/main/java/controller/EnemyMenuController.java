@@ -16,19 +16,19 @@ public class EnemyMenuController {
         if (!userWon) {
             GameAppController.chosenField.removeRandomBuilding();
         }
-        ResultMenu.open(userWon);
-        EnemyMenu.close();
+        ResultMenu.getInstance().open(userWon);
+        EnemyMenu.getInstance().close();
     }
 
     public void close() {
-        EnemyMenu.close();
-        GameApp.getController().setChoosingMod();
-        GameApp.getController().resume();
-        if (GameAppController.gameResources.userLost()) DefeatMenu.open();
+        EnemyMenu.getInstance().close();
+        GameApp.getInstance().getController().setChoosingMod();
+        GameApp.getInstance().getController().resume();
+        if (GameAppController.gameResources.userLost()) DefeatMenu.getInstance().open();
     }
 
-    public static void move (double x, double y) {
+  /*  public static void move (double x, double y) {
         EnemyMenu.setCoords(x, y);
-    }
+    }*/
 
 }

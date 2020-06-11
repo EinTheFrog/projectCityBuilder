@@ -6,36 +6,31 @@ import stages.GameApp;
 
 public class EnemyMenu extends MyAbstractPopup {
     private static EnemyMenu instance;
-    public EnemyMenu(String resPath) {
+
+    private EnemyMenu(String resPath) {
         super(resPath);
     }
 
-    @Override
-    void retainController(FXMLLoader loader) {
-
-    }
-
-    public static void open () {
-        GameApp.getController().setBlockedMod();
+    public static EnemyMenu getInstance() {
         if (instance == null) instance = new EnemyMenu("EnemyMenu.fxml");
-        instance.isOpen = true;
-        instance.showPopup(GameApp.getStage());
-        EnemyMenuController.move(GameApp.getXCenter(), GameApp.getYCenter());
+        return instance;
     }
 
-    public static void close () {
-        if (instance != null) {
-            instance.isOpen = false;
-            instance.hidePopup();
-        }
+    @Override
+    void retainController(FXMLLoader loader) { }
+
+    public void open () {
+        GameApp.getInstance().getController().setBlockedMod();
+        isOpen = true;
+        showPopup(GameApp.getInstance().getStage());
     }
 
-    public static void setCoords(double x, double y) {
-        instance.setInstanceCoords(x, y);
+    public void close () {
+        isOpen = false;
+        hidePopup();
     }
 
-    public static boolean isOpen() {
-       if (instance != null) return instance.isOpen;
-       else return false;
+    public boolean isOpen() {
+       return isOpen;
     }
 }

@@ -10,7 +10,7 @@ import stages.MainMenu;
 public class MainMenuController {
 
     public void btnStartAction() {
-        GameApp.open();
+        GameApp.getInstance().open();
         MainMenu.close();
     }
 

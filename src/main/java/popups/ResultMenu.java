@@ -7,7 +7,7 @@ import stages.GameApp;
 public class ResultMenu extends MyAbstractPopup {
     private static ResultMenu instance;
     private ResultMenuController resultMenuController;
-    public ResultMenu(String resPath) {
+    private ResultMenu(String resPath) {
         super(resPath);
     }
 
@@ -16,33 +16,29 @@ public class ResultMenu extends MyAbstractPopup {
         resultMenuController = loader.getController();
     }
 
+    public static ResultMenu getInstance() {
+        if (instance == null) instance = new ResultMenu("ResultMenu.fxml");
+        return instance;
+    }
+
     private ResultMenuController getInstanceController() {
         return resultMenuController;
     }
 
-    public static void open (Boolean userWon) {
-        if (instance == null) instance = new ResultMenu("ResultMenu.fxml");
-        instance.isOpen = true;
-        instance.showPopup(GameApp.getStage());
-        instance.getInstanceController().setText(userWon);
-        ResultMenuController.move(GameApp.getXCenter(), GameApp.getYCenter());
+    public void open (Boolean userWon) {
+        isOpen = true;
+        showPopup(GameApp.getInstance().getStage());
+        getInstanceController().setText(userWon);
     }
 
-    public static void close () {
-        if (instance != null) {
-            instance.isOpen = false;
-            GameApp.getController().setChoosingMod();
-            GameApp.getController().resume();
-            instance.hidePopup();
-        }
+    public void close () {
+        isOpen = false;
+        GameApp.getInstance().getController().setChoosingMod();
+        GameApp.getInstance().getController().resume();
+        hidePopup();
     }
 
-    public static void setCoords(double x, double y) {
-        instance.setInstanceCoords(x, y);
-    }
-
-    public static boolean isOpen() {
-        if (instance != null) return instance.isOpen;
-        else return false;
+    public  boolean isOpen() {
+        return isOpen;
     }
 }

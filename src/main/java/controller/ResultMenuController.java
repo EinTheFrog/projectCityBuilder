@@ -20,18 +20,18 @@ public class ResultMenuController {
         if (userWon) txtResult.setText("You won!");
         else txtResult.setText("You lose");
     }
-    public static void move(double x, double y) {
+   /* public static void move(double x, double y) {
         ResultMenu.setCoords(x , y);
     }
-
+*/
     public void pressESC(KeyEvent e) {
         if (e.getCode() == KeyCode.ESCAPE) {
-            ResultMenu.close();
+            ResultMenu.getInstance().close();
         }
     }
 
     public void close() {
-        ResultMenu.close();
-        if (GameAppController.gameResources.userLost()) DefeatMenu.open();
+        ResultMenu.getInstance().close();
+        if (GameAppController.gameResources.userLost()) DefeatMenu.getInstance().open();
     }
 }

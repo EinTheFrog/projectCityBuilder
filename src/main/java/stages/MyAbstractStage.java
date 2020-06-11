@@ -39,7 +39,7 @@ abstract class MyAbstractStage {
         stage.show();
     }
 
-    protected Stage getInstanceStage() {
+    public Stage getStage() {
         return stage;
     }
 

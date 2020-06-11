@@ -40,7 +40,7 @@ public abstract class MyAbstractPopup {
         if (popup != null) popup.hide();
     }
 
-    public void setInstanceCoords(double x, double y) {
+    public void setCords(double x, double y) {
         popup.setX(x - popup.getWidth() / 2);
         popup.setY(y - popup.getHeight() / 2);
     }

@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class MenuController {
     public void pressOnBtnResume() {
-        Menu.close();
+        Menu.getInstance().close();
     }
 
     public void pressOnBtnMenu() {
@@ -20,11 +20,11 @@ public class MenuController {
 
     public void pressESC(KeyEvent e) {
         if (e.getCode() == KeyCode.ESCAPE) {
-            Menu.close();
+            Menu.getInstance().close();
         }
     }
 
-    public static void move(double x, double y) {
+   /* public static void move(double x, double y) {
         Menu.setCoords(x , y);
-    }
+    }*/
 }

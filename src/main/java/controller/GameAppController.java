@@ -250,11 +250,11 @@ public class GameAppController implements Initializable {
                     case CHOOSING_MOD:
                         if (chosenField.getChosenBuilding() == null) {
                             setMenuMod();
-                            Menu.open();
+                            Menu.getInstance().open();
                         }
                         else chosenField.setChosenBuilding(null); break;
                     case BUILDING_MOD: setChoosingMod(); break;
-                    case MENU_MOD: Menu.close(); break;
+                    case MENU_MOD: Menu.getInstance().close(); break;
                 }
                 break;
         }
@@ -302,7 +302,7 @@ public class GameAppController implements Initializable {
         if (mod == Mod.MENU_MOD) {
             if (event.getEventType() == MouseEvent.MOUSE_CLICKED || event.getEventType() == MouseEvent.MOUSE_DRAGGED) {
                 resume();
-                Menu.close();
+                Menu.getInstance().close();
             }
             event.consume();
         }
@@ -355,7 +355,7 @@ public class GameAppController implements Initializable {
      */
     public void showEnemy() {
         setBlockedMod();
-        EnemyMenu.open();
+        EnemyMenu.getInstance().open();
     }
 
     public Mod getMod() {

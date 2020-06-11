@@ -1,34 +1,29 @@
 package popups;
 
-import controller.DefeatMenuController;
 import javafx.fxml.FXMLLoader;
 import stages.GameApp;
 
 public class DefeatMenu extends MyAbstractPopup {
     private static DefeatMenu instance;
-    public DefeatMenu(String resPath) {
+    private DefeatMenu(String resPath) {
         super(resPath);
     }
 
     @Override
-    void retainController(FXMLLoader loader) {
+    void retainController(FXMLLoader loader) { }
 
-    }
-
-    public static void open () {
-        GameApp.getController().setBlockedMod();
+    public static DefeatMenu getInstance() {
         if (instance == null) instance = new DefeatMenu("DefeatMenu.fxml");
-        instance.isOpen = true;
-        instance.showPopup(GameApp.getStage());
-        DefeatMenuController.move(GameApp.getXCenter(), GameApp.getYCenter());
+        return instance;
     }
 
-    public static void setCoords(double x, double y) {
-        instance.setInstanceCoords(x, y);
+    public void open () {
+        GameApp.getInstance().getController().setBlockedMod();
+        isOpen = true;
+        showPopup(GameApp.getInstance().getStage());
     }
 
-    public static boolean isOpen() {
-        if (instance != null) return instance.isOpen;
-        else return false;
+    public boolean isOpen() {
+        return isOpen;
     }
 }
