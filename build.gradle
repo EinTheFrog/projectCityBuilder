@@ -24,3 +24,9 @@ javafx {
 
 mainClassName = "$moduleName/render.Main"
 
+jlink {
+    launcher {
+        name = 'projectCityBuilder'
+    }
+}
+

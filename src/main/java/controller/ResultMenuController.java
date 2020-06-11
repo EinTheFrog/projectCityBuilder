@@ -20,10 +20,7 @@ public class ResultMenuController {
         if (userWon) txtResult.setText("You won!");
         else txtResult.setText("You lose");
     }
-   /* public static void move(double x, double y) {
-        ResultMenu.setCoords(x , y);
-    }
-*/
+
     public void pressESC(KeyEvent e) {
         if (e.getCode() == KeyCode.ESCAPE) {
             ResultMenu.getInstance().close();

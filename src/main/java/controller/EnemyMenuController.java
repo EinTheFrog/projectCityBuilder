@@ -27,8 +27,4 @@ public class EnemyMenuController {
         if (GameAppController.gameResources.userLost()) DefeatMenu.getInstance().open();
     }
 
-  /*  public static void move (double x, double y) {
-        EnemyMenu.setCoords(x, y);
-    }*/
-
 }

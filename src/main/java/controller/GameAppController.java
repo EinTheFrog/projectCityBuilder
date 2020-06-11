@@ -183,7 +183,10 @@ public class GameAppController implements Initializable {
         showInfo();
     }
 
+    private boolean playerMovesCam = false;
+
     private void moveTask() {
+        if (!playerMovesCam) return;
         double dy = 0;
         double dx = 0;
         for (KeyboardButtons key: curBtnPressed) {
@@ -226,7 +229,6 @@ public class GameAppController implements Initializable {
      * @param code
      */
     public void keyPressed(KeyCode code) {
-        boolean playerMovesCam = false;
         switch (code) {
             case W:
                 newBtnPressed.add(KeyboardButtons.W);

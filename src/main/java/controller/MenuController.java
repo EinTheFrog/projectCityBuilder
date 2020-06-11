@@ -23,8 +23,4 @@ public class MenuController {
             Menu.getInstance().close();
         }
     }
-
-   /* public static void move(double x, double y) {
-        Menu.setCoords(x , y);
-    }*/
 }
