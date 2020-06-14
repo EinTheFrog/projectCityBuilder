@@ -8,13 +8,14 @@ repositories {
     jcenter()
 }
 
-tasks.withType(Test).configureEach {
+test {
     useJUnitPlatform()
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.1'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.4.2ju'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.4.2'
 }
 
 javafx {
