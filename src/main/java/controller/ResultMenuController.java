@@ -6,6 +6,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import popups.DefeatMenu;
 import popups.ResultMenu;
+import stages.GameApp;
 
 
 public class ResultMenuController {
@@ -29,6 +30,6 @@ public class ResultMenuController {
 
     public void close() {
         ResultMenu.getInstance().close();
-        if (GameAppController.gameResources.userLost()) DefeatMenu.getInstance().open();
+        if (GameApp.getInstance().getController().gameResources.userLost()) DefeatMenu.getInstance().open();
     }
 }

@@ -48,12 +48,12 @@ public class GameAppController implements Initializable {
     //множества для контроля за зажатыми клавишами,
     //curBtnPressed отвечает за клавиши, что уже были зажаты
     //newBtnPressed отвечает за клавиши, которые пользователь нажал
-    private static final EnumSet <KeyboardButtons> curBtnPressed = EnumSet.noneOf(KeyboardButtons.class);
-    private static final EnumSet <KeyboardButtons> newBtnPressed = EnumSet.noneOf(KeyboardButtons.class);
-    public static Mod mod = Mod.CHOOSING_MOD; //при открытии игрвого окна мы находимся в режиме выбора
+    private final EnumSet <KeyboardButtons> curBtnPressed = EnumSet.noneOf(KeyboardButtons.class);
+    private final EnumSet <KeyboardButtons> newBtnPressed = EnumSet.noneOf(KeyboardButtons.class);
+    private Mod mod;
     //поле является static, т.к у нас может быть только одно игрвое поле, накотором находится игрок
-    static FieldView chosenField;
-    static GameResources gameResources;
+    FieldView chosenField;
+    GameResources gameResources;
 
     private Timeline gameLoop;
 
@@ -92,6 +92,8 @@ public class GameAppController implements Initializable {
 
         fieldPane.getChildren().add(chosenField);
         fieldPane.addEventHandler(ScrollEvent.SCROLL, event -> chosenField.zoom(event.getDeltaY()));
+
+        mod = Mod.CHOOSING_MOD; //при открытии игрвого окна мы находимся в режиме выбора
 
         KeyFrame keyFrame = new KeyFrame(
                 Duration.seconds(0.017), // 60 FPS
@@ -266,7 +268,7 @@ public class GameAppController implements Initializable {
 
     /**
      * Метод, обрабатывающий нажатые клавиши и вызывающий соответствующие методы
-     * @param code
+     * @param code требует KeyCode
      */
     public void keyReleased(KeyCode code) {
         switch (code) {
@@ -298,7 +300,7 @@ public class GameAppController implements Initializable {
 
     /**
      * метод для закрытия PopUp меню при щелчке внутри игрвого окна
-     * @param event
+     * @param event требует MouseEvent
      */
     public void closeMenuOnClick(MouseEvent event) {
         if (mod == Mod.MENU_MOD) {

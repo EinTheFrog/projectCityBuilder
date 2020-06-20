@@ -27,6 +27,10 @@ public class GameApp extends MyAbstractStage {
         return instance;
     }
 
+    public static void deleteInstance() {
+        instance = null;
+    }
+
     public void open() {
         showStage();
         getStage().xProperty().addListener(((observable, oldValue, newValue) -> moveMenus()));
@@ -40,9 +44,8 @@ public class GameApp extends MyAbstractStage {
         ResultMenu.getInstance().setCords(getXCenter(), getYCenter());
     }
 
-    public static void close() {
-        instance.closeStage();
-        instance = null;
+    public void close() {
+        closeStage();
     }
 
     public GameAppController getController() {

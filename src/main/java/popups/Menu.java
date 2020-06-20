@@ -1,7 +1,6 @@
 package popups;
 
 
-import controller.MenuController;
 import javafx.fxml.FXMLLoader;
 import stages.GameApp;
 

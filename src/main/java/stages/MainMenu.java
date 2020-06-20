@@ -12,12 +12,16 @@ public class MainMenu extends MyAbstractStage {
     @Override
     protected void retainController(FXMLLoader loader) {}
 
-    public static void open() {
+    public static MainMenu getInstance() {
         if (instance == null) instance = new MainMenu(RESPATH);
+        return instance;
+    }
+
+    public void open() {
         instance.showStage();
     }
 
-    public static void close() {
+    public void close() {
         instance.closeStage();
     }
 }

@@ -5,8 +5,9 @@ import stages.MainMenu;
 public class DefeatMenuController {
 
     public void pressOnBtnMenu() {
-        MainMenu.open();
-        GameApp.close();
+        MainMenu.getInstance().open();
+        GameApp.getInstance().close();
+        GameApp.deleteInstance();
     }
 
 }

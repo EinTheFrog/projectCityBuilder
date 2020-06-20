@@ -14,7 +14,7 @@ import java.io.IOException;
 public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
-        MainMenu.open();
+        MainMenu.getInstance().open();
     }
 
     public static void main (String[] args) {

@@ -7,14 +7,14 @@ import stages.GameApp;
 
 public class EnemyMenuController {
     public void pressOnBtnPay() {
-        GameAppController.gameResources.payEnemies();
+        GameApp.getInstance().getController().gameResources.payEnemies();
         close();
     }
 
     public void pressOnBtnFight() {
-        boolean userWon = GameAppController.gameResources.beatEnemies();
+        boolean userWon = GameApp.getInstance().getController().gameResources.beatEnemies();
         if (!userWon) {
-            GameAppController.chosenField.removeRandomBuilding();
+            GameApp.getInstance().getController().chosenField.removeRandomBuilding();
         }
         ResultMenu.getInstance().open(userWon);
         EnemyMenu.getInstance().close();
@@ -24,7 +24,7 @@ public class EnemyMenuController {
         EnemyMenu.getInstance().close();
         GameApp.getInstance().getController().setChoosingMod();
         GameApp.getInstance().getController().resume();
-        if (GameAppController.gameResources.userLost()) DefeatMenu.getInstance().open();
+        if (GameApp.getInstance().getController().gameResources.userLost()) DefeatMenu.getInstance().open();
     }
 
 }

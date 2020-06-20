@@ -11,10 +11,10 @@ public class MainMenuController {
 
     public void btnStartAction() {
         GameApp.getInstance().open();
-        MainMenu.close();
+        MainMenu.getInstance().close();
     }
 
     public void btnQuitAction() {
-        MainMenu.close();
+        MainMenu.getInstance().close();
     }
 }
