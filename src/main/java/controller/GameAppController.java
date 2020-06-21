@@ -43,13 +43,10 @@ public class GameAppController implements Initializable {
     @FXML
     private Screen screen;
 
-
     private Set<Button> buttonSet;
-    //множества для контроля за зажатыми клавишами,
-    //curBtnPressed отвечает за клавиши, что уже были зажаты
-    //newBtnPressed отвечает за клавиши, которые пользователь нажал
-    private final EnumSet <KeyboardButtons> curBtnPressed = EnumSet.noneOf(KeyboardButtons.class);
-    private final EnumSet <KeyboardButtons> newBtnPressed = EnumSet.noneOf(KeyboardButtons.class);
+
+    //множество для контроля за зажатыми клавишами,
+    private final EnumSet <KeyboardButtons> keysPressed = EnumSet.noneOf(KeyboardButtons.class);
     private Mod mod;
     //поле является static, т.к у нас может быть только одно игрвое поле, накотором находится игрок
     FieldView chosenField;
@@ -191,7 +188,7 @@ public class GameAppController implements Initializable {
         if (!playerMovesCam) return;
         double dy = 0;
         double dx = 0;
-        for (KeyboardButtons key: curBtnPressed) {
+        for (KeyboardButtons key: keysPressed) {
             dx += key.dx;
             dy += key.dy;
         }
@@ -233,20 +230,20 @@ public class GameAppController implements Initializable {
     public void keyPressed(KeyCode code) {
         switch (code) {
             case W:
-                newBtnPressed.add(KeyboardButtons.W);
+                keysPressed.add(KeyboardButtons.W);
                 //говорим, что игрок двигает камеру
                 playerMovesCam = true;
                 break;
             case A:
-                newBtnPressed.add(KeyboardButtons.A);
+                keysPressed.add(KeyboardButtons.A);
                 playerMovesCam = true;
                 break;
             case D:
-                newBtnPressed.add(KeyboardButtons.D);
+                keysPressed.add(KeyboardButtons.D);
                 playerMovesCam = true;
                 break;
             case S:
-                newBtnPressed.add(KeyboardButtons.S);
+                keysPressed.add(KeyboardButtons.S);
                 playerMovesCam = true;
                 break;
             case ESCAPE:
@@ -262,8 +259,6 @@ public class GameAppController implements Initializable {
                 }
                 break;
         }
-        //если игрок двигает камеру, то вызываем метод для перемещения камеры
-        if (playerMovesCam) updatePressedButtons();
     }
 
     /**
@@ -273,29 +268,20 @@ public class GameAppController implements Initializable {
     public void keyReleased(KeyCode code) {
         switch (code) {
             case W:
-                //обнуляем расстояние, нак оторое камера должна пермещаться по оси OY
+                //обнуляем расстояние, на которое камера должна пермещаться по оси OY
                 //удаляем кнопку из списка зажатых сейчас
-                newBtnPressed.remove(KeyboardButtons.W);
+                keysPressed.remove(KeyboardButtons.W);
                 break;
             case A:
-                newBtnPressed.remove(KeyboardButtons.A);
+                keysPressed.remove(KeyboardButtons.A);
                 break;
             case D:
-                newBtnPressed.remove(KeyboardButtons.D);
+                keysPressed.remove(KeyboardButtons.D);
                 break;
             case S:
-                newBtnPressed.remove(KeyboardButtons.S);
+                keysPressed.remove(KeyboardButtons.S);
                 break;
         }
-        updatePressedButtons();
-    }
-
-    /**
-     * Метод для обновления нажатых клавиш
-     */
-    private void updatePressedButtons() {
-        curBtnPressed.clear();
-        curBtnPressed.addAll(newBtnPressed);
     }
 
     /**
