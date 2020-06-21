@@ -11,7 +11,7 @@ import javafx.scene.shape.Polygon;
 
 public class CellView extends Polygon{
     private final Color BASE_COLOR = Color.rgb(10, 106, 84);
-    Color borderColor = Color.rgb(220, 220, 220);
+    private final Color BORDER_COLOR = Color.rgb(220, 220, 220);
     public BooleanProperty isChosen = new SimpleBooleanProperty();
     public BooleanProperty isClicked = new SimpleBooleanProperty();
     private final CellCore cellCore;
@@ -25,7 +25,7 @@ public class CellView extends Polygon{
                 width / 2, - height / 2
         );
         //отрисовывем клетку
-        setStroke(borderColor);
+        setStroke(BORDER_COLOR);
         setFill(BASE_COLOR);
 
         isChosen.setValue(false);
@@ -33,10 +33,7 @@ public class CellView extends Polygon{
 
         addEventHandler(MouseEvent.MOUSE_EXITED, event -> isChosen.setValue(false));
         addEventHandler(MouseEvent.MOUSE_ENTERED, event -> isChosen.setValue(true));
-        addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            isClicked.setValue(true);
-            event.consume();
-        });
+        addEventHandler(MouseEvent.MOUSE_CLICKED, event -> { isClicked.setValue(true); });
     }
 
     public void setAuraColor(Aura aura) {

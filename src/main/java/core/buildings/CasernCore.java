@@ -27,7 +27,6 @@ public class CasernCore extends AbstractBuilding {
         return copy;
     }
 
-
     @Override
     public int getGoldProfit() {
         int profit = GOLD_PROFIT;

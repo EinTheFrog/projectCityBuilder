@@ -96,7 +96,7 @@ public class FieldView extends Pane {
         START_MOVE_RANGE = moveRange;
         fieldMoveX = indent;
         fieldMoveY = indent;
-        //вычитываем координаты поля для его отрисовки
+        //высчитываем координаты поля для его отрисовки
         fieldX = (fieldMoveX - paneWidth.getValue() / 2) * scaleValue + paneWidth.getValue() / 2;
         fieldY = (fieldMoveY - paneHeight.getValue() / 2) * scaleValue + paneHeight.getValue() / 2;
         //задаем нужные параметры для преобразования scale и применяем его
@@ -161,8 +161,8 @@ public class FieldView extends Pane {
 
     /**
      * Метод добавляющий клетку. При добавлении на параметры isClicked и is Chosen клетки устанавливаются слушаетели,
-     * чтобы поле могло реагировать, когда наводит курсор или клмикает по како-либо клетке. С помощью такой реализации
-     * поле знает о клетках, которые находятся на нем, однако клетки не знают о поле, на котором находятся
+     * чтобы поле могло реагировать, когда пользователь наводит курсор или кликает по какой-либо клетке. С помощью такой
+     * реализации поле знает о клетках, которые находятся на нем, однако клетки не знают о поле, на котором находятся
      * @param cellView
      */
     private void addCell(CellView cellView) {
@@ -172,7 +172,7 @@ public class FieldView extends Pane {
         cellsArray[indX][indY] = cellView;
         fieldCore.addCell(cellView.getCore());
         //координаты cellView (по какой-то причине) считаются так, будто бы это прямоуголник,
-        // после создания все становится нормально
+        //после создания все становится нормально
         final double FIRST_CELL_X = cellWidth / 2 * indY;
         final double FIRST_CELL_Y = height / 2 + cellHeight / 2 * indY - cellHeight / 2;
         double x = indX * cellWidth / 2 + FIRST_CELL_X;
@@ -200,7 +200,6 @@ public class FieldView extends Pane {
                         buildingGhost.setVisibility(Visibility.INVISIBLE);
                     }
             }
-
         });
         cellView.isClicked.addListener((obs, oldVal, newVal) -> {
             if (newVal) {
@@ -239,10 +238,9 @@ public class FieldView extends Pane {
      */
     private void makeBuildingsClickable (boolean bool) {
         for (AbstractBuildingView building: buildingsList) {
-            if (bool) {
-                building.setVisibility(Visibility.VISIBLE);
-            }
+            if (bool) building.setVisibility(Visibility.VISIBLE);
             else building.setVisibility(Visibility.GHOST);
+
             building.setClickable(bool);
         }
     }
@@ -304,7 +302,6 @@ public class FieldView extends Pane {
             getChildren().add(buildingView);
             updateBuildingsDisposal(buildingView);
 
-            //controller.updateResources();
             controller.setChoosingMod();
         }
     }
@@ -362,7 +359,6 @@ public class FieldView extends Pane {
     public void removeBuilding(AbstractBuildingView buildingView) {
         fieldCore.removeBuilding(buildingView.getCore());
         getChildren().remove(buildingView);
-        //controller.updateResources();
         buildingsList.remove(buildingView);
     }
 
@@ -379,14 +375,6 @@ public class FieldView extends Pane {
             if (bool) cellView.setAuraColor(building.getCore().getOwnAura());
             else  cellView.clearAuraColor();
         }
-    }
-
-    public double getX() {
-        return fieldX;
-    }
-
-    public double getY() {
-        return fieldY;
     }
 
     public double getCellWidth() {
